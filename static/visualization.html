@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可视化 - AL 循环控制面板</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css//all.min.css"> -->
+    <link rel="stylesheet" href="/static/css/visualization.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-atom me-2"></i>AL 循环控制面板
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i> 首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="data_preparation.html">
+                            <i class="fas fa-database me-1"></i> 数据准备及模型设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="visualization.html">
+                            <i class="fas fa-chart-line me-1"></i> 可视化及ML模型分析
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="model_analysis.html">
+                            <i class="fas fa-microscope me-1"></i> tdb模型分析及输出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="d-flex align-items-center mb-4">
+            <i class="fas fa-chart-line fa-2x text-success me-3"></i>
+            <h1 class="mb-0">模型训练可视化</h1>
+        </div>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            此页面展示训练过程中的综合可视化信息，包含所有关键指标的单张图像，帮助您全面监控模型性能。
+        </div>
+        
+        <!-- 系统状态信息 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card system-status-card" style="height: 160px;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">系统状态</h5>
+                        <div class="row h-75">
+                            <!-- 当前探索的相 -->
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
+                                <div class="small text-muted">当前探索的相</div>
+                                <div id="phase-name" class="fs-5">
+                                    <span class="loading-spinner"></span>加载中...
+                                </div>
+                            </div>
+                            
+                            <!-- 当前迭代 - 使用itermax变量 -->
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
+                                <div class="small text-muted">当前迭代</div>
+                                <div id="current-iteration" class="fs-5">
+                                    <span class="loading-spinner"></span>加载中...
+                                </div>
+                            </div>
+                            
+                            <!-- 当前操作 - 使用process变量 -->
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
+                                <div class="small text-muted">当前操作</div>
+                                <div class="fs-5">
+                                    <span id="current-operation-number" class="process">
+                                        <span class="loading-spinner"></span>加载中...
+                                    </span>
+                                    <span id="current-operation-text" class="operation-status operation-unknown">未知</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 学习模型 -->
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
+                                <div class="small text-muted">学习模型</div>
+                                <div id="ml-model" class="fs-5">
+                                    <span class="loading-spinner"></span>加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 轮次选择器 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="iteration-controls">
+                        <button class="btn btn-outline-primary iteration-btn" id="first-iter">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="btn btn-outline-primary iteration-btn" id="prev-iter">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        <div class="iteration-display" id="current-iter">
+                            <span class="loading-spinner"></span>加载中...
+                        </div>
+                        <button class="btn btn-outline-primary iteration-btn" id="next-iter">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="btn btn-outline-primary iteration-btn" id="last-iter">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                        <span class="ms-2">共 <span id="total-iters">
+                            <span class="loading-spinner"></span>加载中...
+                        </span> 轮</span>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">数据量:</span>
+                            <span class="badge bg-primary" id="data-count">
+                                <span class="loading-spinner"></span>
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">训练RMSE:</span>
+                            <span class="badge bg-success" id="train-rmse">
+                                <span class="loading-spinner"></span>
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">测试RMSE:</span>
+                            <span class="badge bg-warning text-dark" id="test-rmse">
+                                <span class="loading-spinner"></span>
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">交叉验证 RMSE:</span>
+                            <span class="badge bg-info" id="cv-info">
+                                <span class="loading-spinner"></span>
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">交叉验证 R²值:</span>
+                            <span class="badge bg-secondary" id="r2-score">
+                                <span class="loading-spinner"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div id="data-error" class="data-error mt-2" style="display: none;">
+                    数据错误信息
+                    <button class="btn btn-sm btn-danger show-details-btn" id="show-error-details">显示详情</button>
+                </div>
+                <div id="csv-error-details" class="csv-error-details">
+                    <!-- 错误详情将在这里显示 -->
+                </div>
+            </div>
+        </div>
+        
+        <ul class="nav nav-tabs mb-4" id="vizTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="training-tab" data-bs-toggle="tab" data-bs-target="#training" type="button" role="tab">
+                    <i class="fas fa-running me-1"></i> 训练过程
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="convex-hull-tab" data-bs-toggle="tab" data-bs-target="#convex-hull" type="button" role="tab">
+                    <i class="fas fa-cube me-1"></i> 凸包信息
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab">
+                    <i class="fas fa-cogs me-1"></i> 特征分析
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button" role="tab">
+                    <i class="fas fa-file-alt me-1"></i> 日志信息
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="vizTabContent">
+            <!-- 训练过程标签页 -->
+            <div class="tab-pane fade show active" id="training" role="tabpanel">
+                <div class="row">
+                    <!-- 主要图片区域 -->
+                    <div class="col-12">
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                综合训练指标视图
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="main-image-container">
+                                    <img id="main-image" class="main-image" src="" alt="包含所有训练指标的综合视图" loading="lazy">
+                                    <div id="main-loading" class="loading-indicator">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="image-status" id="main-image-status" style="display: none;">
+                                        加载中...
+                                    </div>
+                                    <div class="cache-indicator" id="main-image-cache">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-info mt-3">
+                                    显示当前迭代的所有训练指标综合信息
+                                </div>
+                                <div class="image-path" id="main-image-path">
+                                    图片路径: 加载中...
+                                </div>
+                                <!-- 添加强制刷新按钮 -->
+                                <button class="btn btn-outline-danger force-refresh-btn" id="force-refresh-main">
+                                    <i class="fas fa-sync-alt"></i> 强制刷新综合指标图
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 预测对比图片区域 -->
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <!-- 第二张图：默认显示iter0001 -->
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                <span>Predicted vs Calculated (初始迭代)</span>
+                                <span class="metric-badge bg-white text-primary" id="pred-r2-1">R²: <span class="loading-spinner"></span></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="pred-image-container">
+                                    <img id="pred-image-1" class="pred-image" src="" alt="Predicted vs Calculated 对比图 (初始迭代)" loading="lazy">
+                                    <div id="pred-loading-1" class="text-center">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="image-status" id="pred-image-status-1" style="display: none;">
+                                        加载中...
+                                    </div>
+                                    <div class="cache-indicator" id="pred-image-cache-1">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-navigation">
+                                    <button class="btn btn-outline-primary iteration-btn" id="first-pred-1">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary iteration-btn" id="prev-pred-1">
+                                        <i class="fas fa-angle-left"></i>
+                                    </button>
+                                    <input type="number" class="form-control image-iteration-input" id="iter-pred-1" min="1" value="1">
+                                    <button class="btn btn-outline-primary iteration-btn" id="next-pred-1">
+                                        <i class="fas fa-angle-right"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary iteration-btn" id="last-pred-1">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </div>
+                                <div class="image-info">
+                                    迭代范围: <span id="pred-range-1">
+                                        <span class="loading-spinner"></span>
+                                    </span>
+                                </div>
+                                <div class="image-path" id="pred-image-path-1">
+                                    图片路径: 加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <!-- 第三张图：默认显示itermax -->
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                <span>Predicted vs Calculated (最新迭代)</span>
+                                <span class="metric-badge bg-white text-primary" id="pred-r2-2">R²: <span class="loading-spinner"></span></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="pred-image-container">
+                                    <img id="pred-image-2" class="pred-image" src="" alt="Predicted vs Calculated 对比图 (最新迭代)" loading="lazy">
+                                    <div id="pred-loading-2" class="text-center">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="image-status" id="pred-image-status-2" style="display: none;">
+                                        加载中...
+                                    </div>
+                                    <div class="cache-indicator" id="pred-image-cache-2">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-navigation">
+                                    <button class="btn btn-outline-primary iteration-btn" id="first-pred-2">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary iteration-btn" id="prev-pred-2">
+                                        <i class="fas fa-angle-left"></i>
+                                    </button>
+                                    <input type="number" class="form-control image-iteration-input" id="iter-pred-2" min="1" value="1">
+                                    <button class="btn btn-outline-primary iteration-btn" id="next-pred-2">
+                                        <i class="fas fa-angle-right"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary iteration-btn" id="last-pred-2">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </div>
+                                <div class="image-info">
+                                    迭代范围: <span id="pred-range-2">
+                                        <span class="loading-spinner"></span>
+                                    </span>
+                                </div>
+                                <div class="image-path" id="pred-image-path-2">
+                                    图片路径: 加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 其他标签页内容 -->
+            <div class="tab-pane fade" id="convex-hull" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                凸包信息可视化
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="main-image-container">
+                                    <img id="convex-hull-image" class="main-image" src="" alt="凸包信息可视化" loading="lazy">
+                                    <div id="convex-hull-loading" class="loading-indicator">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="cache-indicator" id="convex-hull-cache">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-info mt-3">
+                                    显示当前迭代的凸包结构和相关信息
+                                </div>
+                                <div class="image-path" id="convex-hull-image-path">
+                                    图片路径: 加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="features" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                特征重要性分析
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="main-image-container">
+                                    <img id="features-image" class="main-image" src="" alt="特征重要性分析" loading="lazy">
+                                    <div id="features-loading" class="loading-indicator">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="cache-indicator" id="features-cache">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-info mt-3">
+                                    显示模型特征重要性排序和分析
+                                </div>
+                                <div class="image-path" id="features-image-path">
+                                    图片路径: 加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="logs" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-viz">
+                            <div class="card-header bg-primary text-white">
+                                训练日志信息
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="main-image-container">
+                                    <img id="logs-image" class="main-image" src="" alt="训练日志信息" loading="lazy">
+                                    <div id="logs-loading" class="loading-indicator">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <p class="mt-2">加载图片中...</p>
+                                    </div>
+                                    <div class="cache-indicator" id="logs-cache">
+                                        已缓存
+                                    </div>
+                                </div>
+                                <div class="image-info mt-3">
+                                    显示当前迭代的训练日志和关键事件
+                                </div>
+                                <div class="image-path" id="logs-image-path">
+                                    图片路径: 加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="/static/css/bootstrap.bundle.min.js"></script>
+    <script src="/static/visualization.js"></script>
+</body>
+</html>

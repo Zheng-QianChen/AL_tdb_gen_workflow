@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模型分析流程 - AL 循环控制面板</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <!-- <link rel="stylesheet" href="/static/css//all.min.css">
+    <script src="/static/css/chart.js"></script>
+    <script src="/static/css/3.4.17"></script>
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/css/papaparse.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        neutral: '#64748B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .chart-container {
+                height: 70vh;
+            }
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/static/css/model_analysis.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-atom me-2"></i>AL 循环控制面板
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i> 首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="data_preparation.html">
+                            <i class="fas fa-database me-1"></i> 数据准备及模型设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="visualization.html">
+                            <i class="fas fa-chart-line me-1"></i> 可视化及ML模型分析
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="model_analysis.html">
+                            <i class="fas fa-microscope me-1"></i> tdb模型分析及输出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- 流程导航图 -->
+        <div class="flow-chart">
+            <h3 class="flow-title">模型分析流程</h3>
+            <div class="flow-connector">
+                <div class="connector-progress" id="connector-progress"></div>
+            </div>
+            <div class="flow-steps">
+                <div class="flow-step" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">参数输入</div>
+                </div>
+                <div class="flow-step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">亚点阵模型预选</div>
+                </div>
+                <div class="flow-step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">结果可视化</div>
+                </div>
+                <div class="flow-step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">模型微调</div>
+                </div>
+                <div class="flow-step" data-step="5">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">模型输出</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 步骤1: 参数输入 -->
+        <div class="content-section active" id="section-1">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h me-2"></i>参数输入
+            </h2>
+            <p class="text-muted mb-4">请输入生成TDB文件所需的参数，系统将使用这些参数调用output_tdb_file函数。</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="param-group">
+                        <label class="param-label" for="user-input">用户标识 (user)</label>
+                        <input type="text" id="user-input" class="form-control" placeholder="输入用户标识字符串">
+                    </div>
+                    
+                    <div class="param-group">
+                        <label class="param-label" for="mask-input">掩码值 (mask)</label>
+                        <input type="number" id="mask-input" class="form-control" placeholder="输入整数掩码值">
+                    </div>
+                    
+                    <div class="param-group">
+                        <label class="param-label" for="input-file-path">相模型文件 (可选)</label>
+                        <input type="text" id="input-file-path" class="form-control" placeholder="输入相模型文件（默认为 static/run/input.json）">
+                    </div>
+                    
+                    <!-- 新增：CSV文件路径输入 -->
+                    <div class="param-group">
+                        <label class="param-label" for="csv-file-path">CSV数据文件路径</label>
+                        <input type="text" id="csv-file-path" class="form-control" value="/static/table/model_score.csv" placeholder="输入CSV数据文件路径">
+                        <small class="text-muted">系统将自动加载该路径下的CSV文件用于可视化</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-info-circle me-1"></i> 参数说明</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item bg-transparent">
+                                    <strong>user:</strong> 用户标识字符串，用于记录和追踪操作
+                                </li>
+                                <li class="list-group-item bg-transparent">
+                                    <strong>mask:</strong> 整数掩码值，用于数据处理和过滤
+                                </li>
+                                <li class="list-group-item bg-transparent">
+                                    <strong>record_path:</strong> 可选参数，指定记录文件保存路径
+                                </li>
+                                <li class="list-group-item bg-transparent">
+                                    <strong>CSV文件路径:</strong> 模型分析数据的CSV文件路径，用于可视化
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 计算状态显示 -->
+            <div class="calculation-status" id="step1-status">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                <span id="step1-status-text">正在计算中...</span>
+            </div>
+            
+            <div class="btn-group-actions">
+                <div>
+                    <!-- 步骤1: 确认计算按钮 -->
+                    <button class="btn calculate-btn btn-nav" id="step1-calculate">
+                        <i class="fas fa-calculator me-1"></i> 确认计算
+                    </button>
+                </div>
+                <button class="btn btn-primary btn-nav" id="step1-next" disabled>
+                    下一步 <i class="fas fa-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 步骤2: 亚点阵模型预选 -->
+        <div class="content-section" id="section-2">
+            <h2 class="section-title">
+                <i class="fas fa-check-square me-2"></i>亚点阵模型预选
+            </h2>
+            <p class="text-muted mb-4">请选择需要分析的亚点阵模型的亚点阵数量，系统将基于所选模型进行分析。</p>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">可选：</h5>
+                    <p class="text-muted">根据input.json中的sublattice_number值（当前值为<span id="sublattice-number-display">5</span>），可选范围为2-<span id="max-model-number">4</span></p>
+                    
+                    <div class="checkbox-group" id="sublattice-checkboxes">
+                        <!-- 动态生成复选框 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-lightbulb me-2"></i>
+                <strong>提示:</strong> 您可以选择多个模型进行对比分析，建议至少选择2个模型以获得更全面的比较结果。
+            </div>
+            
+            <!-- 计算状态显示 -->
+            <div class="calculation-status" id="step2-status">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                <span id="step2-status-text">正在计算中...</span>
+            </div>
+            
+            <div class="btn-group-actions">
+                <button class="btn btn-secondary btn-nav" id="step2-prev">
+                    <i class="fas fa-arrow-left me-1"></i> 上一步
+                </button>
+                <div>
+                    <!-- 步骤2: 确认计算按钮 -->
+                    <button class="btn calculate-btn btn-nav" id="step2-calculate">
+                        <i class="fas fa-calculator me-1"></i> 确认计算
+                    </button>
+                    <button class="btn btn-primary btn-nav" id="step2-next" disabled>
+                        <span id="step2-btn-text">下一步</span>
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 步骤3: 结果可视化 - 替换为交互式图表 -->
+        <div class="content-section" id="section-3">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar me-2"></i>结果可视化
+            </h2>
+            <p class="text-muted mb-4">以下是基于所选模型生成的CSV数据可视化结果的总览，您可以查看不同模型的性能对比。<br>此外，您还可以通过下方的界面进行交互式查看。</p>
+            
+            <!-- 新增：模型分析图展示区域 -->
+            <div class="plot-container" id="model-plot-container">
+                <div class="plot-loading" id="plot-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">请先进行计算以加载模型分析图...</p>
+                </div>
+                <div class="plot-error" id="plot-error" style="display: none;"></div>
+                <img src="" alt="模型分析图" class="plot-image" id="model-plot-image" style="display: none;">
+            </div>
+            
+            <!-- 交互式图表区域 -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">交互式数据可视化</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 主要内容区 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- 左侧控制面板 -->
+                        <div class="lg:col-span-1 bg-gray-50 rounded-xl p-4 h-fit">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fa fa-cogs text-primary mr-2"></i>图表设置
+                            </h3>
+                            
+                            <!-- CSV文件信息 -->
+                            <div class="mb-4 p-3 bg-white rounded border border-gray-200">
+                                <p class="text-sm text-gray-600">
+                                    <i class="fa fa-file-text-o mr-1"></i>
+                                    <span id="csvFileName">加载中...</span>
+                                </p>
+                            </div>
+                            
+                            <!-- 数据列选择 -->
+                            <div id="columnSelectors" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">X轴数据</label>
+                                    <select id="xAxis" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"></select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Y轴配置 (每个Y轴可按住Ctrl多选数据列)</label>
+                                    <div id="yAxisContainer">
+                                        <div class="y-axis-group border rounded-md p-3 mb-3">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm font-medium">Y轴 1</span>
+                                                <button class="btn btn-sm btn-danger remove-y-axis" disabled>
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <select class="yAxis form-select form-select-sm mb-2" multiple size="3">
+                                                <!-- 选项将动态生成 -->
+                                            </select>
+                                            <div class="flex items-center gap-2">
+                                                <select class="chart-type-selector form-select form-select-sm" data-axis="0">
+                                                    <option value="line">折线图</option>
+                                                    <option value="bar">柱状图</option>
+                                                    <option value="scatter">散点图</option>
+                                                </select>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="yAxisIndependent-0" checked>
+                                                    <label class="form-check-label text-sm" for="yAxisIndependent-0">独立轴</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button id="addYAxis" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-plus"></i> 添加Y轴
+                                    </button>
+                                </div>
+                                
+                                <button id="plotButton" class="w-full bg-secondary text-white py-2 px-4 rounded-md hover:bg-secondary/90 transition-all-300 font-medium flex items-center justify-center">
+                                    <i class="fa fa-line-chart mr-2"></i>生成图表
+                                </button>
+                            </div>
+                            
+                            <!-- 数据预览 -->
+                            <div id="dataPreview" class="mt-6">
+                                <h3 class="text-sm font-medium text-gray-700 mb-2">数据预览</h3>
+                                <div class="max-h-40 overflow-y-auto text-sm text-gray-600 border border-gray-200 rounded-md p-2">
+                                    <table class="min-w-full" id="previewTable">
+                                        <!-- 数据预览表格将在这里动态生成 -->
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧图表区域 -->
+                        <div class="lg:col-span-2">
+                            <!-- 图表容器 -->
+                            <div class="chart-container relative border border-gray-200 rounded-lg p-2">
+                                <canvas id="dataChart"></canvas>
+                                <div id="chartPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                                    <i class="fa fa-area-chart text-6xl mb-4"></i>
+                                    <p class="text-center">请配置图表参数并生成图表</p>
+                                    <p class="text-sm mt-2">支持缩放、平移和悬停查看详细数据</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 图表交互控制 -->
+                            <div id="chartControls" class="mt-4 flex flex-wrap gap-2 justify-center">
+                                <button id="zoomIn" class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-all-300">
+                                    <i class="fa fa-search-plus text-gray-600"></i> 放大
+                                </button>
+                                <button id="zoomOut" class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-all-300">
+                                    <i class="fa fa-search-minus text-gray-600"></i> 缩小
+                                </button>
+                                <button id="resetZoom" class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-all-300">
+                                    <i class="fa fa-refresh text-gray-600"></i> 重置视图
+                                </button>
+                                <button id="downloadChart" class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-all-300">
+                                    <i class="fa fa-download text-gray-600"></i> 下载图表
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 计算状态显示 -->
+            <div class="calculation-status" id="step3-status">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                <span id="step3-status-text">正在生成可视化结果...</span>
+            </div>
+            
+            <div class="btn-group-actions">
+                <button class="btn btn-secondary btn-nav" id="step3-prev">
+                    <i class="fas fa-arrow-left me-1"></i> 上一步
+                </button>
+                <div>
+                    <!-- 步骤3: 确认计算按钮 -->
+                    <button class="btn calculate-btn btn-nav" id="step3-calculate">
+                        <i class="fas fa-calculator me-1"></i> 确认计算
+                    </button>
+                    <button class="btn btn-success btn-nav" id="step3-to-5" disabled>
+                        直接输出模型 <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                    <button class="btn btn-primary btn-nav" id="step3-next" disabled>
+                        模型微调 <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 步骤4: 模型微调（修改后） -->
+        <div class="content-section" id="section-4">
+            <h2 class="section-title">
+                <i class="fas fa-sliders me-2"></i>模型微调
+            </h2>
+            <p class="text-muted mb-4">请选择需要微调的模型，点击确认后加载元素组，再通过每组三框选择管理元素。</p>
+
+            <div class="row">
+                <div class="col-md-5">
+                    <!-- 模型选择区域保持不变 -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">选择模型（来自CSV数据）</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="model-selection" id="csv-model-selection"  style="max-height: 300px; overflow-y: auto;">
+                                <div class="text-center text-muted py-3">
+                                    <span class="loading-spinner"></span> 加载CSV模型数据中...
+                                </div>
+                            </div>
+                            <button id="confirm-model" class="btn btn-primary w-100 mt-3" disabled>
+                                <i class="fas fa-check me-1"></i> 确认选择该模型
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">元素管理（来自后端数据）</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- 1. 模型确认提示 -->
+                            <div id="model-confirm-tip" class="text-center text-muted py-3">
+                                <i class="fas fa-info-circle me-1"></i> 请在左侧选择模型并点击“确认选择该模型”
+                            </div>
+                            
+                            <!-- 2. 加载状态 -->
+                            <div id="element-loading" class="text-center text-muted py-3" style="display: none;">
+                                <span class="spinner-border text-primary" role="status"></span> 加载元素组数据中...
+                            </div>
+                            
+                            <!-- 3. 动态元素组容器（每个组包含独立三框） -->
+                            <div id="dynamic-element-groups" class="d-flex flex-column gap-4 mb-4" style="display: none;">
+                                <!-- 由JS动态生成每个组的结构 -->
+                            </div>
+
+                            <!-- 新增：三框选择区域容器 -->
+                            <div id="three-box-selection" style="display: none;"></div>
+                            
+                            <!-- 应用过滤按钮 -->
+                            <button class="btn btn-outline-primary" id="apply-filters">
+                                <i class="fas fa-check me-1"></i> 应用元素过滤
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 border border-gray-200 rounded-lg shadow-sm overflow-hidden transition-all duration-300" id="analysis-console-container">
+
+                <!-- 控制台标题栏 -->
+        <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between">
+            <h3 class="text-sm font-medium text-gray-700 flex items-center">
+                <i class="fas fa-terminal mr-2 text-blue-500"></i>
+                <span id="console-title">分析进程</span>
+            </h3>
+            <div class="flex items-center space-x-2">
+                <span id="status-indicator" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                <span id="status-text" class="text-xs text-gray-500">分析中...</span>
+            </div>
+        </div>
+        
+        <!-- 控制台内容 (初始显示) -->
+        <div id="console-content" class="bg-gray-900 text-gray-100 p-4 h-64 overflow-y-auto text-sm font-mono">
+            <div class="mb-1">
+                <span class="text-green-400">> 应用元素过滤完成，开始分析...</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-blue-400">> 正在处理元素组 1/2</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-blue-400">> 正在处理元素组 2/2</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-yellow-400">> 计算保留元素权重...</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-yellow-400">> 生成分析报告...</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-gray-400">// 请等待分析完成...</span>
+            </div>
+        </div>
+        
+                <!-- CSV查看器 (初始隐藏) -->
+                <div id="csv-viewer" class="hidden p-4 h-64 overflow-y-auto">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">CSV 文件地址:</p>
+                            <p id="csv-file-path" class="text-sm font-medium text-blue-600 break-all">/analysis_results/2_A_A_B_A_A_filtered.csv</p>
+                        </div>
+                        <button id="download-csv" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center transition-colors">
+                            <i class="fas fa-download mr-1"></i> 下载
+                        </button>
+                    </div>
+                    
+                    <!-- CSV表格展示 -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead class="bg-gray-50">
+                                <tr id="csv-header">
+                                    <!-- 表头将通过JS动态生成 -->
+                                </tr>
+                            </thead>
+                            <tbody id="csv-body" class="bg-white divide-y divide-gray-200">
+                                <!-- 表格内容将通过JS动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        <div class="btn-group-actions">
+            <button class="btn btn-secondary btn-nav" id="step4-prev">
+                <i class="fas fa-arrow-left me-1"></i> 上一步
+            </button>
+            <button class="btn btn-primary btn-nav" id="step4-next" disabled>
+                下一步 <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        </div>
+    </div>
+
+        <!-- 步骤5: 模型输出 -->
+    <div class="content-section" id="section-5">
+        <h2 class="section-title">
+            <i class="fas fa-download me-2"></i>模型输出
+        </h2>
+        <p class="text-muted mb-4">请选择最终需要输出的模型，并通过两框管理元素，系统将生成相应的TDB模型文件。模型数据从CSV文件加载。</p>
+        
+            <div class="row">
+                <div class="col-md-5">
+                    <!-- 模型选择区域保持不变 -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">选择模型（来自CSV数据）</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="model-selection" id="step5-csv-model-selection" style="max-height: 300px; overflow-y: auto;">
+                                <div class="text-center text-muted py-3">
+                                    <span class="loading-spinner"></span> 加载CSV模型数据中...
+                                </div>
+                            </div>
+                            <button id="step5-confirm-model" class="btn btn-primary w-100 mt-3" disabled>
+                                <i class="fas fa-check me-1"></i> 确认选择该模型
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-md-7">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">元素管理（来自后端数据）</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- 1. 模型确认提示 -->
+                            <div id="step5-model-confirm-tip" class="text-center text-muted py-3">
+                                <i class="fas fa-info-circle me-1"></i> 请在左侧选择模型并点击“确认选择该模型”
+                            </div>
+                            
+                            <!-- 2. 加载状态 -->
+                            <div id="step5-element-loading" class="text-center text-muted py-3" style="display: none;">
+                                <span class="spinner-border text-primary" role="status"></span> 加载元素组数据中...
+                            </div>
+                            
+                            <!-- 3. 动态元素组容器（每个组包含独立两框） -->
+                            <div id="step5-dynamic-element-groups" class="d-flex flex-column gap-4 mb-4" style="display: none;">
+                                <!-- 由JS动态生成每个组的结构 -->
+                            </div>
+
+                            <!-- 新增：两框选择区域容器 -->
+                            <div id="step5-two-box-selection" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 border border-gray-200 rounded-lg shadow-sm overflow-hidden transition-all duration-300" id="analysis-console-container">
+            </div>
+        
+        <!-- 输出设置 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">输出设置</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <label class="param-label" for="output-path">输出路径</label>
+                            <input type="text" id="output-path" class="form-control" value="./output/models/" placeholder="指定模型输出路径">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <label class="param-label">文件格式</label>
+                            <div class="form-control-plaintext">
+                                <span class="badge bg-secondary">TDB格式</span>
+                                <input type="hidden" id="file-format" value="tdb">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="include-metrics">
+                    <label class="form-check-label" for="include-metrics">
+                        同时输出模型评估指标报告
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-group-actions">
+            <button class="btn btn-secondary btn-nav" id="step5-prev">
+                <i class="fas fa-arrow-left me-1"></i> 上一步
+            </button>
+            <button class="btn btn-success btn-nav" id="export-model" disabled>
+                <i class="fas fa-download me-1"></i> 导出选中模型
+            </button>
+        </div>
+
+    <!-- 提示消息框 -->
+    <div class="alert alert-success alert-custom" id="alert-message" style="display: none;">
+        <strong>成功!</strong> <span id="alert-text"></span>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="/static/css/bootstrap.bundle.min.js"></script>
+    <script src="/static/model_analysis.js"></script>
+</body>
+</html>
