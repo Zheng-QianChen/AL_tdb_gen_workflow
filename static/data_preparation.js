@@ -481,6 +481,19 @@ const modelHyperParameters = {
     }
 };
 
+function safeApplyTranslation() {
+    // 使用 setTimeout 确保在当前 DOM 渲染任务完成后执行
+    setTimeout(() => {
+        if (typeof window.updatePageContent === 'function') {
+            const currentLang = localStorage.getItem('preferredLang') || 'en';
+            window.updatePageContent(currentLang);
+        } else {
+            console.warn("翻译插件尚未就绪，将在 100ms 后重试...");
+            setTimeout(safeApplyTranslation, 100);
+        }
+    }, 0);
+}
+
 function updateHyperParametersJson() {
     const params = {};
     // 遍历所有超参数输入控件
@@ -681,30 +694,48 @@ function generateSublattices(count) {
         
         sublattice.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6>子晶格 ${siteHolders[i]}</h6>
+                <h6>
+                    <span data-i18n="prep.sublattice_prefix">子晶格</span> ${siteHolders[i]}
+                </h6>
                 <span class="badge bg-primary">site_holder: ${siteHolders[i]}</span>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-2">
-                        <label class="form-label">site2sub</label>
+                        <label class="form-label" data-i18n="prep.site2sub_label">Wyckoff与sublattice的对应关系</label>
                         <input type="text" class="form-control site2sub" value="[${i}]" readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-2">
-                        <label class="form-label">occup_atoms_in_tdb</label>
+                        <label class="form-label" data-i18n="prep.occup_atoms_label">在tdb中想要写成的占位分数(只与最终生成的tdb文件有关)</label>
                         <input type="number" class="form-control occup-atoms" value="1" min="1">
                     </div>
                 </div>
             </div>
             <div class="mb-2">
-                <label class="form-label">允许的元素 (comp)</label>
+                <label class="form-label" data-i18n="prep.allowed_elements_label">允许的元素 (comp)</label>
                 <input type="text" class="form-control allowed-elements" value="${defaultElements}">
             </div>
         `;
         
         container.appendChild(sublattice);
+    }
+}
+
+function getI18nText(path, fallback) {
+    try {
+        const keys = path.split('.');
+        const lang = localStorage.getItem('preferredLang') || 'en';
+        // 访问全局 window.i18nData
+        let res = window.i18nData ? window.i18nData[lang] : null;
+        if (!res) return fallback;
+        for (const key of keys) {
+            res = res[key];
+        }
+        return res || fallback;
+    } catch (e) {
+        return fallback;
     }
 }
 
@@ -722,17 +753,36 @@ async function uploadFileToServer(file) {
         const result = await response.json();
         
         if (!response.ok || !result.success) {
-            throw new Error(result.message || '文件上传失败');
+            // 获取翻译：优先找 prep.upload_fail，找不到用 '文件上传失败'
+            const failMsg = getI18nText('prep.upload_fail', 'upload failed');
+            throw new Error(result.message || failMsg);
         }
         
         return result;
     } catch (error) {
-        console.error('文件上传错误:', error);
-        showAlert(`文件上传失败: ${error.message}`, 'danger');
+        console.error('Upload error:', error);
+        
+        // 获取翻译：优先找 prep.upload_fail_prefix，找不到用 '文件上传失败: '
+        const errorPrefix = getI18nText('prep.upload_fail_prefix', 'upload failed: ');
+        
+        showAlert(`${errorPrefix}${error.message}`, 'danger');
         throw error;
     }
 }
 
+function safeApplyTranslation() {
+    try {
+        // 检查全局翻译函数是否存在
+        if (typeof window.updatePageContent === 'function') {
+            // 从本地存储读取当前语言偏好
+            const currentLang = localStorage.getItem('preferredLang') || 'en';
+            // 触发翻译扫描
+            window.updatePageContent(currentLang);
+        }
+    } catch (e) {
+        console.error("i18n refresh failed:", e);
+    }
+}
 
 // 添加描述符文件
 function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
@@ -752,9 +802,11 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         <button type="button" class="remove-item" data-id="${itemId}">
             <i class="fas fa-times"></i>
         </button>
-        <h6>描述符文件 #${itemCount + 1}</h6>
+        <h6>
+            <span data-i18n="prep.descriptor_file_prefix">Descriptor Settings</span> #${itemCount + 1}
+        </h6>
         <div class="mb-3">
-            <label class="form-label">文件路径</label>
+            <label class="form-label" data-i18n="prep.file_path_label">File Path</label>
             <div class="input-group">
                 <input type="text" class="form-control descriptor-file" value="${filePath}">
                 <button class="btn btn-outline-primary select-file" type="button" data-target="${itemId}">
@@ -765,14 +817,14 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-2">
-                    <label class="form-label">索引名称 (index_name)</label>
+                    <label class="form-label" data-i18n="prep.index_name_label">Index col name(index_name)</label>
                     <input type="text" class="form-control descriptor-index" value="${indexName}">
-                    <div class="form-text">请从列名中选择一个作为索引</div>
+                    <div class="form-text" data-i18n="prep.index_hint">Please choose one of the column names as index</div>
                 </div>
             </div>
         </div>
         <div class="mb-2">
-            <label class="form-label">选择列 (col_name)</label>
+            <label class="form-label" data-i18n="prep.select_cols_label">describe col name (col_name)</label>
             <div class="column-selector">
                 ${columnsHtml}
             </div>
@@ -780,7 +832,9 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
     `;
     
     container.appendChild(descriptorItem);
-    
+
+    safeApplyTranslation();
+
     // 添加删除按钮事件
     descriptorItem.querySelector('.remove-item').addEventListener('click', function() {
         document.getElementById(this.dataset.id).remove();
@@ -807,10 +861,10 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
                 try {
                     // 显示上传中状态
                     button.disabled = true;
-                    button.innerHTML = '<span class="uploading-spinner"></span> 上传中...';
+                    button.innerHTML = '<span class="uploading-spinner"></span> uploading...';
                     
                     const file = e.target.files[0];
-                    showAlert(`开始上传文件: ${file.name}`, 'info');
+                    showAlert(`uploading: ${file.name}`, 'info');
                     
                     // 上传文件到服务器
                     const uploadResult = await uploadFileToServer(file);
@@ -834,15 +888,15 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
                             indexInput.value = columns[0];
                         }
                         
-                        showAlert(`文件已上传并解析，发现 ${columns.length} 个列`, 'success');
-                        console.log('检测到的列名:', columns);
+                        showAlert(`upload success: find ${columns.length} cols`, 'success');
+                        console.log('please check cols:', columns);
                     } else {
-                        showAlert('未能从CSV文件中解析出列名', 'warning');
+                        showAlert('cannot find cols in this file', 'warning');
                     }
                     
                 } catch (error) {
-                    console.error('文件处理错误:', error);
-                    showAlert(`文件处理失败: ${error.message}`, 'danger');
+                    console.error('load file fails:', error);
+                    showAlert(`load file fails: ${error.message}`, 'danger');
                 } finally {
                     // 恢复按钮状态
                     button.disabled = false;
@@ -855,19 +909,15 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         fileInput.click();
     });
     
-    // 索引名称变化时自动选择对应列
-    descriptorItem.querySelector('.descriptor-index').addEventListener('change', function() {
-        const columns = Array.from(descriptorItem.querySelectorAll('.column-checkbox'))
-            .map(checkbox => checkbox.value);
-            
-        if (columns.includes(this.value)) {
-            // 确保索引列被选中
-            const indexCheckbox = descriptorItem.querySelector(`.column-checkbox[value="${this.value}"]`);
-            if (indexCheckbox && !indexCheckbox.checked) {
-                indexCheckbox.checked = true;
-            }
+
+    try {
+        if (typeof window.updatePageContent === 'function') {
+            const currentLang = localStorage.getItem('preferredLang') || 'en';
+            window.updatePageContent(currentLang);
         }
-    });
+    } catch (e) {
+        console.warn("翻译更新失败，但不影响功能操作:", e);
+    }
 }
 
     // 生成列选择器HTML
@@ -1023,6 +1073,10 @@ function renumberDescriptors() {
 // 显示通知提示
 function showAlert(message, type = 'info') {
     const alertContainer = document.querySelector('.alert-container');
+    if (!alertContainer) {
+        console.warn('Alert container not found! Message:', message);
+        return;
+    }
     
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} alert-dismissible fade show`;
@@ -1169,31 +1223,60 @@ function collectFormData() {
 function saveToServer() {
     const data = collectFormData();
     if (!data) return; // 如果数据无效，不发送
+
+    let filename = document.getElementById('custom-filename').value.trim();
+    if (!filename) filename = 'input';
+    if (!filename.endsWith('.json')) {
+        filename += '.json';
+    }
+    // 禁用按钮防止重复提交
+    const saveBtn = document.getElementById('save-json-btn');
+    const originalHtml = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> saving...';
+
+    // 获取当前语言，用于 fallback
+    const currentLang = localStorage.getItem('preferredLang') || 'zh';
     
-    // 发送数据到服务器
     fetch('/save_input_json', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+                filename: filename,  // 发送文件名
+                data: data     // 发送数据内容
+            })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('网络响应不正常');
-        }
-        return response.json();
+        // 即使 response.ok 为 false (如 400, 500)，我们也尝试解析 JSON 获取 message_key
+        return response.json().then(json => {
+            if (!response.ok) return Promise.reject(json);
+            return json;
+        });
     })
     .then(result => {
         if (result.success) {
-            showAlert('配置已成功保存到服务器: ' + result.file_path, 'success');
+            // 动态翻译后端返回的 key，如果找不到则显示默认文本
+            const msg = getI18nText(result.message_key, '配置已成功保存');
+            const filePathMsg = result.file_path ? `: ${result.file_path}` : '';
+            showAlert(msg + filePathMsg, 'success');
         } else {
-            showAlert('保存失败: ' + result.message, 'danger');
+            const errorMsg = getI18nText(result.message_key, result.message || '保存失败');
+            showAlert(errorMsg, 'danger');
         }
     })
     .catch(error => {
         console.error('保存出错:', error);
-        showAlert('保存失败，请检查网络连接或重试', 'danger');
+        // 翻译通用的网络错误 key
+        const netError = getI18nText('api.err_network', '保存失败，请检查网络连接或重试');
+        showAlert(netError, 'danger');
+    })
+    .finally(() => {
+        // 核心：无论如何都会执行到这里，恢复按钮
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHtml;
+        console.log("Button restored."); 
     });
 }
 
@@ -1228,12 +1311,17 @@ async function handleFileSelect(button) {
     fileInput.addEventListener('change', async function(e) {
         if (e.target.files.length > 0) {
             try {
+                // const uploadingText = getI18nText('prep.uploading', '上传中...');
+                const uploadStartText = getI18nText('prep.upload_start', 'Uploading: ');
+                const uploadSuccessText = getI18nText('prep.upload_success', 'Upload success');
+                // const parseErrorText = getI18nText('prep.parse_error', '未能从CSV文件中解析出列名');
+                // const uploadFailPrefix = getI18nText('prep.upload_fail_prefix', '文件处理失败: ');
                 // 显示上传中状态
                 button.disabled = true;
-                button.innerHTML = '<span class="uploading-spinner"></span> 上传中...';
+                button.innerHTML = '<span class="uploading-spinner"></span> ${uploadingText}';
                 
                 const file = e.target.files[0];
-                showAlert(`开始上传文件: ${file.name}`, 'info');
+                showAlert(`${uploadStartText}${file.name}`, 'info');
                 
                 // 上传文件到服务器
                 const uploadResult = await uploadFileToServer(file);
@@ -1246,9 +1334,9 @@ async function handleFileSelect(button) {
                     filePathInput.dispatchEvent(new Event('input'));
                 }
                 
-                showAlert(`文件已上传并复制到程序目录: ${uploadResult.file_path}`, 'success');
+                showAlert(`${uploadSuccessText}: ${uploadResult.file_path}`, 'success');
             } catch (error) {
-                console.error('文件处理错误:', error);
+                console.error('${uploadFailPrefix}:', error);
             } finally {
                 // 恢复按钮状态
                 button.disabled = false;

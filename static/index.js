@@ -7,6 +7,8 @@ const btnRefresh = document.getElementById('btnRefresh');
 const btnReloadInput = document.getElementById('btnReloadInput');
 const statusDiv = document.getElementById('status');
 const logDiv = document.getElementById('log');
+
+let activeConfigName = 'input.json'; // 默认监控文件名
 let ws;
 let reconnectInterval;
 let statusCheckInterval;
@@ -15,12 +17,133 @@ let runtimeInterval = null;
 let recordPath = null; // 存储从input.json获取的record_path（文件系统路径）
 let fetchTimeout = null; // 用于超时控制
 
+btnStart.onclick = doStart;
+
+// --- 核心逻辑：UI 更新函数 ---
+// 该函数是所有数据流的终点，实现数据驱动界面
+function updateUIWithConfig(data) {
+    if (!data) return;
+
+    // 1. 定义映射关系
+    const statusMappings = [
+        { id: 'phase-name', path: 'phase_name', defaultValue: '未设置' },
+        { id: 'ml-model', path: 'AL_set.ML_model', defaultValue: '未设置' }
+    ];
+
+    // 2. 更新基础文本信息
+    statusMappings.forEach(item => {
+        const value = item.path.split('.').reduce((obj, key) => {
+            return obj && obj[key] !== undefined ? obj[key] : undefined;
+        }, data);
+        
+        const element = document.getElementById(item.id);
+        if (element) {
+            element.textContent = value !== undefined ? value : item.defaultValue;
+        }
+    });
+
+    // 3. 处理记录文件路径联动
+    if (data.record_path) {
+        // 更新全局 recordPath，供 readRecordFile 使用
+        recordPath = data.record_path + '/record.txt';
+        readRecordFile(); 
+    } else {
+        recordPath = null;
+        document.getElementById('current-iteration').textContent = '无路径';
+        document.getElementById('current-operation-number').textContent = '无路径';
+    }
+}
+
+// --- 接口调用：获取系统状态 ---
+async function fetchSystemStatus(filename = activeConfigName) {
+    // 只有在主动刷新或初次加载时显示“加载中”
+    // resetLoadingState(); 
+
+    if (fetchTimeout) clearTimeout(fetchTimeout);
+    const abortController = new AbortController();
+    fetchTimeout = setTimeout(() => abortController.abort(), 10000);
+
+    try {
+        // 【改进】：通过查询参数指定文件名，支持并发监控不同配置
+        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`, { 
+            signal: abortController.signal 
+        });
+
+        if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+        
+        const data = await response.json();
+        updateUIWithConfig(data);
+        
+    } catch (error) {
+        console.error('获取系统状态失败:', error);
+        // 如果失败，更新 UI 反馈
+        const phaseEl = document.getElementById('phase-name');
+        if (phaseEl) phaseEl.textContent = error.name === 'AbortError' ? '超时' : '连接失败';
+    }
+}
+
+// 更改input.json配置文件的函数
+async function loadSpecificConfig() {
+    const filenameInput = document.getElementById('target-config-file');
+    const filename = filenameInput.value.trim();
+    if (!filename) {
+        alert("请输入文件名");
+        return;
+    }
+
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+
+    try {
+        // const response = await fetch('/get_config_status', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ filename: filename })
+        // });
+        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`);
+
+        
+        if (response.ok) {
+            // 成功后，刷新系统状态显示（如 ML 模型名、当前相名等）
+            activeConfigName = filename; // 更新当前监控的文件名
+            // 如果后端直接返回了新配置的内容，直接更新 UI
+            const data = await response.json();
+            activeConfigName = filename;
+            if (data) {
+                updateUIWithConfig(data);
+                initWebSocket(filename);
+                const newUrl = `${window.location.pathname}?task=${encodeURIComponent(filename)}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+                addToLog(`监控任务已切换为: ${filename}`, 'info');
+            } else {
+                alert("加载失败: 文件不存在或后端未定义该路由");
+            }
+            // 可以在控制台打印一行日志
+            addToLog(`系统已成功切换配置文件为: ${filename}`, 'info');
+            if (typeof showAlert === 'function') {
+                showAlert(getI18nText('api.load_success', '配置加载成功'), 'success');
+            }
+        } else {
+            alert("加载失败: " + (result.detail || "文件不存在"));
+        }
+    } catch (error) {
+        console.error("加载配置出错:", error);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+
 // 初始化WebSocket连接
-function initWebSocket() {
+function initWebSocket(filename = activeConfigName) {
+    if (ws) ws.close(); // 先关闭旧连接
     if (reconnectInterval) clearInterval(reconnectInterval);
     
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUri = `${wsProtocol}//${window.location.host}/ws`;
+    const wsUri = `${wsProtocol}//${window.location.host}/ws?task=${encodeURIComponent(filename)}`;
     
     addToLog(`尝试连接到WebSocket: ${wsUri}`, 'websocket');
     
@@ -213,14 +336,26 @@ function startStatusUpdates() {
 
 // 开始按钮点击事件
 async function doStart() {
+    // addToLog(`in doStart`, 'info');
     try {
-        addToLog('发送开始请求...', 'status-update');
-        const response = await fetch('/start', { method: 'POST' });
-        if (!response.ok) {
-            throw new Error(`开始请求失败: ${response.status}`);
+        const configRes = await fetch(`/get_config_status?filename=${encodeURIComponent(activeConfigName)}`);
+        const configData = await configRes.json();
+        addToLog(`正在请求启动任务: ${activeConfigName}...`, 'status-update');
+        const response = await fetch(`/start`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: "guest",
+                configname: activeConfigName.replace('.json', ''),
+                // config: configData  // 将完整配置发送过去
+            })
+        });
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+            addToLog("任务启动成功", 'info');
+        } else {
+            throw new Error(result.message || "启动失败");
         }
-        addToLog('已发送开始请求', 'status-update');
-        startTime = new Date(); // 重置开始时间
     } catch (e) {
         addToLog(`开始请求失败: ${e}`, 'error');
     }
@@ -254,32 +389,32 @@ async function doStop() {
     }
 }
 
-// 重新载入input.json按钮点击事件
-async function reloadInputJson() {
-    try {
-        // 禁用按钮并显示加载状态
-        btnReloadInput.disabled = true;
-        btnReloadInput.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 加载中...';
+// // 重新载入input.json按钮点击事件
+// async function reloadInputJson() {
+//     try {
+//         // 禁用按钮并显示加载状态
+//         btnReloadInput.disabled = true;
+//         btnReloadInput.innerHTML = '<i class="fas fa-spinner fa-spin"></i> loading...';
         
-        addToLog('重新载入input.json配置文件...', 'status-update');
+//         addToLog('reloading config...', 'status-update');
 
-        const response = await fetch('/reset', { method: 'POST' });
-        if (!response.ok) {
-            throw new Error(`停止请求失败: ${response.status}`);
-        }
+//         const response = await fetch('/reset', { method: 'POST' });
+//         if (!response.ok) {
+//             throw new Error(`request error: ${response.status}`);
+//         }
         
-        // 调用已有的系统状态获取函数，该函数会重新读取input.json
-        fetchSystemStatus();
+//         // 调用已有的系统状态获取函数，该函数会重新读取input.json
+//         fetchSystemStatus();
         
-        addToLog('input.json配置文件已重新加载', 'status-update');
-    } catch (e) {
-        addToLog(`重新加载input.json失败: ${e}`, 'error');
-    } finally {
-        // 恢复按钮状态
-        btnReloadInput.disabled = false;
-        btnReloadInput.innerHTML = '<i class="fas fa-file-import"></i> 重新载入input.json';
-    }
-}
+//         addToLog('config reload success', 'status-update');
+//     } catch (e) {
+//         addToLog(`config reload dail: ${e}`, 'error');
+//     } finally {
+//         // 恢复按钮状态
+//         btnReloadInput.disabled = false;
+//         btnReloadInput.innerHTML = '<i class="fas fa-file-import"></i>  <span data-i18n="index.btn_reload">Reload input.json</span>';
+//     }
+// }
 
 // 获取操作状态的文本描述
 function getOperationText(operationCode) {
@@ -414,14 +549,6 @@ async function readRecordFile() {
     }
 }
 
-// 页面加载时初始化
-window.onload = function() {
-    initWebSocket();
-    startStatusUpdates();
-    // 初始化系统状态数据加载
-    fetchSystemStatus();
-};
-
 // 页面关闭时清理
 window.onbeforeunload = function() {
     if (ws) {
@@ -433,93 +560,123 @@ window.onbeforeunload = function() {
     if (fetchTimeout) clearTimeout(fetchTimeout);
 };
 
-// 读取并显示系统状态数据的函数
-function fetchSystemStatus() {
-    // 重置加载状态
-    resetLoadingState();
+// // 读取并显示系统状态数据的函数
+// function fetchSystemStatus() {
+//     // 重置加载状态
+//     resetLoadingState();
     
-    // 定义需要操作的元素ID和对应的数据路径
-    const statusMappings = [
-        { id: 'phase-name', path: 'phase_name', defaultValue: '未设置' },
-        { id: 'ml-model', path: 'AL_set.ML_model', defaultValue: '未设置' }
-    ];
+//     // 定义需要操作的元素ID和对应的数据路径
+//     const statusMappings = [
+//         { id: 'phase-name', path: 'phase_name', defaultValue: '未设置' },
+//         { id: 'ml-model', path: 'AL_set.ML_model', defaultValue: '未设置' }
+//     ];
 
-    // 检查所有必要元素是否存在
-    const missingElements = statusMappings.filter(item => !document.getElementById(item.id));
-    if (missingElements.length > 0) {
-        console.error('缺少必要的DOM元素:', missingElements.map(item => item.id));
-        return;
-    }
+//     // 检查所有必要元素是否存在
+//     const missingElements = statusMappings.filter(item => !document.getElementById(item.id));
+//     if (missingElements.length > 0) {
+//         console.error('缺少必要的DOM元素:', missingElements.map(item => item.id));
+//         return;
+//     }
 
-    // 清除之前的超时
-    if (fetchTimeout) clearTimeout(fetchTimeout);
+//     // 清除之前的超时
+//     if (fetchTimeout) clearTimeout(fetchTimeout);
     
-    // 设置超时
-    const abortController = new AbortController();
-    fetchTimeout = setTimeout(() => abortController.abort(), 10000); // 10秒超时
+//     // 设置超时
+//     const abortController = new AbortController();
+//     fetchTimeout = setTimeout(() => abortController.abort(), 10000); // 10秒超时
     
-    fetch('/static/run/input.json', { signal: abortController.signal })
-        .then(response => {
-            clearTimeout(fetchTimeout);
+//     fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`)
+//         .then(response => {
+//             clearTimeout(fetchTimeout);
+//             if (!response.ok) {
+//                 throw new Error(`HTTP错误，状态码: ${response.status}`);
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             console.log('成功获取系统状态数据:', data);
             
-            if (!response.ok) {
-                throw new Error(`HTTP错误，状态码: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('成功获取系统状态数据:', data);
-            
-            // 逐个设置每个状态值
-            statusMappings.forEach(item => {
-                // 按路径获取值
-                const value = item.path.split('.').reduce((obj, key) => {
-                    return obj && obj[key] !== undefined ? obj[key] : undefined;
-                }, data);
+//             // 逐个设置每个状态值
+//             statusMappings.forEach(item => {
+//                 // 按路径获取值
+//                 const value = item.path.split('.').reduce((obj, key) => {
+//                     return obj && obj[key] !== undefined ? obj[key] : undefined;
+//                 }, data);
                 
-                // 设置值，使用默认值
-                const element = document.getElementById(item.id);
-                if (element) {
-                    element.textContent = value !== undefined ? value : item.defaultValue;
-                }
-            });
+//                 // 设置值，使用默认值
+//                 const element = document.getElementById(item.id);
+//                 if (element) {
+//                     element.textContent = value !== undefined ? value : item.defaultValue;
+//                 }
+//             });
             
-            // 保存record_path（文件系统路径）并读取记录文件
-            if (data.record_path) {
-                // 拼接完整的record.txt文件路径
-                recordPath = data.record_path + '/record.txt';
-                addToLog(`获取到本地文件路径: ${recordPath}`, 'info');
-                // 读取记录文件（通过后端接口）
-                readRecordFile();
-            } else {
-                addToLog('未在input.json中找到record_path', 'warning');
-                recordPath = null;
-                document.getElementById('current-iteration').textContent = '无路径';
-                document.getElementById('current-operation-number').textContent = '无路径';
-            }
-        })
-        .catch(error => {
-            clearTimeout(fetchTimeout);
+//             // 保存record_path（文件系统路径）并读取记录文件
+//             if (data.record_path) {
+//                 // 拼接完整的record.txt文件路径
+//                 recordPath = data.record_path + '/record.txt';
+//                 addToLog(`获取到本地文件路径: ${recordPath}`, 'info');
+//                 // 读取记录文件（通过后端接口）
+//                 readRecordFile();
+//             } else {
+//                 addToLog('未在input.json中找到record_path', 'warning');
+//                 recordPath = null;
+//                 document.getElementById('current-iteration').textContent = '无路径';
+//                 document.getElementById('current-operation-number').textContent = '无路径';
+//             }
+//         })
+//         .catch(error => {
+//             clearTimeout(fetchTimeout);
             
-            console.error('获取系统状态失败:', error);
+//             console.error('获取系统状态失败:', error);
             
-            // 显示具体错误而不是一直加载中
-            statusMappings.forEach(item => {
-                const element = document.getElementById(item.id);
-                if (element) {
-                    if (error.name === 'AbortError') {
-                        element.textContent = '加载超时';
-                    } else {
-                        element.textContent = '获取失败';
-                    }
-                }
-            });
+//             // 显示具体错误而不是一直加载中
+//             statusMappings.forEach(item => {
+//                 const element = document.getElementById(item.id);
+//                 if (element) {
+//                     if (error.name === 'AbortError') {
+//                         element.textContent = '加载超时';
+//                     } else {
+//                         element.textContent = '获取失败';
+//                     }
+//                 }
+//             });
             
-            // 更新迭代相关状态
-            document.getElementById('current-iteration').textContent = '获取失败';
-            document.getElementById('current-operation-number').textContent = '获取失败';
-        });
+//             // 更新迭代相关状态
+//             document.getElementById('current-iteration').textContent = '获取失败';
+//             document.getElementById('current-operation-number').textContent = '获取失败';
+//         });
+// }
+
+// --- 生命周期控制 ---
+let statusTimer = null;
+
+function startGlobalMonitoring() {
+    // 清理旧定时器
+    if (statusTimer) clearInterval(statusTimer);
+
+    // 1. 立即执行一次
+    fetchSystemStatus(activeConfigName);
+    initWebSocket(activeConfigName);
+
+    // 2. 设置定时轮询
+    statusTimer = setInterval(() => {
+        fetchSystemStatus(activeConfigName);
+    }, 5000);
 }
 
-// 每5秒刷新一次数据
-setInterval(fetchSystemStatus, 5000);
+window.onload = function() {
+    // 自动从 URL 获取任务名（例如 index.html?task=A.json）
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskFromUrl = urlParams.get('task');
+    if (taskFromUrl) {
+        activeConfigName = taskFromUrl;
+        const input = document.getElementById('target-config-file');
+        if (input) input.value = taskFromUrl;
+    }
+    
+    startGlobalMonitoring();
+};
+
+window.onbeforeunload = () => {
+    if (ws) ws.close();
+};

@@ -45,7 +45,7 @@ def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
     
 
 def pred_calc_fig(pkl_phase_path,iter):
-    from lib.class_def import Phase
+    from src.class_def import Phase
     process = 2
 
     phase=Phase.load(f'{pkl_phase_path}/model_{iter:06d}_{process}.pd')
@@ -69,7 +69,7 @@ def pred_calc_fig(pkl_phase_path,iter):
     y_test = phase.y_test
     y_pred_test_MLmodel = phase.y_pred_test_MLmodel
     if phase.ML_style == 'flat':
-        X_col = phase.X_tabel.columns.values[1:]
+        X_col = phase.X_bable.columns.values[1:]
         X_imp = pd.DataFrame(X_train,columns=X_col)
     elif phase.ML_style == 'stack':
         X_col = phase.eigen_table

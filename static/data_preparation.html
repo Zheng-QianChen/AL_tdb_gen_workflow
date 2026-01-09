@@ -1,46 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数据准备及模型设置 - AL 循环控制面板</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title data-i18n="prep.page_title">数据准备及模型设置 - AL 循环控制面板</title>
     <link rel="stylesheet" href="/static/css/data_preparation.css">
-    <!-- <link rel="stylesheet" href="/static/css/bootstrap.min.css"> -->
-    <!-- <link rel="stylesheet" href="/static/css//all.min.css"> -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/all.min.css">
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-atom me-2"></i>AL 循环控制面板
+                <i class="fas fa-atom me-2"></i><span data-i18n="common.brand">AL 循环控制面板</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="index.html" data-i18n="common.nav_home">
                             <i class="fas fa-home me-1"></i> 首页
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="data_preparation.html">
+                        <a class="nav-link active" href="data_preparation.html" data-i18n="common.nav_prep">
                             <i class="fas fa-database me-1"></i> 数据准备及模型设置
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="visualization.html">
+                        <a class="nav-link" href="visualization.html" data-i18n="common.nav_viz">
                             <i class="fas fa-chart-line me-1"></i> 可视化及ML模型分析
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="model_analysis.html">
+                        <a class="nav-link" href="model_analysis.html" data-i18n="common.nav_analysis">
                             <i class="fas fa-microscope me-1"></i> tdb模型分析及输出
                         </a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <select class="form-select form-select-sm" id="langSelect">
+                            <option value="zh">中文</option>
+                            <option value="en">English</option>
+                        </select>
                     </li>
                 </ul>
             </div>
@@ -50,34 +54,33 @@
     <div class="container py-4">
         <div class="d-flex align-items-center mb-4">
             <i class="fas fa-database fa-2x text-primary me-3"></i>
-            <h1 class="mb-0">数据准备及模型设置</h1>
+            <h1 class="mb-0" data-i18n="prep.title">数据准备及模型设置</h1>
         </div>
         
         <div class="alert alert-info">
             <i class="fas fa-info-circle me-2"></i>
-            在此页面配置输入数据、模型参数和训练设置。所有更改在保存后生效。选择文件后将自动复制到程序目录。
+            <span data-i18n="prep.alert_info">在此页面配置输入数据、模型参数和训练设置。所有更改在保存后生效。选择文件后将自动复制到程序目录。</span>
         </div>
         
         <div class="row">
             <div class="col-lg-8">
                 <!-- 基本设置部分 -->
                 <div class="form-section">
-                    <h3 class="section-title">基本设置</h3>
-                    
+                    <h3 class="section-title" data-i18n="prep.basic_settings">基本设置</h3>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">相名称 (phase_name)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.phase_name">相名称 (phase_name)</label>
                                 <input type="text" class="form-control" id="phase-name" value="CU4TI">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">记录文件路径 (record_path)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.record_path">记录文件路径 (record_path)</label>
                                 <input type="text" class="form-control path-input" id="record-path" value="CU4TI/stack_result" 
-                                    placeholder="例如: phase/results">
-                                <div class="form-text">用于存储当前迭代的记录文件的目录<br>可以自由更改该文件以回退进度</div>
+                                    placeholder="e.g. phase/results">
+                               <div class="form-text" data-i18n="prep.record_path_hint">用于存储当前迭代的记录文件的目录<br>可以自由更改该文件以回退进度</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">结构文件 (structure_file)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.struct_file">结构文件 (structure_file)</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="structure-file" value="templates/Cu4Ti_Cu4Ti_sd_0457419.cif">
                                     <button class="btn btn-outline-primary file-select-btn" type="button" data-target="structure-file">
@@ -86,30 +89,31 @@
                                 </div>
                             </div>
                             <div class="mb-3 path-input-group">
-                                <label class="form-label fw-bold">结构输出文件 (structure_out_file)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.struct_out_label">结构输出文件 (structure_out_file)</label>
                                 <input type="text" class="form-control path-input" id="structure-out-file" value="CU4TI/struct/POSCAR.poscar"
+                                    data-i18n-placeholder="prep.struct_out_placeholder"
                                     placeholder="例如: phase/struct/output.cif">
-                                <div class="form-text">需要以 .cif 或者 .POSCAR 结尾</div>
-                                <div class="invalid-feedback">请输入有效的文件路径</div>
+                                <div class="form-text" data-i18n="prep.struct_out_hint">需要以 .cif 或者 .POSCAR 结尾</div>
+                                <div class="invalid-feedback" data-i18n="prep.path_invalid">请输入有效的文件路径</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">转换为原胞 (structure_convert_to_primitive)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.convert_prim">转换为原胞 (structure_convert_to_primitive)</label>
                                 <select class="form-select" id="convert-to-primitive">
-                                    <option value="yes" selected>是 (yes)</option>
-                                    <option value="no">否 (no)</option>
+                                    <option value="yes" selected data-i18n="common.yes">是</option>
+                                    <option value="no" data-i18n="common.no">否</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">CIF子晶格 (cif_sublatt)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.cif_sublatt">CIF子晶格 (cif_sublatt)</label>
                                 <input type="text" class="form-control" id="cif-sublatt" value="">
-                                <div class="form-text">可选参数，留空表示不设置</div>
+                                <div class="form-text" data-i18n="prep.cif_sublatt_hint">可选参数，留空表示不设置</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">初始随机选择点数量 (init_random_n)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.init_random">初始随机选择点数量 (init_random_n)</label>
                                 <input type="number" class="form-control" id="init-random-n" value="30" min="1">
-                                <div class="form-text">初始会随机生成一系列建议点以开启第一轮DFT标注<br>允许用户上传自行计算的点</div>
+                                <div class="form-text" data-i18n="prep.init_random_hint">初始会随机生成一系列建议点以开启第一轮DFT标注<br>允许用户上传自行计算的点</div>
                             </div>
                         </div>
                     </div>
@@ -117,31 +121,31 @@
                 
                 <!-- TDB模型设置部分 -->
                 <div class="form-section">
-                    <h3 class="section-title">TDB模型设置</h3>
+                    <h3 class="section-title" data-i18n="prep.tdb_settings">TDB模型设置</h3>
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">子晶格数量 (sublattice_number)</label>
+                            <label class="form-label fw-bold" data-i18n="prep.sub_num">子晶格数量 (sublattice_number)</label>
                             <input type="number" class="form-control" id="sublattice-number" value="5" min="1">
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
                             <button id="update-sublattices" class="btn btn-primary">
-                                <i class="fas fa-sync-alt me-1"></i> 更新子晶格配置
+                                <i class="fas fa-sync-alt me-1"></i> <span data-i18n="prep.update_sub">更新子晶格配置</span>
                             </button>
                         </div>
                     </div>
                     
-                    <h5 class="mb-3">子晶格配置</h5>
+                    <h5 class="mb-3" data-i18n="prep.sublattice_config_title">子晶格配置</h5>
                     <div id="sublattices-container">
                         <!-- 子晶格将通过JavaScript动态生成 -->
                     </div>
                     
                     <div class="mt-4">
-                        <h5 class="mb-3">原子参考设置 (Atom_ref)</h5>
+                        <h5 class="mb-3" data-i18n="prep.atom_ref_title">原子参考设置 (Atom_ref)</h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label class="form-label">参考文件</label>
+                                    <label class="form-label" data-i18n="prep.ref_file_label">参考文件</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="atom-ref-file" value="eigenvalue/base_energy.csv">
                                         <button class="btn btn-outline-primary file-select-btn" type="button" data-target="atom-ref-file">
@@ -152,13 +156,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">索引名称 (index_name)</label>
+                                    <label class="form-label" data-i18n="prep.index_name_label">索引名称 (index_name)</label>
                                     <input type="text" class="form-control" id="atom-ref-index" value="symbol">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">列名称 (col_name)</label>
+                                    <label class="form-label" data-i18n="prep.col_name_label">列名称 (col_name)</label>
                                     <input type="text" class="form-control" id="atom-ref-col" value="E_atom_eV_2">
                                 </div>
                             </div>
@@ -168,49 +172,48 @@
                 
                 <!-- AL循环设置部分 -->
                 <div class="form-section">
-                    <h3 class="section-title">AL循环设置</h3>
+                    <h3 class="section-title" data-i18n="prep.al_settings">AL循环设置</h3>
                     
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">机器学习模型 (ML_model)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.ml_model">机器学习模型 (ML_model)</label>
                                 <select class="form-select" id="ml-model">
-                                    <option value="gbr" selected>梯度提升回归 (gbr)</option>
-                                    <option value="rf">随机森林 (rf)</option>
-                                    <option value="svr">支持向量回归 (svr)</option>
-                                    <option value="lr">线性回归 (lr)</option>
-                                    <option value="ridge">岭回归 (ridge)</option>
-                                    <option value="lasso">Lasso回归 (lasso)</option>
-                                    <option value="knn">K近邻回归 (knn)</option>
-                                    <option value="mlp">多层感知器 (mlp)</option>
-                                    <option value="dt">决策树 (dt)</option>
-                                    <option value="xgb">XGBoost (xgb)</option>
+                                    <option value="gbr" selected data-i18n="prep.opt_gbr">梯度提升回归 (gbr)</option>
+                                    <option value="rf" data-i18n="prep.opt_rf">随机森林 (rf)</option>
+                                    <option value="svr" data-i18n="prep.opt_svr">支持向量回归 (svr)</option>
+                                    <option value="lr" data-i18n="prep.opt_lr">线性回归 (lr)</option>
+                                    <option value="ridge" data-i18n="prep.opt_ridge">岭回归 (ridge)</option>
+                                    <option value="lasso" data-i18n="prep.opt_lasso">Lasso回归 (lasso)</option>
+                                    <option value="knn" data-i18n="prep.opt_knn">K近邻回归 (knn)</option>
+                                    <option value="mlp" data-i18n="prep.opt_mlp">多层感知器 (mlp)</option>
+                                    <option value="dt" data-i18n="prep.opt_dt">决策树 (dt)</option>
+                                    <option value="xgb" data-i18n="prep.opt_xgb">XGBoost (xgb)</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">机器学习风格 (ML_style)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.ml_style">机器学习风格 (ML_style)</label>
                                 <select class="form-select" id="ml-style">
-                                    <option value="stack" selected>堆叠 (stack)</option>
-                                    <option value="flat"> (flat)</option>、
+                                    <option value="stack" selected data-i18n="prep.opt_stack">堆叠 (stack)</option>
+                                    <option value="flat" data-i18n="prep.opt_flat">扁平 (flat)</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">归一化方法 (normalizer)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.norm_method">归一化方法 (normalizer)</label>
                                 <select class="form-select" id="normalizer">
-                                    <option value="Zscore" selected>Z分数 (Zscore)</option>
-                                    <option value="mmscale">最小-最大缩放 (mmscale)</option>
+                                    <option value="Zscore" selected data-i18n="prep.opt_zscore">Z分数 (Zscore)</option>
+                                    <option value="mmscale" data-i18n="prep.opt_mmscale">最小-最大缩放 (mmscale)</option>
                                 </select>
-                                <div class="form-text">normalizer has two ways to choose: Zscore or mmscale</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">特征权重 (eigen_weight)</label>
+                                <label class="form-label fw-bold" data-i18n="prep.eigen_weight_label"> 特征权重 (eigen_weight)</label>
                                 <input type="text" class="form-control" id="eigen-weight" value="1.0, 1.0, 1.0, 1.0, 1.0">
-                                <div class="form-text">以逗号分隔的权重值，与特征数量对应(当前版本没用，仅保留接口)</div>
+                                <div class="form-text" data-i18n="prep.eigen_weight_hint">以逗号分隔的权重值，与特征数量对应(当前版本没用，仅保留接口)</div>
                             </div>
                             
-                            <h5 class="mb-2">查询策略 (quest)</h5>
+                            <h5 class="mb-2" data-i18n="prep.quest_strategy_title">查询策略 (quest)</h5>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-2">
@@ -235,70 +238,78 @@
                     </div>
 
                     <div class="mb-4">
-                        <h5 class="mb-3">机器学习超参数 (ML_hyper_parameters)</h5>
+                        <h5 class="mb-3" data-i18n="prep.ml_hyper_params_title">机器学习超参数 (ML_hyper_parameters)</h5>
                         <div class="hyper-params-container" id="hyper-params-container">
                             <!-- 超参数将根据选择的模型动态生成 -->
                         </div>
                         <input type="hidden" id="ml-hyper-parameters-json" value="">
                     </div>
                     
-                    <h5 class="mb-3">文件路径设置</h5>
+                    <h5 class="mb-3" data-i18n="prep.path_settings_title">文件路径设置</h5>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3 path-input-group">
-                                <label class="form-label">生成DFT路径 (generate_DFT_path)</label>
+                                <label class="form-label" data-i18n="prep.gen_dft_path">生成DFT路径 (generate_DFT_path)</label>
                                 <input type="text" class="form-control path-input" id="generate-dft-path" value="./CU4TI/stack_result/upload"
                                     placeholder="例如: ./phase/results/upload">
-                                <div class="invalid-feedback">请输入有效的目录路径</div>
+                                <div class="invalid-feedback" data-i18n="prep.invalid_path">请输入有效的目录路径</div>
                             </div>
                             <div class="mb-3 path-input-group">
-                                <label class="form-label">计算DFT路径 (calced_DFT_path)</label>
+                                <label class="form-label" data-i18n="prep.calc_dft_path">计算DFT路径 (calced_DFT_path)</label>
                                 <input type="text" class="form-control path-input" id="calced-dft-path" value="./CU4TI/stack_result/calced"
                                     placeholder="例如: ./phase/results/calced">
-                                <div class="invalid-feedback">请输入有效的目录路径</div>
+                                <div class="invalid-feedback" data-i18n="prep.invalid_path">请输入有效的目录路径</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 path-input-group">
-                                <label class="form-label">PKL相路径 (pkl_phase_path)</label>
+                                <label class="form-label" data-i18n="prep.pkl_phase_path">PKL相路径 (pkl_phase_path)</label>
                                 <input type="text" class="form-control path-input" id="pkl-phase-path" value="./CU4TI/stack_result/pkls"
                                     placeholder="例如: ./phase/results/pkls">
-                                <div class="invalid-feedback">请输入有效的目录路径</div>
+                                <div class="invalid-feedback" data-i18n="prep.invalid_path">请输入有效的目录路径</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">PKL显示控制 (pkl_show_control)</label>
+                                <label class="form-label" data-i18n="prep.pkl_show_control">PKL显示控制</label>
                                 <select class="form-select" id="pkl-show-control">
-                                    <option value="high" selected>高 (high)</option>
-                                    <option value="medium">中 (medium)</option>
-                                    <option value="low">低 (low)</option>
+                                    <option value="high" data-i18n="prep.opt_high">高</option>
+                                    <option value="medium" data-i18n="prep.opt_medium">中</option>
+                                    <option value="low" data-i18n="prep.opt_low">低</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     
-                    <h5 class="mb-3 mt-4">描述符设置 (descriptor)</h5>
+                    <h5 class="mb-3 mt-4" data-i18n="prep.descriptor_title">描述符设置</h5>
                     <div class="row">
                         <div class="col-md-12">
                             <div id="descriptors-container">
                                 <!-- 描述符将通过JavaScript动态生成 -->
                             </div>
                             <button id="add-descriptor" class="btn btn-outline-primary">
-                                <i class="fas fa-plus me-1"></i> 添加描述符文件
+                                <i class="fas fa-plus me-1"></i> <span data-i18n="prep.add_descriptor_btn">添加描述符文件</span>
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                    <button class="btn btn-secondary me-md-2" id="cancel-btn">
-                        <i class="fas fa-times me-1"></i> 取消
-                    </button>
-                    <button class="btn btn-primary me-md-2" id="preview-json-btn">
-                        <i class="fas fa-eye me-1"></i> 预览JSON
-                    </button>
-                    <button class="btn btn-success" id="save-json-btn">
-                        <i class="fas fa-save me-1"></i> 保存到服务器
-                    </button>
+                <div class="d-flex flex-column align-items-end mt-4">
+                    <div class="input-group mb-2" style="max-width: 400px;">
+                        <span class="input-group-text" data-i18n="prep.save_filename_label">保存文件名</span>
+                        <input type="text" id="custom-filename" class="form-control" placeholder="input.json" value="input.json">
+                        <span class="input-group-text">.json</span>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button class="btn btn-secondary me-md-2" id="cancel-btn">
+                            <i class="fas fa-times me-1"></i> <span data-i18n="common.cancel">取消</span>
+                        </button>
+                        <button class="btn btn-info me-md-2 text-white" id="preview-json-btn">
+                            <i class="fas fa-eye me-1"></i> <span data-i18n="prep.preview_json">预览JSON</span>
+                        </button>
+                        <button class="btn btn-success" id="save-json-btn">
+                            <i class="fas fa-save me-1"></i> <span data-i18n="common.save">保存到服务器</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- JSON预览区域 -->
@@ -307,64 +318,66 @@
                     <pre class="json-output" id="json-output"></pre>
                 </div>
             </div>
+
+            <!-- 侧边三栏，无法开侧边栏前提下会放在最后 -->
             
             <div class="col-lg-4">
                 <div class="card card-setting">
                     <div class="card-header bg-primary text-white">
-                        <i class="fas fa-info-circle me-2"></i> 配置指南
+                        <i class="fas fa-info-circle me-2"></i> <span data-i18n="prep.guide_title">配置指南</span>
                     </div>
                     <div class="card-body">
-                        <p>确保所有路径设置正确：</p>
+                        <p data-i18n="prep.guide_p">确保所有路径设置正确：</p>
                         <ul>
-                            <li>结构文件应为CIF格式</li>
-                            <li>输出目录应具有写入权限</li>
-                            <li>参考能量文件应包含所有需要的元素</li>
+                            <li data-i18n="prep.guide_l1">结构文件应为CIF格式</li>
+                            <li data-i18n="prep.guide_l2">输出目录应具有写入权限</li>
+                            <li data-i18n="prep.guide_l3">参考能量文件应包含所有需要的元素</li>
                         </ul>
-                        <p class="mb-0">子晶格配置提示：</p>
+                        <p class="mb-0" data-i18n="prep.guide_sub_p">子晶格配置提示：</p>
                         <ul>
-                            <li>子晶格数量应与材料结构匹配</li>
-                            <li>每个子晶格的元素应根据实际情况设置</li>
-                            <li>特征权重应根据重要性调整</li>
+                            <li data-i18n="prep.guide_sub_l1">子晶格数量应与材料结构匹配</li>
+                            <li data-i18n="prep.guide_sub_l2">每个子晶格的元素应根据实际情况设置</li>
+                            <li data-i18n="prep.guide_sub_l3">特征权重应根据重要性调整</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="card card-setting">
                     <div class="card-header bg-success text-white">
-                        <i class="fas fa-lightbulb me-2"></i> 模型设置建议
+                        <i class="fas fa-lightbulb me-2"></i> <span data-i18n="prep.advice_title">模型设置建议</span>
                     </div>
                     <div class="card-body">
-                        <p>AL循环参数优化：</p>
+                        <p data-i18n="prep.advice_al_p">AL循环参数优化：</p>
                         <ul>
-                            <li>初始随机数建议30-50之间</li>
-                            <li>查询策略比例应根据需求调整</li>
-                            <li>归一化方法：Zscore适用于正态分布数据</li>
+                            <li data-i18n="prep.advice_al_l1">初始随机数建议30-50之间</li>
+                            <li data-i18n="prep.advice_al_l2">查询策略比例应根据需求调整</li>
+                            <li data-i18n="prep.advice_al_l3">归一化方法：Zscore适用于正态分布数据</li>
                         </ul>
-                        <p class="mb-0">文件管理最佳实践：</p>
+                        <p class="mb-0" data-i18n="prep.advice_file_p">文件管理最佳实践：</p>
                         <ul>
-                            <li>使用有意义的目录结构</li>
-                            <li>定期备份计算结果</li>
-                            <li>保持参考数据文件的更新</li>
+                            <li data-i18n="prep.advice_file_l1">使用有意义的目录结构</li>
+                            <li data-i18n="prep.advice_file_l2">定期备份计算结果</li>
+                            <li data-i18n="prep.advice_file_l3">保持参考数据文件的更新</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="card card-setting">
                     <div class="card-header bg-info text-white">
-                        <i class="fas fa-file-csv me-2"></i> 描述符文件指南
+                        <i class="fas fa-file-csv me-2"></i> <span data-i18n="prep.desc_title">描述符文件指南</span>
                     </div>
                     <div class="card-body">
-                        <p>描述符文件格式要求：</p>
+                        <p data-i18n="prep.desc_p">描述符文件格式要求：</p>
                         <ul>
-                            <li>必须为CSV格式</li>
-                            <li>第一行应为列名</li>
-                            <li>应包含元素符号列作为索引</li>
+                            <li data-i18n="prep.desc_l1">必须为CSV格式</li>
+                            <li data-i18n="prep.desc_l2">第一行应为列名</li>
+                            <li data-i18n="prep.desc_l3">应包含元素符号列作为索引</li>
                         </ul>
-                        <p class="mb-0">常用描述符：</p>
+                        <p class="mb-0" data-i18n="prep.desc_list_p">常用描述符：</p>
                         <ul>
-                            <li>原子序数、原子量</li>
-                            <li>电负性、原子半径</li>
-                            <li>电离能、电子亲和能</li>
+                            <li data-i18n="prep.desc_list_l1">原子序数、原子量</li>
+                            <li data-i18n="prep.desc_list_l2">电负性、原子半径</li>
+                            <li data-i18n="prep.desc_list_l3">电离能、电子亲和能</li>
                         </ul>
                     </div>
                 </div>
@@ -374,9 +387,8 @@
 
     <!-- 通知提示容器 -->
     <div class="alert-container"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="/static/css/bootstrap.bundle.min.js"></script> -->
+    <script src="/static/css/bootstrap.bundle.min.js"></script>
+    <script src="/static/i18n.js"></script>
     <script src="/static/data_preparation.js"></script>
 </body>
 </html>

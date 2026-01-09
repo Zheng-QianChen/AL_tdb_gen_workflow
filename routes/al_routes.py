@@ -1,146 +1,129 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Request, HTTPException, Body
 import asyncio, json
-from config import runner, logger
-from lib.main_process.al_worker import ALRunner
+from config import logger, RUN_DIR
+from src.main_process.al_worker import ALRunner
 from pathlib import Path
 
 al_router = APIRouter()
 
-@al_router.post("/start")
-async def start_al():
-    """启动AL循环"""
-    logger.info("接收到启动AL循环请求")
-    
-    if runner.started and runner.main_task and not runner.main_task.done():
-        # 如果已经在运行，先停止
-        await runner.stop()
-        await asyncio.sleep(0.5)  # 短暂等待确保停止
-    
-    # 重置状态并启动新的任务
-    runner.reset_state()
-    runner.running = True
-    runner.started = True
-    runner.main_task = asyncio.create_task(runner.main_loop())
-    
-    return {"status": "started", "running": True}
+def get_manager(request: Request):
+    """从 app state 中安全获取 manager"""
+    if not hasattr(request.app.state, "manager"):
+        raise HTTPException(status_code=500, detail="ALManager not initialized in app state")
+    return request.app.state.manager
 
-@al_router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    """WebSocket端点，用于实时通信"""
-    await websocket.accept()
-    runner.subscribe(websocket)
-    try:
-        while True:
-            # 保持连接，每30秒发送一次心跳防止超时
-            await asyncio.sleep(30)
-            await websocket.send_text(json.dumps({"type": "heartbeat", "message": "连接保持中"}))
-    except WebSocketDisconnect:
-        runner.unsubscribe(websocket)
-        logger.info("WebSocket连接断开")
-    except Exception as e:
-        logger.error(f"WebSocket错误: {e}")
-        runner.unsubscribe(websocket)
+@al_router.post("/start")
+async def start_al(request: Request, data: dict = Body(...)):
+    """
+    启动/重启特定任务
+    请求体示例: {"user_id": "guest", "PHASE_NAME": "Alpha", ...}
+    """
+    manager = get_manager(request)
+    
+    # 构造或获取任务ID
+    user_id = data.get("user_id", "guest")
+    configname = data.get("configname", "input")
+    # config_dir = data.get("config", {})
+    task_id = f"{user_id}_{configname}"
+    
+    logger.info(f"接收到启动任务请求: {task_id}")
+    
+    # 如果任务已存在且在运行，先停止旧的
+    if task_id in manager.tasks:
+        old_runner = manager.tasks[task_id]
+        await old_runner.stop()
+        del manager.tasks[task_id] # 移除旧实例以便重新创建
+    
+    # 使用你 Manager 里的核心启动方法
+    success, msg = await manager.create_and_start_task(task_id, f"{RUN_DIR}/{configname}.json")
+    
+    if not success:
+        raise HTTPException(status_code=400, detail=msg)
+    
+    return {"status": "success", "task_id": task_id, "message": msg}
+
 
 @al_router.post("/pause")
-async def pause_al():
-    """暂停/继续AL循环"""
-    paused = await runner.toggle_pause()  # 确保这里使用await
-    return {"status": "paused" if paused else "resumed", "paused": paused}
+async def pause_al(request: Request, task_id: str = Body(..., embed=True)):
+    """暂停/继续特定任务"""
+    manager = get_manager(request)
+    if task_id not in manager.tasks:
+        raise HTTPException(status_code=404, detail="任务不存在")
+    
+    runner = manager.tasks[task_id]
+    paused = await runner.toggle_pause()
+    return {"status": "paused" if paused else "resumed", "paused": paused, "task_id": task_id}
 
 @al_router.post("/stop")
-async def stop_al():
-    """立即返回响应，通过WebSocket通知状态变化"""
-    # 立即响应，不等待实际停止完成
-    asyncio.create_task(runner.stop())  # 在后台执行实际停止操作
-    return {
-        "status": "stopping", 
-        "message": "停止指令已受理，正在终止任务",
-        "running": True  # 暂时返回True，实际状态通过WebSocket更新
-    }
-
-
-@al_router.post("/reset")
-async def reset_al():
-    """重新加载input.json配置并重启ALRunner"""
-    global runner
-    logger.info("接收到重新加载input.json的请求")
-    
-    try:
-        
-        # 读取input.json文件
-        input_path = Path("./static/run/input.json")
-
-        if not input_path.exists():
-            logger.error("input.json文件不存在")
-            return {
-                "success": False,
-                "message": "input.json文件不存在"
-            }
-        
-        # 解析配置文件
-        with open(input_path, 'r') as f:
-            input_config = json.load(f)
-        logger.info("成功读取input.json配置文件")
-        
-        # 先停止当前运行的任务
-        if runner.running or (runner.main_task and not runner.main_task.done()):
-            logger.info("停止当前运行的ALRunner实例")
-            await runner.stop()
-            await asyncio.sleep(0.5)  # 等待停止完成
-        
-        # 创建新的ALRunner实例，假设它能接收配置参数
-        runner = ALRunner()
-        
-        # 如果ALRunner有初始化配置的方法，在这里调用
-        if hasattr(runner, 'load_config'):
-            runner.load_config(input_config)
-            logger.info("已将新配置应用到ALRunner")
-        
-        # 如果之前是运行状态，重新启动
-        if runner.started:
-            runner.reset_state()
-            runner.running = True
-            runner.main_task = asyncio.create_task(runner.main_loop())
-            logger.info("已使用新配置重启ALRunner")
-            return {
-                "success": True,
-                "message": "input.json已重新加载并应用，ALRunner已重启"
-            }
-        else:
-            logger.info("input.json已重新加载，ALRunner处于停止状态")
-            return {
-                "success": True,
-                "message": "input.json已重新加载并应用"
-            }
-            
-    except Exception as e:
-        logger.error(f"重新加载input.json失败: {str(e)}")
-        return {
-            "success": False,
-            "message": f"重新加载失败: {str(e)}"
-        }
-
-
+async def stop_al(request: Request, task_id: str = Body(..., embed=True)):
+    """停止特定任务"""
+    manager = get_manager(request)
+    if task_id in manager.tasks:
+        runner = manager.tasks[task_id]
+        asyncio.create_task(runner.stop())
+        return {"status": "stopping", "task_id": task_id}
+    return {"status": "not_found", "message": "任务未运行"}
 
 @al_router.get("/status")
-async def get_status() -> dict[str, bool | int | str]:
+async def get_status(request: Request, task_id: str = "guest_default"):
+    """
+    查询任务状态
+    访问示例: /status?task_id=guest_Alpha
+    """
+    manager = get_manager(request)
+    
+    if task_id not in manager.tasks:
+        return {
+            "running": False,
+            "status_text": "未启动",
+            "task_id": task_id
+        }
+    
+    runner = manager.tasks[task_id]
+    
     async with runner.state_lock:
-        status_text = "未运行"
-        if runner.running:
-            status_text = "运行中" if not runner.paused else "已暂停"
-        task_status = "未启动"
-        if runner.main_task:
-            if runner.main_task.done():
-                task_status = "已结束"
-            else:
-                task_status = "运行中"
-        
+        status_text = "运行中"
+        if not runner.running:
+            status_text = "已结束"
+        elif runner.paused:
+            status_text = "已暂停"
+            
+        task_status = "运行中"
+        if runner.main_task and runner.main_task.done():
+            task_status = "已完成/已停止"
+            
         return {
             "running": runner.running,
             "paused": runner.paused,
             "started": runner.started,
+            "iter": runner.iter,
+            "process": runner.process,
             "subscribers": len(runner.subscribers),
             "status_text": status_text,
-            "task_status": task_status
+            "task_status": task_status,
+            "task_id": task_id
         }
+
+# 注意：WebSocket 建议统一在 app.py 的端点处理，
+# 或者在此处根据 task_id 订阅
+@al_router.websocket("/ws/{task_id}")
+async def websocket_endpoint(websocket: WebSocket, task_id: str = "guest_default"):
+    manager = websocket.app.state.manager
+    await websocket.accept()
     
+    manager.subscribe(task_id, websocket)
+    logger.info(f"WS Client subscribed to {task_id}")
+    
+    try:
+        while True:
+            # 接收前端指令 (例如暂停/停止)
+            data = await websocket.receive_json()
+            if task_id in manager.tasks:
+                runner = manager.tasks[task_id]
+                action = data.get("action")
+                if action == "pause": await runner.toggle_pause()
+                if action == "stop": await runner.stop()
+                
+    except WebSocketDisconnect:
+        manager.unsubscribe(task_id, websocket)
+        logger.info(f"WS Client disconnected from {task_id}")

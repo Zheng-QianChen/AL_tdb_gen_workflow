@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request, UploadFile, HTTPException, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 from pathlib import Path
 import os, json, uuid, shutil, fastapi, asyncio
-from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, RUN_DIR
+from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, RUN_DIR, BASE_DATA_DIR
 
 file_router = APIRouter()
 
@@ -21,64 +21,65 @@ def is_safe_path(base_dir: str, file_path: str) -> bool:
     # 确保文件路径是基础目录的子目录
     return base_path in resolved_file_path.parents or base_path == resolved_file_path
 
-@file_router.post("/save_input_json")
+@file_router.post("/save_input_json", summary="api.summary_save_json")
 async def save_input_json(request: Request):
     """将配置保存到 input.json 文件"""
     try:
-        logger.info("收到保存配置请求")
+        logger.info("recieve the save input.json request")
         
         # 解析请求数据
         try:
             config_data = await request.json()
-            logger.info(f"收到配置数据，长度: {len(json.dumps(config_data))} 字符")
+            raw_filename = config_data.get("filename", "input.json")
+            filename = os.path.basename(raw_filename)  # 防止路径注入
+            data_len = len(json.dumps(config_data.get("data")))
+            logger.info(f"recieve the file name: {filename}")
+            logger.info(f"recieve the save request: {data_len} words")
         except Exception as e:
-            logger.error(f"解析JSON失败: {str(e)}")
+            logger.error(f"parsing JSON fails: {str(e)}")
             return JSONResponse(
                 status_code=400,
-                content={"success": False, "message": f"JSON解析错误: {str(e)}"}
+                content={"success": False, "message_key": "api.err_json_parse"} # 使用 Key
             )
         
         # 保存文件
         try:
             save_path = Path(RUN_DIR)
-            save_path.mkdir(exist_ok=True)
-            filename = "input.json"
+            save_path.mkdir(parents=True, exist_ok=True) # 确保父目录也一并创建
             file_path = save_path / filename
             counter = 0
-            while file_path.exists():
-                name, ext = os.path.splitext(filename)
-                name = f"{name}_{counter}{ext}"
-                file_path = save_path / name
-                counter += 1
-            os.rename(save_path/filename, file_path)
+            if file_path.exists():
+                counter = 0
+                backup_file = file_path
+                # 寻找可用的备份文件名
+                while backup_file.exists():
+                    name, ext = os.path.splitext(filename)
+                    backup_file = save_path / f"{name}_{counter}{ext}"
+                    counter += 1
+                # 安全地备份旧文件
+                os.rename(file_path, backup_file)
+                logger.info(f"backup the older input.json to: {backup_file}")
             with open(save_path/filename, "w", encoding="utf-8") as f:
                 json.dump(config_data, f, ensure_ascii=False, indent=2)
             
-            os.chmod(save_path, 0o644)
-            logger.info(f"成功保存到: {save_path.absolute()}")
+            logger.info(f"success save in: {save_path.absolute()}")
             return {
                 "success": True,
-                "message": "配置已保存",
-                "file_path": str(save_path.absolute())
+                "message_key": "api.save_success", # 使用 Key
+                "file_path": str(file_path.absolute())
             }
         except PermissionError:
-            logger.error(f"没有权限写入文件: {save_path.absolute()}")
+            logger.error(f"Permission error: {save_path.absolute()}")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": f"保存失败：没有权限写入文件"}
-            )
-        except Exception as e:
-            logger.error(f"保存文件失败: {str(e)}")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": f"保存文件错误: {str(e)}"}
+                content={"success": False, "message_key": "api.err_permission"}
             )
             
     except Exception as e:
-        logger.error(f"处理保存请求时出错: {str(e)}")
+        logger.error(f"Error in save file: {str(e)}")
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": f"服务器错误: {str(e)}"}
+            content={"success": False, "message_key": "api.err_server", "detail": str(e)}
         )
 
 @file_router.post("/upload_file")
@@ -107,7 +108,7 @@ async def upload_file(file: UploadFile = fastapi.File(...)):
             while chunk := await file.read(1024 * 1024):  # 1MB chunks
                 buffer.write(chunk)
         
-        logger.info(f"文件已复制到程序目录: {file_path.resolve()}")
+        logger.info(f"file is copy to: {file_path.resolve()}")
         
         # 返回文件在服务器上的路径
         return {
@@ -118,50 +119,50 @@ async def upload_file(file: UploadFile = fastapi.File(...)):
             "url": f"/uploads/{name}"  # 可直接访问的URL
         }
     except Exception as e:
-        logger.error(f"文件上传失败: {str(e)}", exc_info=True)
+        logger.error(f"upload fail: {str(e)}", exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": f"文件上传失败: {str(e)}"}
+            content={"success": False, "message": f"upload fail: {str(e)}"}
         )
     finally:
         await file.close()
 
-@file_router.post("/read-record", summary="读取指定路径的记录文件")
+@file_router.post("/read-record", summary="reaing file content")
 async def read_record(request: FilePathRequest):
     try:
         file_path = request.file_path
-        logger.info(f"尝试读取文件: {file_path}")
+        logger.info(f"try to read file: {file_path}")
         
         # 安全检查
         if not is_safe_path(ALLOWED_BASE_DIR, file_path):
-            logger.warning(f"路径安全检查失败: {file_path}")
+            logger.warning(f"file path is unsafe: {file_path}")
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="路径不允许访问"
+                detail="permission denied for this file path"
             )
         
         # 检查文件是否存在
         file_path_obj = Path(file_path)
         if not file_path_obj.exists():
-            logger.warning(f"文件不存在: {file_path}")
+            logger.warning(f"file is unexits: {file_path}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="文件不存在"
+                detail="file is unexits"
             )
             
         # 检查是否是文件
         if not file_path_obj.is_file():
-            logger.warning(f"不是文件: {file_path}")
+            logger.warning(f"Error: Not a file: {file_path}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="指定路径不是文件"
+                detail="Error: Not a file"
             )
         
         # 检查文件大小，防止过大文件
         file_size = file_path_obj.stat().st_size
         max_size = 10 * 1024 * 1024  # 10MB
         if file_size > max_size:
-            error_msg = f"文件过大: {file_path} (大小: {file_size} bytes, 最大允许: {max_size} bytes)"
+            error_msg = f"Error: too long: {file_path} (Now: {file_size} bytes, Maxium: {max_size} bytes)"
             logger.warning(error_msg)
             raise HTTPException(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
@@ -182,7 +183,7 @@ async def read_record(request: FilePathRequest):
             
             content = await read_file_async(file_path_obj)
             
-            logger.info(f"成功读取文件: {file_path} (大小: {len(content)} bytes)")
+            logger.info(f"Read success: {file_path} ({len(content)} bytes)")
 
             return JSONResponse({
                 "success": True,
@@ -190,19 +191,47 @@ async def read_record(request: FilePathRequest):
             })
             
         except Exception as e:
-            logger.error(f"读取文件错误: {str(e)}")
+            logger.error(f"fails in reading: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"读取文件失败: {str(e)}"
+                detail=f"fails in reading: {str(e)}"
             )
             
     except HTTPException:
         # 重新抛出已定义的HTTP异常
         raise
     except Exception as e:
-        logger.error(f"处理请求错误: {str(e)}")
+        logger.error(f"responce has some problem: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"服务器错误: {str(e)}"
+            detail=f"Server has some problem: {str(e)}"
         )
+    
+@file_router.get("/get_data_file/{folder}/{filename}")
+async def get_data_file(folder: str, filename: str):
+    # 安全检查，防止路径穿越
+    safe_filename = os.path.basename(filename)
+    file_path = Path(BASE_DATA_DIR) / folder / safe_filename
+    
+    if file_path.exists():
+        return FileResponse(file_path)
+    return JSONResponse(status_code=404, content={"message": "File not found"})
+
+@file_router.get("/get_config_status")
+async def get_config_status(filename: str):
+    try:
+        # 防止目录遍历攻击
+        safe_filename = os.path.basename(filename)
+        target_path = Path(RUN_DIR) / safe_filename
+        print(f"DEBUG: 正在尝试访问的绝对路径是: {target_path.absolute()}")
+        print(f"DEBUG: 该路径是否存在: {target_path.exists()}")
+        if not target_path.exists():
+            return JSONResponse(status_code=404, content={"success": False, "detail": "File not found"})
+
+        with open(target_path, "r", encoding="utf-8") as f:
+            config_data = json.load(f)
+            
+        return config_data # 直接返回配置内容
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"success": False, "detail": str(e)})
     

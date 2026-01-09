@@ -2,9 +2,9 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import asyncio,fastapi
-from config import runner, logger, executor
-from lib.main_process.subl_model_assess import subl_assess
-import lib.generate as generate
+from config import logger, executor
+from src.main_process.subl_model_assess import subl_assess
+import src.generate as generate
 from pathlib import Path
 
 tdb_router = APIRouter()

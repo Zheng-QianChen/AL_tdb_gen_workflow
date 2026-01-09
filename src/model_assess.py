@@ -2,10 +2,10 @@
 from ast import literal_eval
 import numpy as np
 import pandas as pd
-import lib.generate as generate
+import src.generate as generate
 from scipy.spatial import ConvexHull
-import lib.pts_and_hull as pts_and_hull
-from lib.MODEL import *
+import src.pts_and_hull as pts_and_hull
+from src.MODEL import *
 from pathlib import Path
 
 

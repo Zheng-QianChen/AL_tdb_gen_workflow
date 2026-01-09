@@ -5,6 +5,7 @@ import time
 import asyncio
 import logging
 from typing import List, Optional
+from pathlib import Path
 
 import pandas as pd
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
@@ -14,27 +15,33 @@ from fastapi.templating import Jinja2Templates
 import uvicorn
 from concurrent.futures import ThreadPoolExecutor
 
-import lib.POSCAR_generate
-from lib.class_def import Phase
-from lib.tdb_generator import tdb_generate_from_MLmodel
+import src.POSCAR_generate
+from src.class_def import Phase
+from src.tdb_generator import tdb_generate_from_MLmodel
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ALRunner:
-    def __init__(self):
+    def __init__(self, task_id: str, config_dir: str, executor=None):
+        self.task_id = task_id
+        self.executor = executor # 保存传入的全局线程池
+
+        self.input_json = Path(config_dir)
+        # self.file_path = os.path.join(working_dir, "record.txt")
+        # self.iter_csv_path = os.path.join(working_dir, "iter.csv")
+
         self.running = False
         self.paused = False
         self.started = False
+
         self.main_task: Optional[asyncio.Task] = None
         self.subscribers: List[WebSocket] = []
         self.phase: Optional[Phase] = None
         self.iter: int = 0
         self.process: int = 0
         self.data: Optional[dict] = None
-        self.file_path = "record.txt"
-        self.input_json = "static/run/input.json"
         self.state_lock = asyncio.Lock()  # 关键修复：异步锁保护状态修改
         self.stop_event = asyncio.Event()  # 新增：用于快速通知主循环停止
         self.executor: Optional[ThreadPoolExecutor] = None  # 线程池初始化为None
@@ -89,9 +96,10 @@ class ALRunner:
         if data_file == '':
             data_file = self.input_json
         with open(data_file, 'r', encoding='utf-8') as f:
-            data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
-        pkl_phase_path = data["AL_SET"]["PKL_PHASE_PATH"]
-        file_path = data["record_path".upper()]
+            # data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
+            data = json.load(f)
+        pkl_phase_path = data["AL_set"]["pkl_phase_path"]
+        file_path = data["record_path"]
         # 读取或初始化迭代状态
         if os.path.isfile(file_path+'/record.txt'):
             iter, process = self.read_last_line(file_path=file_path+'/record.txt')
@@ -248,8 +256,12 @@ class ALRunner:
     def init_process(self, data):
         """初始化过程，与原始代码保持一致"""
         logger.info("开始初始化AL循环")
-        phase_name = data["PHASE_NAME"]
-        re = [
+        
+        phase_name = data["phase_name"]
+        al_set = data["AL_set"]
+        record_path = data["record_path"] # 已经由 Manager 确保唯一性
+
+        ELEMENT_SYMBOLS = [
             'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
             'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
             'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
@@ -264,122 +276,104 @@ class ALRunner:
             'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
         ]
         
-        init_stru_path = data["STRUCTURE_FILE"]
-        AB_stru_path = data["STRUCTURE_OUT_FILE"]
-        # 创建必要的目录
-        al_set = data["AL_SET"]
-        record_path = data["record_path".upper()]
-        os.makedirs(al_set["GENERATE_DFT_PATH"], exist_ok=True)
-        os.makedirs(al_set["CALCED_DFT_PATH"], exist_ok=True)
-        os.makedirs(al_set["PKL_PHASE_PATH"], exist_ok=True)
-        os.makedirs(record_path, exist_ok=True)
-        self.file_path = record_path+"/record.txt"
-
-        flag_to_primitive = data["STRUCTURE_CONVERT_TO_PRIMITIVE"]
-        flag_to_primitive = flag_to_primitive.upper() in ['Y', 'YES']
+        # 3. 执行结构转换逻辑 (POSCAR 生成)
+        # 脱钩点：所有路径都直接从 data 键值对获取
+        flag_to_primitive = data.get("structure_convert_to_primitive", "N").upper() in ['Y', 'YES']
         
-        stru, replace_pattern = lib.POSCAR_generate.replace_wyckoff(
-            init_stru_path, 
-            replacement_sequence=re,
+        stru, replace_pattern = src.POSCAR_generate.replace_wyckoff(
+            data["structure_file"], 
+            replacement_sequence=ELEMENT_SYMBOLS,
             convert_to_primatice=flag_to_primitive, 
-            output_file=AB_stru_path
+            output_file=data["structure_out_file"]
         )
         
-        model = data["TDB_MODEL"]
-        # temp = model["SITE2SUB"]
-        site_holder = model["SITE_HOLDER"]
-        # element_mapping = {}
+        # 4. 构建 Phase 对象
+        # 注意：这里我们只传参，不再管理 record.txt 的句柄
+        model = data["tdb_model"]
+        site_holder = model["site_holder"]
         site_holder_end = [replace_pattern[ord(i)-65] for i in site_holder]
-        
-        # for group_idx, numbers in enumerate(temp):
-        #     group_label = f"{site_holder[group_idx]}"
-        #     for num in numbers:
-        #         original = replace_pattern[num]
-        #         element_mapping[original] = replace_pattern[ord(group_label)-65]
-        
-        # logger.info(f"元素映射: {element_mapping}")
-        
-        # stru_gentest = lib.POSCAR_generate.POSCAR_generate(
-        #     in_poscar=stru, 
-        #     replace_map=element_mapping,
-        #     out_poscar_path=f'./NEW_POSCAR_test'
-        # )
-        
-        phase = Phase(iter=0, name=phase_name, structure=stru, tdb_model=model, record_path = record_path)
-        # logger.info(f"位点持有者: {site_holder_end}")
-        phase.tdb_model["SITE_HOLDER"] = site_holder_end
-        
 
-        # 初始化X_tabel
-        ML_model_type = al_set["ML_MODEL"]
-        ML_style = al_set["ML_STYLE"]
-        print(312)
-        ML_hyper_parameters = al_set["ML_hyper_parameters".upper()]
-        if not ML_hyper_parameters.strip():
-            ML_hyper_parameters = {}
-        else:
-            try:
-                ML_hyper_parameters = eval(ML_hyper_parameters)
-            except (SyntaxError, NameError, TypeError) as e:
-                print(f"解析超参数失败: {e}")
-                ML_hyper_parameters = {}  # 解析失败时使用默认值
-        print(312)
-        descripter = al_set["DESCRIPTOR"]
-        print(382)
+        phase = Phase(
+            iter=0, 
+            name=phase_name, 
+            structure=stru, 
+            tdb_model=model, 
+            record_path=record_path
+        )
+        phase.tdb_model["site_holder"] = site_holder_end
+        # 5. 特征表整合 (机器学习准备)
+        eigen_table = self._build_eigen_table(al_set["descriptor"])
+        
+        # 6. 初始化 Phase 的机器学习环境
+        phase.X_table_init(
+            al_set["ML_model"], 
+            self._parse_hyper_params(al_set.get("ML_hyper_parameters", "")), 
+            al_set["ML_style"],
+            eigen_table, 
+            al_set["eigen_weight"], 
+            al_set["normalizer"],
+            al_set["generate_DFT_path"], 
+            al_set["calced_DFT_path"],
+            al_set["pkl_phase_path"], 
+            al_set["pkl_show_control"], 
+            al_set["quest"]
+        )
+        
+        # 7. 生成初始采样点
+        random_n = data.get("init_random_n", 5)
+        temp = random.sample(phase.pool, random_n)
+        for i in phase.tdb_model["sys_species"]:
+            temp.append(':'.join([i] * len(phase.tdb_model["comp"])))
+        
+        phase.upload(temp)
+        logger.info(f"初始上传点: {temp}")
+        
+        # 8. 记录初始化数据 (不再在函数内 open, 保持逻辑纯粹)
+        self._initialize_record_files(record_path)
+        
+        return phase
+
+
+    def _initialize_record_files(self, record_path):
+        """辅助方法：初始化记录文件"""
+        os.makedirs(record_path, exist_ok=True)
+        record_file = os.path.join(record_path, "record.txt")
+        with open(record_file, 'w', encoding='utf-8') as f:
+            f.write("0 0\n")  # 初始迭代状态
+        # 初始化 iter.csv 文件
+        iter_csv_path = os.path.join(record_path, "iter.csv")
+        iter_df = pd.DataFrame(columns=[
+            "iter", "process", "num_DFT_points", 
+            "num_ML_points", "MAE", "RMSE", "R2"
+        ])
+        iter_df.to_csv(iter_csv_path, index=False)
+        logger.info(f"已初始化记录文件: {record_file} 和 {iter_csv_path}")
+
+    def _build_eigen_table(self, descripter):
+        """辅助方法：解耦特征表构建"""
         eigen_table = pd.DataFrame(columns=["symbol"])
         for key in descripter:
             logger.info(f"处理描述符: {key}, {descripter[key]}")
-            selected_cols = [descripter[key]["INDEX_NAME"]] + descripter[key]["COL_NAME"]
+            selected_cols = [descripter[key]["index_name"]] + descripter[key]["col_name"]
             load_temp = pd.read_csv(key)
+            print(load_temp)
             load_temp = load_temp[selected_cols]
             load_temp.rename(columns={selected_cols[0]: "symbol"}, inplace=True)
             load_temp["symbol"] = load_temp["symbol"].str.upper()
-            
             eigen_table = pd.merge(
                 load_temp,
                 eigen_table,
                 on="symbol",
                 how='outer'
             )
-        
-        logger.info(f"特征表列数: {len(eigen_table.columns)}")
-        
-        normalizer = al_set["NORMALIZER"]
-        eigen_weight = al_set["EIGEN_WEIGHT"]
-        generate_DFT_path = al_set["GENERATE_DFT_PATH"]
-        calced_DFT_path = al_set["CALCED_DFT_PATH"]
-        pkl_phase_path = al_set["PKL_PHASE_PATH"]
-        pkl_show_control = al_set["PKL_SHOW_CONTROL"]
-        quest = al_set["QUEST"]
-        
-        phase.X_tabel_init(
-            ML_model_type, ML_hyper_parameters, ML_style,
-            eigen_table, eigen_weight, normalizer,
-            generate_DFT_path, calced_DFT_path,
-            pkl_phase_path, pkl_show_control, quest
-        )
-        
-        # 生成初始上传点
-        random_n = data["INIT_RANDOM_N"]
-        temp = random.sample(phase.pool, random_n)
-        
-        # 生成端点
-        for i in phase.tdb_model["SYS_SPECIES"]:
-            logger.info(f"添加端点元素: {i}")
-            temp.append(':'.join([i]*len(phase.tdb_model["COMP"])))
-        
-        phase.upload(temp)
-        logger.info(f"初始上传点: {temp}")
-        
-        # 保存初始模型
-        self.iter = 0
-        self.process = 1
-        phase.save(f'{pkl_phase_path}/model_{self.iter:06d}_{self.process}.pd')
-        iter_csv = open(record_path+'/iter.csv','a')
-        iter_csv.write(f"traning_data_amount,RMSE(train),RMSE(test),fold_num_r2,r2_score,fold_num_r2,RMSE_score\n")
+        return eigen_table
 
-        
-        return phase
+    def _parse_hyper_params(self, param_str):
+        """辅助方法：安全解析参数"""
+        try:
+            return eval(param_str) if param_str.strip() else {}
+        except:
+            return {}
     
     def read_last_line(self, file_path:str='') -> tuple[int, int]:
         """读取文件最后一行并解析为整数对 (iter, process)"""
@@ -433,17 +427,19 @@ class ALRunner:
         """AL循环主逻辑，改造为异步执行"""
         logger.info("开始AL主循环")
         try:
-            # 每次启动时创建新的线程池
-            self.executor = ThreadPoolExecutor(max_workers=1)
-            logger.info("已创建新的线程池")
+            # # 每次启动时创建新的线程池
+            # self.executor = ThreadPoolExecutor(max_workers=1)
+            # logger.info("已创建新的线程池")
 
             # 读取配置数据
             with open(self.input_json, 'r', encoding='utf-8') as f:
-                self.data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
+                # self.data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
+                self.data = json.load(f)
             
-            pkl_phase_path = self.data["AL_SET"]["PKL_PHASE_PATH"]
-
-            self.file_path = self.data["record_path".upper()]+'/record.txt'
+            pkl_phase_path = self.data["AL_set"]["pkl_phase_path"]
+            os.makedirs(pkl_phase_path, exist_ok=True)
+            os.makedirs(self.data["record_path"], exist_ok=True)
+            self.file_path = self.data["record_path"]+'/record.txt'
             
             # 读取或初始化迭代状态
             if os.path.isfile(self.file_path):
@@ -461,6 +457,7 @@ class ALRunner:
                     self.data
                 )
                 self.write_log(f"{self.iter} {self.process}\n")
+                self.phase.save(f'{pkl_phase_path}/model_{self.iter:06d}_{self.process}.pd')
                 self.process = 1
                 self.write_log(f"{self.iter} {self.process}\n")
                 await self.send_message("初始化完成")
@@ -495,14 +492,14 @@ class ALRunner:
                 if not running:
                     break
                 
-                al_set = self.data["AL_SET"]
-                pkl_phase_path = al_set["PKL_PHASE_PATH"]
+                al_set = self.data["AL_set"]
+                pkl_phase_path = al_set["pkl_phase_path"]
                 
                 try:
                     # 状态0: 完成模型训练，生成新的quest
                     if self.process == 0:
                         await self.send_message(f"迭代 {self.iter}: 生成新的查询点...")
-                        self.phase.quest = al_set["QUEST"]
+                        self.phase.quest = al_set["quest"]
                         
                         # 执行凸包分析并生成新的DFT点
                         await asyncio.get_event_loop().run_in_executor(
@@ -530,6 +527,7 @@ class ALRunner:
                         calced_dir = f"{self.phase.calced_DFT_path}/iter.{self.iter:06d}"
                         os.makedirs(calced_dir, exist_ok=True)
                         vasp_calc_end = f"{calced_dir}/calc.txt"
+                        print(vasp_calc_end)
                         
                         # 等待VASP计算完成
                         while running and not self.stop_event.is_set():

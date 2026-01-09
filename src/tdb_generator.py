@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from lib.class_def import Phase
+from src.class_def import Phase
 import os
 from pathlib import Path
 
@@ -40,7 +40,7 @@ def pre_for_model_assess(phase:Phase, file_path):
     tdb_gen_pad[['sys_num', 'sys_type']] = tdb_gen_pad['endmember'].apply(
         lambda x: pd.Series(process_element(x))
     )
-    sys_spe = phase.tdb_model["sys_species".upper()]
+    sys_spe = phase.tdb_model["sys_species"]
     print(sys_spe,tdb_gen_pad.columns)
     flag = 0
     for i in range(len(sys_spe)):
@@ -184,16 +184,16 @@ def tdb_generate_from_MLmodel(pkl_path:str, iter:int=0, process:int=1, user:str=
     tdb_gen_pad, sys_spe = pre_for_model_assess(phase, file_path)
 
     with open(f'{file_path}/{phase.name}_{phase.iter}_raw.tdb','w') as file:
-        sumn = sum(phase.tdb_model["occup_atoms_in_tdb".upper()])
-        temp = [str(i/sumn) for i in phase.tdb_model["occup_atoms_in_tdb".upper()]]
+        sumn = sum(phase.tdb_model["occup_atoms_in_tdb"])
+        temp = [str(i/sumn) for i in phase.tdb_model["occup_atoms_in_tdb"]]
         phase_summarize = ' '.join(temp)
         phase_compo_summarize = [
-            ','.join(phase.tdb_model["comp".upper()][i])
-            for i in range(len(phase.tdb_model["comp".upper()]))
+            ','.join(phase.tdb_model["comp"][i])
+            for i in range(len(phase.tdb_model["comp"]))
         ]
         phase_compo_summarize = ':'.join(phase_compo_summarize)
         file.write(f'''
-Phase {phase.name} % {phase.tdb_model["sublattice_number".upper()]} {phase_summarize} !
+Phase {phase.name} % {phase.tdb_model["sublattice_number"]} {phase_summarize} !
 CONSTITUENT {phase.name} :{phase_compo_summarize}:!
         ''')
 

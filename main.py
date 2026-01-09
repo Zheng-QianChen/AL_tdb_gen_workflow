@@ -9,7 +9,7 @@ import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from config import runner, logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR
+from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR
 from routes.main_routes import main_router
 from routes.al_routes import al_router
 from routes.file_routes import file_router

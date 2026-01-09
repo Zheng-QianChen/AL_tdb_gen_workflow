@@ -1,9 +1,9 @@
-import lib.model_assess as mAssess
-import lib.model_score as mScore
-from lib.MODEL import *
-import lib.generate as generate
-import lib.tdb_generator as Tdbgene
-import lib.model_post as mPost
+import src.model_assess as mAssess
+import src.model_score as mScore
+from src.MODEL import *
+import src.generate as generate
+import src.tdb_generator as Tdbgene
+import src.model_post as mPost
 import pandas as pd
 import numpy as np
 import os, json
@@ -16,7 +16,8 @@ class subl_assess:
                  record_path:Path = Path("./")):
         self.name_list = []
         with open(input_data_file, 'r', encoding='utf-8') as f:
-            data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
+            # data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
+            data = json.load(f)
         self.input_data = data
         self.site_elements = []
         self.elements_list = []

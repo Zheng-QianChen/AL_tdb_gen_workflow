@@ -29,9 +29,9 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 from catboost import CatBoostRegressor
 
-import lib.Hull as Hull
-import lib.POSCAR_generate
-import lib.post as post
+import src.Hull as Hull
+import src.POSCAR_generate
+import src.post as post
 
 
 def format_element(element_str):
@@ -228,15 +228,15 @@ class Phase:
         self.tdb_model = tdb_model
         self.record_path = record_path
         # 获得体系不重复的元素种类
-        self.tdb_model["sys_species".upper()] =list({element for sublist in tdb_model["comp".upper()] for element in sublist})
-        ref = sum(self.tdb_model["occup_atoms_in_tdb".upper()])
-        self.tdb_model["Atom_weight".upper()] = [x/ref for x in self.tdb_model["occup_atoms_in_tdb".upper()]]
-        temp = self.tdb_model["Atom_ref".upper()]
-        self.tdb_model["Atom_ref".upper()] = pd.read_csv(temp["file".upper()])[[temp["index_name".upper()],temp["col_name".upper()]]]
-        self.tdb_model["Atom_ref".upper()][temp["index_name".upper()]] = self.tdb_model["Atom_ref".upper()][temp["index_name".upper()]].apply(format_element)
-        energy_dict = self.tdb_model["Atom_ref".upper()].set_index(temp["index_name".upper()])[temp["col_name".upper()]].to_dict()
-        self.tdb_model["Atom_ref".upper()] = energy_dict
-        print(self.tdb_model["Atom_ref".upper()])
+        self.tdb_model["sys_species"] =list({element for sublist in tdb_model["comp"] for element in sublist})
+        ref = sum(self.tdb_model["occup_atoms_in_tdb"])
+        self.tdb_model["Atom_weight"] = [x/ref for x in self.tdb_model["occup_atoms_in_tdb"]]
+        temp = self.tdb_model["Atom_ref"]
+        self.tdb_model["Atom_ref"] = pd.read_csv(temp["file"])[[temp["index_name"],temp["col_name"]]]
+        self.tdb_model["Atom_ref"][temp["index_name"]] = self.tdb_model["Atom_ref"][temp["index_name"]].apply(format_element)
+        energy_dict = self.tdb_model["Atom_ref"].set_index(temp["index_name"])[temp["col_name"]].to_dict()
+        self.tdb_model["Atom_ref"] = energy_dict
+        print(self.tdb_model["Atom_ref"])
         self.pool = self.pool_generate()
         self.subl_energy = pd.DataFrame({
             'endmember': self.pool,
@@ -247,9 +247,9 @@ class Phase:
         self.subl_energy['Atom_ref'] = self.subl_energy['endmember'].apply(self.calculate_weighted_energy)
         self.ML_model_type = 'gbr'
         self.ML_hyper_parameters = {}
-        self.X_tabel = pd.DataFrame()
+        self.X_bable = pd.DataFrame()
         # 为凸包预备的数据
-        self.ref_points = pd.DataFrame(columns=["endmember"] + self.tdb_model["sys_species".upper()][1:]+["Energy"])
+        self.ref_points = pd.DataFrame(columns=["endmember"] + self.tdb_model["sys_species"][1:]+["Energy"])
         self.ref_points = self.ref_points.set_index('endmember')
         self.calc_points = self.ref_points.copy(deep=True)
         self.all_points = self.get_points(self.pool).set_index('endmember')
@@ -263,13 +263,13 @@ class Phase:
 
     def pool_generate(self):
         from itertools import product
-        model = self.tdb_model['comp'.upper()]
+        model = self.tdb_model['comp']
         combined = [":".join(items) for items in product(*model)]
         print(len(combined))
         return combined
 
 
-    def X_tabel_init(self, ML_model_type, ML_hyper_parameters, ML_style,
+    def X_table_init(self, ML_model_type, ML_hyper_parameters, ML_style,
                      eigen_table:pd.DataFrame, eigen_weight, normalizer,
                            generate_DFT_path, calced_DFT_path,
                            pkl_phase_path,pkl_show_control,
@@ -286,7 +286,7 @@ class Phase:
         self.eigen_num_per_site = len(eigen_table.columns) - 1
         self.eigen_table = eigen_table.columns.values[1:]
         self.quest = quest
-        X_tabel = []
+        X_bable = []
         for endmember in self.pool:
             symbols = endmember.split(":")
             missing = [s for s in symbols if s not in eigen_table["symbol"].values]
@@ -302,41 +302,41 @@ class Phase:
                     for col in eigen_table.columns
                     if col != 'symbol'
                 })
-            X_tabel.append(result)
-        print(X_tabel)
-        self.X_tabel = pd.DataFrame(X_tabel)
+            X_bable.append(result)
+        print(X_bable)
+        self.X_bable = pd.DataFrame(X_bable)
 
         if normalizer == "Zscore":
             from sklearn.preprocessing import StandardScaler
 
             # 提取需要标准化的列
-            cols = self.X_tabel.columns[1:]
+            cols = self.X_bable.columns[1:]
             # 初始化标准化器
             scaler = StandardScaler()
             # 对指定列进行标准化并覆盖原数据
-            self.X_tabel[cols] = scaler.fit_transform(self.X_tabel[cols])
-            print(self.X_tabel)
+            self.X_bable[cols] = scaler.fit_transform(self.X_bable[cols])
+            print(self.X_bable)
         
         elif normalizer == "mmscale":
             from sklearn.preprocessing import MinMaxScaler
 
             # 提取目标列
-            cols = self.X_tabel.columns[1:]
+            cols = self.X_bable.columns[1:]
             # 初始化并执行归一化
             scaler = MinMaxScaler(feature_range=(0, 1))  # 默认即为[0,1]
-            self.X_tabel[cols] = scaler.fit_transform(self.X_tabel[cols])
-            print(self.X_tabel)
+            self.X_bable[cols] = scaler.fit_transform(self.X_bable[cols])
+            print(self.X_bable)
 
     def upload(self, up_endmem:list):
         os.makedirs(f"{self.generate_DFT_path}/{self.iter}",exist_ok=True)
-        holder = self.tdb_model["site_holder".upper()]
+        holder = self.tdb_model["site_holder"]
         print(holder)
         for endmem in up_endmem:
             endmem = f"{endmem}"
             temp = [element.capitalize() for element in endmem.split(":")]
             ele_map = dict(zip(holder, temp))
             lat_name = endmem.replace(":","_")
-            lib.POSCAR_generate.POSCAR_generate(in_poscar=self.structure,
+            src.POSCAR_generate.POSCAR_generate(in_poscar=self.structure,
                                                 replace_map=ele_map,
                                                 out_poscar_path=f"{self.generate_DFT_path}/{self.iter}/{lat_name}/POSCAR")
 
@@ -350,15 +350,15 @@ class Phase:
         """
         elements = row.split(':')
         formatted_elements = [format_element(e) for e in elements]
-        energy_dict = self.tdb_model["Atom_ref".upper()]
+        energy_dict = self.tdb_model["Atom_ref"]
         
         # 验证元素与权重数量匹配
-        if len(formatted_elements) != len(self.tdb_model["ATOM_WEIGHT"]):
+        if len(formatted_elements) != len(self.tdb_model["Atom_weight"]):
             raise ValueError("元素数量与权重参数长度不匹配")
         
         # 计算加权和
         total = 0.0
-        for elem, weight in zip(formatted_elements, self.tdb_model["ATOM_WEIGHT"]):
+        for elem, weight in zip(formatted_elements, self.tdb_model["Atom_weight"]):
             total += energy_dict.get(elem, 0) * weight
         return total
 
@@ -401,10 +401,10 @@ class Phase:
         # print(self.calc_points)
         df2 = data
         if self.iter != 0:
-            flag = [endmember for endmember in df2['endmember'].unique() if endmember in self.X_tabel['endmember'].values]
-            self.X_test = self.X_tabel.set_index(['endmember']).loc[flag]
+            flag = [endmember for endmember in df2['endmember'].unique() if endmember in self.X_bable['endmember'].values]
+            self.X_test = self.X_bable.set_index(['endmember']).loc[flag]
             # print(X_test)
-            self.X_tabel.reset_index()
+            self.X_bable.reset_index()
         # 设置索引加速匹配
         df1 = self.subl_energy
         df1 = df1.drop_duplicates(subset='endmember', keep='first')
@@ -438,7 +438,7 @@ class Phase:
             y_test = self.y_test
             y_pred_test_MLmodel = self.y_pred_test_MLmodel
             if self.ML_style == 'flat':
-                X_col = self.X_tabel.columns.values[1:]
+                X_col = self.X_bable.columns.values[1:]
                 X_imp = pd.DataFrame(X_train,columns=X_col)
             elif self.ML_style == 'stack':
                 X_col = self.eigen_table
@@ -455,18 +455,18 @@ class Phase:
         self.X_train = X_train
         self.y_train = y_train
         # self.old_MLmodel = self.MLmodel
-        self.y_pred = MLmodel.predict(self.X_tabel.iloc[:,1:].values)
-        self.pool_pred = pd.DataFrame(zip(self.X_tabel["endmember"].values, self.y_pred),columns=['endmember','y_pred_kJ_mol'])
+        self.y_pred = MLmodel.predict(self.X_bable.iloc[:,1:].values)
+        self.pool_pred = pd.DataFrame(zip(self.X_bable["endmember"].values, self.y_pred),columns=['endmember','y_pred_kJ_mol'])
         return MLmodel
     
     def ML_flat(self):
         y_train = self.subl_energy[self.subl_energy['in_iter'].notna()]
         print(y_train)
-        common_sites = [endmember for endmember in y_train['endmember'].unique() if endmember in self.X_tabel['endmember'].values]
-        X_train = self.X_tabel.set_index(["endmember"]).loc[common_sites]
-        self.X_tabel.reset_index()
+        common_sites = [endmember for endmember in y_train['endmember'].unique() if endmember in self.X_bable['endmember'].values]
+        X_train = self.X_bable.set_index(["endmember"]).loc[common_sites]
+        self.X_bable.reset_index()
         print(X_train)
-        print(self.X_tabel)
+        print(self.X_bable)
         X_train = X_train.values
         print(X_train)
         y_train = ((y_train['DFT_2']/self.total_atoms - y_train['Atom_ref'])*96.485).values
@@ -480,8 +480,8 @@ class Phase:
     def ML_stack(self):
         y_train = self.subl_energy[self.subl_energy['in_iter'].notna()]
         print(y_train)
-        common_sites = [endmember for endmember in y_train['endmember'].unique() if endmember in self.X_tabel['endmember'].values]
-        X_train = self.X_tabel.set_index(["endmember"]).loc[common_sites]
+        common_sites = [endmember for endmember in y_train['endmember'].unique() if endmember in self.X_bable['endmember'].values]
+        X_train = self.X_bable.set_index(["endmember"]).loc[common_sites]
         y_train = ((y_train['DFT_2']/self.total_atoms - y_train['Atom_ref'])*96.485).values
         print(X_train,y_train)
         print("im in 497")
@@ -496,7 +496,7 @@ class Phase:
             # 初始化自动赋0的字典
             temp_dict = defaultdict(float)
             # 遍历键值对进行累加
-            for key, value in zip(endmem.split(':'), self.tdb_model["ATOM_WEIGHT"]*100):
+            for key, value in zip(endmem.split(':'), self.tdb_model["Atom_weight"]*100):
                 temp_dict[key] += value
             # 转换为普通字典（可选）
             temp_dict = dict(temp_dict)
@@ -597,9 +597,9 @@ class Phase:
         # 按稳定性排序
         sorted_ref = self.upload_ref.sort_values('above_hull')
 
-        q_near = self.quest['near_hall'.upper()]
-        q_above = self.quest['unstable'.upper()]
-        q_rand = self.quest['random'.upper()]
+        q_near = self.quest['near_hall']
+        q_above = self.quest['unstable']
+        q_rand = self.quest['random']
 
         # 选择最稳定的q_near个（凸包上方距离最小）
         near_hull = sorted_ref.nsmallest(q_near, 'above_hull')
@@ -644,12 +644,12 @@ class Phase:
 
 
 if __name__=='__main__':
-    import lib.POSCAR_generate
+    import src.POSCAR_generate
     comp_list = ["CO","CU","FE","NI","TA","TI","W"]
     model = [comp_list,comp_list,comp_list]
     print(model)
     re = tuple([chr(i + 65) for i in range(26)])
-    stru = lib.POSCAR_generate.replace_wyckoff("test/test_data/Ce3Al11.cif", replacement_sequence=tuple(re), output_file='POSCAR')
+    stru = src.POSCAR_generate.replace_wyckoff("test/test_data/Ce3Al11.cif", replacement_sequence=tuple(re), output_file='POSCAR')
     C14_phase = Phase(iter=0,name='C14',structure = Structure.from_file("./test/test_data/Ce3Al11.cif"), tdb_model={'each_subl_comp':model})
 
     iter=0

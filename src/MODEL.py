@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import ConvexHull
 from typing import Optional
-import lib.pts_and_hull as pts_and_hull
-import lib.Hull as Hull
+import src.pts_and_hull as pts_and_hull
+import src.Hull as Hull
 
 class Sublattice_model:
     def __init__(
