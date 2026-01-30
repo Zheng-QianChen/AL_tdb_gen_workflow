@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 executor = ThreadPoolExecutor(max_workers=1)
 
 # 安全配置
-ALLOWED_BASE_DIR = ""  # 请根据实际情况修改
+ALLOWED_BASE_DIR = "."  # 请根据实际情况修改
 # 路径配置
 # 其他html文件的路径
 STATIC_DIR = Path("./static")
