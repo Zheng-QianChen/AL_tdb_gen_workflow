@@ -221,4 +221,29 @@ AL_tdb_gen_workflow/
 ├── working/             # Active computation directory
 └── environment.yml      # Conda environment specification
 
+---
+
+## HOW TO RUN
+
+### 1. Using vscode or other terminal, open working file
+![alt text](manual/image1.png)
+
+### 2. Run
 ```
+python app.py
+```
+![alt text](image.png)
+
+open local website as feedback:
+```
+ --- AL system is running ---
+Main interface URL: http://localhost:8003
+API documentation URL: http://localhost:8003/docs
+```
+
+### 3. using html
+![alt text](image3.png)
+
+---
+# Any questions:
+e-mail: gz1999zqc@163.com
