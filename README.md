@@ -233,7 +233,7 @@ AL_tdb_gen_workflow/
 ```bash
 python app.py
 ```
-![alt text](image.png)
+![alt text](manual/image.png)
 
 open local website as feedback:
 ```text
@@ -243,7 +243,7 @@ API documentation URL: http://localhost:8003/docs
 ```
 
 ### 3. using html
-![alt text](image3.png)
+![alt text](manual/image3.png)
 
 ---
 # Any questions:
