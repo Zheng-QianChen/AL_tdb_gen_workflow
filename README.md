@@ -233,7 +233,7 @@ AL_tdb_gen_workflow/
 ```bash
 python app.py
 ```
-![alt text](manual/image.png)
+![alt text](manual/image2.png)
 
 open local website as feedback:
 ```text
