@@ -29,6 +29,8 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 from catboost import CatBoostRegressor
 
+from config import BASE_DATA_DIR
+
 import src.Hull as Hull
 import src.POSCAR_generate
 import src.post as post
@@ -232,7 +234,7 @@ class Phase:
         ref = sum(self.tdb_model["occup_atoms_in_tdb"])
         self.tdb_model["Atom_weight"] = [x/ref for x in self.tdb_model["occup_atoms_in_tdb"]]
         temp = self.tdb_model["Atom_ref"]
-        self.tdb_model["Atom_ref"] = pd.read_csv(temp["file"])[[temp["index_name"],temp["col_name"]]]
+        self.tdb_model["Atom_ref"] = pd.read_csv(BASE_DATA_DIR / temp["file"])[[temp["index_name"],temp["col_name"]]]
         self.tdb_model["Atom_ref"][temp["index_name"]] = self.tdb_model["Atom_ref"][temp["index_name"]].apply(format_element)
         energy_dict = self.tdb_model["Atom_ref"].set_index(temp["index_name"])[temp["col_name"]].to_dict()
         self.tdb_model["Atom_ref"] = energy_dict
@@ -259,7 +261,7 @@ class Phase:
         )
         self.ref_points.columns = self.tdb_model["sys_species"][1:]+["Energy"]
         self.ref_points.index.name = 'endmember'
-        self.ref_points.to_csv("test.csv")
+        # self.ref_points.to_csv("test.csv")
         self.calc_points = self.ref_points.copy(deep=True)
         self.all_points = self.get_points(self.pool).set_index('endmember')
         print(self.all_points)
@@ -544,7 +546,7 @@ class Phase:
         max_energy = points_df['Energy'].max()
         max_energy = max_energy * 2
         self.ref_points["Energy"] = max_energy
-        self.ref_points.to_csv("test.csv")
+        # self.ref_points.to_csv("test.csv")
 
         pd.concat((points_df,self.ref_points))
         all_combinations = []

@@ -60,7 +60,7 @@ async def save_input_json(request: Request):
                 os.rename(file_path, backup_file)
                 logger.info(f"backup the older input.json to: {backup_file}")
             with open(save_path/filename, "w", encoding="utf-8") as f:
-                json.dump(config_data, f, ensure_ascii=False, indent=2)
+                json.dump(config_data.get("data"), f, ensure_ascii=False, indent=2)
             
             logger.info(f"success save in: {save_path.absolute()}")
             return {

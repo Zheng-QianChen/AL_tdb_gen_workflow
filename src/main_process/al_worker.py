@@ -358,7 +358,7 @@ class ALRunner:
         for key in descripter:
             logger.info(f"处理描述符: {key}, {descripter[key]}")
             selected_cols = [descripter[key]["index_name"]] + descripter[key]["col_name"]
-            load_temp = pd.read_csv(key)
+            load_temp = pd.read_csv(BASE_DATA_DIR / key)
             print(load_temp)
             load_temp = load_temp[selected_cols]
             load_temp.rename(columns={selected_cols[0]: "symbol"}, inplace=True)

@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # Ensure the root directory for task execution exists
     os.makedirs("static/run", exist_ok=True)
     
-    port = 8003
+    port = 8090
     print(f"\n--- AL system is running ---")
     print(f"Main interface URL: http://localhost:{port}")
     print(f"API documentation URL: http://localhost:{port}/docs\n")
