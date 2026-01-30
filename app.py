@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # 1. import config and logger
-from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR
+from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR, RUN_DIR, BASE_DATA_DIR
 # 2. import routes
 from routes.main_routes import main_router
 from routes.al_routes import al_router
@@ -16,6 +16,13 @@ from routes.file_routes import file_router
 from routes.tdb_routes import tdb_router
 # 3. import AL Manager
 from src.main_process.al_manager import ALManager
+
+os.mkdirs(ALLOWED_BASE_DIR, exist_ok=True)
+os.mkdirs(STATIC_DIR, exist_ok=True)
+os.mkdirs(UPLOAD_DIR, exist_ok=True)
+os.mkdirs(RUN_DIR, exist_ok=True)
+os.mkdirs(WORKING_DIR, exist_ok=True)
+os.mkdirs(BASE_DATA_DIR, exist_ok=True)
 
 # init logging
 logging.basicConfig(level=logging.INFO)
