@@ -17,12 +17,12 @@ from routes.tdb_routes import tdb_router
 # 3. import AL Manager
 from src.main_process.al_manager import ALManager
 
-os.mkdirs(ALLOWED_BASE_DIR, exist_ok=True)
-os.mkdirs(STATIC_DIR, exist_ok=True)
-os.mkdirs(UPLOAD_DIR, exist_ok=True)
-os.mkdirs(RUN_DIR, exist_ok=True)
-os.mkdirs(WORKING_DIR, exist_ok=True)
-os.mkdirs(BASE_DATA_DIR, exist_ok=True)
+os.mkdir(ALLOWED_BASE_DIR, exist_ok=True)
+os.mkdir(STATIC_DIR, exist_ok=True)
+os.mkdir(UPLOAD_DIR, exist_ok=True)
+os.mkdir(RUN_DIR, exist_ok=True)
+os.mkdir(WORKING_DIR, exist_ok=True)
+os.mkdir(BASE_DATA_DIR, exist_ok=True)
 
 # init logging
 logging.basicConfig(level=logging.INFO)
