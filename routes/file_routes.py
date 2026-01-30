@@ -7,31 +7,31 @@ from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, RUN_DIR, BASE_DATA_DIR
 
 file_router = APIRouter()
 
-# 定义请求模型
+# Define request model
 class FilePathRequest(BaseModel):
     file_path: str
 
 def is_safe_path(base_dir: str, file_path: str) -> bool:
     """
-    检查文件路径是否在允许的基础目录内，防止路径遍历攻击
+    Check if the file path is within the allowed base directory to prevent path traversal attacks
     """
     base_path = Path(base_dir).resolve()
     resolved_file_path = Path(file_path).resolve()
     
-    # 确保文件路径是基础目录的子目录
+    # Ensure the file path is a subdirectory of the base directory
     return base_path in resolved_file_path.parents or base_path == resolved_file_path
 
 @file_router.post("/save_input_json", summary="api.summary_save_json")
 async def save_input_json(request: Request):
-    """将配置保存到 input.json 文件"""
+    """Save configuration to the input.json file"""
     try:
         logger.info("recieve the save input.json request")
         
-        # 解析请求数据
+        # Parse request data
         try:
             config_data = await request.json()
             raw_filename = config_data.get("filename", "input.json")
-            filename = os.path.basename(raw_filename)  # 防止路径注入
+            filename = os.path.basename(raw_filename)  # Prevent path injection
             data_len = len(json.dumps(config_data.get("data")))
             logger.info(f"recieve the file name: {filename}")
             logger.info(f"recieve the save request: {data_len} words")
@@ -42,21 +42,21 @@ async def save_input_json(request: Request):
                 content={"success": False, "message_key": "api.err_json_parse"} # 使用 Key
             )
         
-        # 保存文件
+        # Save file
         try:
             save_path = Path(RUN_DIR)
-            save_path.mkdir(parents=True, exist_ok=True) # 确保父目录也一并创建
+            save_path.mkdir(parents=True, exist_ok=True) # Ensure parent directories are created as we
             file_path = save_path / filename
             counter = 0
             if file_path.exists():
                 counter = 0
                 backup_file = file_path
-                # 寻找可用的备份文件名
+                # Look for an available backup filename
                 while backup_file.exists():
                     name, ext = os.path.splitext(filename)
                     backup_file = save_path / f"{name}_{counter}{ext}"
                     counter += 1
-                # 安全地备份旧文件
+                # Safely back up the old file
                 os.rename(file_path, backup_file)
                 logger.info(f"backup the older input.json to: {backup_file}")
             with open(save_path/filename, "w", encoding="utf-8") as f:
@@ -84,16 +84,14 @@ async def save_input_json(request: Request):
 
 @file_router.post("/upload_file")
 async def upload_file(file: UploadFile = fastapi.File(...)):
-    """上传文件并复制到程序目录下的uploads文件夹"""
+    """Upload file and copy it to the uploads folder in the program directory"""
     try:
-        # 创建目标文件路径
+        # Create target file path
         filename = file.filename
-
-        # 创建目标文件路径
-        if not filename:  # 处理没有文件名的情况
+        if not filename:
             filename = f"unknown_file_{uuid.uuid4().hex[:8]}"
         
-        # 处理重名文件
+        # Handle duplicate filenames
         file_path = UPLOAD_DIR / filename
         counter = 1
         while file_path.exists():
@@ -102,21 +100,21 @@ async def upload_file(file: UploadFile = fastapi.File(...)):
             file_path = UPLOAD_DIR / name
             counter += 1
         
-        # 保存文件
+        # Save file
         with open(file_path, "wb") as buffer:
-            # 分块读取写入，处理大文件更高效
+            # Read and write in chunks for higher efficiency with large files
             while chunk := await file.read(1024 * 1024):  # 1MB chunks
                 buffer.write(chunk)
         
         logger.info(f"file is copy to: {file_path.resolve()}")
         
-        # 返回文件在服务器上的路径
+        # Return the file path on the server
         return {
             "success": True,
             "filename": name,
-            "file_path": str(file_path.resolve()),  # 返回绝对路径
-            "relative_path": f"uploads/{name}",  # 用于前端访问的相对路径
-            "url": f"/uploads/{name}"  # 可直接访问的URL
+            "file_path": str(file_path.resolve()),  # Absolute path on the server
+            "relative_path": f"uploads/{name}",  # Relative path for frontend access
+            "url": f"/uploads/{name}"  # FILES URL for direct access
         }
     except Exception as e:
         logger.error(f"upload fail: {str(e)}", exc_info=True)
@@ -130,10 +128,10 @@ async def upload_file(file: UploadFile = fastapi.File(...)):
 @file_router.post("/read-record", summary="reaing file content")
 async def read_record(request: FilePathRequest):
     try:
-        file_path = request.file_path
+        file_path = request.file_path.replace("/get_data_file/", str(BASE_DATA_DIR) + "/")
         logger.info(f"try to read file: {file_path}")
         
-        # 安全检查
+        # Security check
         if not is_safe_path(ALLOWED_BASE_DIR, file_path):
             logger.warning(f"file path is unsafe: {file_path}")
             raise HTTPException(
@@ -141,7 +139,7 @@ async def read_record(request: FilePathRequest):
                 detail="permission denied for this file path"
             )
         
-        # 检查文件是否存在
+        # Check if file exists
         file_path_obj = Path(file_path)
         if not file_path_obj.exists():
             logger.warning(f"file is unexits: {file_path}")
@@ -150,7 +148,7 @@ async def read_record(request: FilePathRequest):
                 detail="file is unexits"
             )
             
-        # 检查是否是文件
+        # Check if it is a file
         if not file_path_obj.is_file():
             logger.warning(f"Error: Not a file: {file_path}")
             raise HTTPException(
@@ -158,7 +156,7 @@ async def read_record(request: FilePathRequest):
                 detail="Error: Not a file"
             )
         
-        # 检查文件大小，防止过大文件
+        # Check file size to prevent excessively large files
         file_size = file_path_obj.stat().st_size
         max_size = 10 * 1024 * 1024  # 10MB
         if file_size > max_size:
@@ -169,12 +167,11 @@ async def read_record(request: FilePathRequest):
                 detail=error_msg
             )
         
-        # 异步读取文件内容
+        # Read file content asynchronously
         try:
-            # 使用异步方式读取文件
             async def read_file_async(path: Path) -> str:
                 loop = asyncio.get_event_loop()
-                # 在线程池中执行文件读取，避免阻塞事件循环
+                # Execute file reading in a thread pool to avoid blocking the event loop
                 return await loop.run_in_executor(
                     None, 
                     path.read_text, 
@@ -198,7 +195,6 @@ async def read_record(request: FilePathRequest):
             )
             
     except HTTPException:
-        # 重新抛出已定义的HTTP异常
         raise
     except Exception as e:
         logger.error(f"responce has some problem: {str(e)}")
@@ -207,31 +203,34 @@ async def read_record(request: FilePathRequest):
             detail=f"Server has some problem: {str(e)}"
         )
     
-@file_router.get("/get_data_file/{folder}/{filename}")
-async def get_data_file(folder: str, filename: str):
-    # 安全检查，防止路径穿越
-    safe_filename = os.path.basename(filename)
-    file_path = Path(BASE_DATA_DIR) / folder / safe_filename
-    
-    if file_path.exists():
-        return FileResponse(file_path)
-    return JSONResponse(status_code=404, content={"message": "File not found"})
+@file_router.get("/get_data_file/{file_path:path}")
+async def get_data_file(file_path: str):
+    # serve files from BASE_DATA_DIR
+    full_path = Path(BASE_DATA_DIR) / file_path
+    if full_path.exists() and full_path.is_file():
+        return FileResponse(full_path)
+    return JSONResponse(status_code=404, content={"message": f"File not found: {file_path}"})
+    # safe_filename = os.path.basename(filename)
+    # file_path = Path(BASE_DATA_DIR) / folder / safe_filename
+    # if file_path.exists():
+    #     return FileResponse(file_path)
+    # return JSONResponse(status_code=404, content={"message": "File not found"})
 
 @file_router.get("/get_config_status")
 async def get_config_status(filename: str):
     try:
-        # 防止目录遍历攻击
+        # Prevent directory traversal attacks
         safe_filename = os.path.basename(filename)
         target_path = Path(RUN_DIR) / safe_filename
-        print(f"DEBUG: 正在尝试访问的绝对路径是: {target_path.absolute()}")
-        print(f"DEBUG: 该路径是否存在: {target_path.exists()}")
+        print(f"DEBUG: The absolute path being attempted is: {target_path.absolute()}")
+        print(f"DEBUG: Whether this path exists: {target_path.exists()}")
         if not target_path.exists():
             return JSONResponse(status_code=404, content={"success": False, "detail": "File not found"})
 
         with open(target_path, "r", encoding="utf-8") as f:
             config_data = json.load(f)
             
-        return config_data # 直接返回配置内容
+        return config_data # Directly return the configuration content
     except Exception as e:
         return JSONResponse(status_code=500, content={"success": False, "detail": str(e)})
     

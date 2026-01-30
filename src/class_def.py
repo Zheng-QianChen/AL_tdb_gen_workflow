@@ -249,8 +249,17 @@ class Phase:
         self.ML_hyper_parameters = {}
         self.X_bable = pd.DataFrame()
         # 为凸包预备的数据
-        self.ref_points = pd.DataFrame(columns=["endmember"] + self.tdb_model["sys_species"][1:]+["Energy"])
-        self.ref_points = self.ref_points.set_index('endmember')
+        n = len(self.tdb_model["sys_species"])
+        identity_matrix = np.eye(n)*100
+        identity_matrix[n-1, n-1] = 0
+        self.ref_points = pd.DataFrame(
+            identity_matrix, 
+            columns=self.tdb_model["sys_species"][1:] + ["Energy"],
+            index=self.tdb_model["sys_species"][1:] + [self.tdb_model["sys_species"][0]]
+        )
+        self.ref_points.columns = self.tdb_model["sys_species"][1:]+["Energy"]
+        self.ref_points.index.name = 'endmember'
+        self.ref_points.to_csv("test.csv")
         self.calc_points = self.ref_points.copy(deep=True)
         self.all_points = self.get_points(self.pool).set_index('endmember')
         print(self.all_points)
@@ -375,30 +384,14 @@ class Phase:
                     dft_1 = float(parts[1])
                     dft_2 = float(parts[2])
                     data.append([original_str, str(self.iter), dft_1, dft_2])
-                    # # 初始化自动赋0的字典
-                    # temp_dict = defaultdict(float)
-                    # # 遍历键值对进行累加
-                    # for key, value in zip(parts[0].split('_'), self.tdb_model["ATOM_WEIGHT"]):
-                    #     temp_dict[key] += value
-                    # # 转换为普通字典（可选）
-                    # temp_dict = dict(temp_dict)
-                    # temp_dict["endmember"] = parts[0].replace('_', ':')
-                    # temp_dict["Energy"] = dft_2/self.total_atoms - ref_energy_dict[original_str]
-                    # points.append(temp_dict)
         data = pd.DataFrame(data, columns=['endmember', 'in_iter', 'DFT_1', 'DFT_2'])
         points = self.get_points(data['endmember']).set_index('endmember')
-        # print(data['DFT_2'].values / self.total_atoms)
-        # print((data["endmember"].map(ref_energy_dict)))
         points['Energy'] = ((data['DFT_2'].values / self.total_atoms) - (data["endmember"].map(ref_energy_dict)).values)*96.485
-        # print(points)
-        # print(self.calc_points)
         cols = list(set(self.calc_points.columns).intersection(points.columns))
         self.calc_points = pd.concat((self.calc_points,points[cols]))
         self.calc_points = self.calc_points.fillna(0)
         # 构造前一轮的测试集
         self.y_test = points["Energy"]
-        # print(self.y_test)
-        # print(self.calc_points)
         df2 = data
         if self.iter != 0:
             flag = [endmember for endmember in df2['endmember'].unique() if endmember in self.X_bable['endmember'].values]
@@ -412,8 +405,7 @@ class Phase:
         # 设置索引
         df1 = df1.set_index('endmember')
         df2 = df2.set_index('endmember')
-        # --- 更新数据 ---
-        # 方法1：直接覆盖
+        # 直接覆盖
         df1.update(df2)  # 更新现有行，不添加新行
         df1 = df1.reset_index()
         self.subl_energy = df1
@@ -484,7 +476,6 @@ class Phase:
         X_train = self.X_bable.set_index(["endmember"]).loc[common_sites]
         y_train = ((y_train['DFT_2']/self.total_atoms - y_train['Atom_ref'])*96.485).values
         print(X_train,y_train)
-        print("im in 497")
         MLmodel = Stack_ML_model(self.eigen_table,X_train.columns)
         MLmodel.set_model(self.ML_model_type,self.ML_hyper_parameters)
         MLmodel.fit(X_train, y_train)
@@ -534,7 +525,7 @@ class Phase:
         po_new += (1-(row_sums/100))*ref_po[0]
         po_new = po.iloc[:,-1]-po_new
         po.iloc[:,-1] = po_new.values
-        po.to_csv(self.record_path+"/points_before0.csv")
+        po.to_csv(self.record_path / "points_before0.csv")
         # mask = (po.iloc[:,-1] <=1e-5)
         # po = po[mask]
         # po.to_csv("test_before1.csv")
@@ -542,16 +533,20 @@ class Phase:
 
     def convex_analy(self):
         points_df = self.all_points
-        self.calc_points.to_csv(self.record_path+"/calced_points.csv")
+        self.calc_points.to_csv(self.record_path / "calced_points.csv")
         if self.calc_points.index.has_duplicates:
             self.calc_points = self.calc_points.reset_index(drop=True)
         temp_pool_pred = self.pool_pred.rename(columns={'y_pred_kJ_mol': 'Energy'})
         temp_pool_pred = temp_pool_pred.set_index('endmember')
         points_df.update(temp_pool_pred)
         points_df.update(self.calc_points)
-        print(552)
+        
+        max_energy = points_df['Energy'].max()
+        max_energy = max_energy * 2
+        self.ref_points["Energy"] = max_energy
+        self.ref_points.to_csv("test.csv")
+
         pd.concat((points_df,self.ref_points))
-        print(553)
         all_combinations = []
         import itertools
         for k in range(points_df.shape[1]-1):
@@ -559,10 +554,9 @@ class Phase:
         points = points_df.values
         points[:,0:-1] = points[:,0:-1]*100
         po = pd.DataFrame(points)
-        po.to_csv(self.record_path+"/all_convex_dimention_points_before_modify.csv")
-        print(points)
+        po.to_csv(self.record_path/"all_convex_dimention_points_before_modify.csv")
         points = self.points_modify(po)
-        points.to_csv(self.record_path+"/all_convex_dimention_points.csv")
+        points.to_csv(self.record_path/"all_convex_dimention_points.csv")
         points = points.values
         hull = ConvexHull(points, qhull_options="Qx Qc",incremental=True)
         all_inside = True
@@ -570,13 +564,10 @@ class Phase:
             if p not in hull.points[hull.vertices]:
                 all_inside = False
                 raise ValueError
-        print("所有点是否在凸包顶点或内部：", all_inside)
-        # self.hull = hull
         normals, offsets, norms = Hull.generate_lower_hull_hyperplanes(hull, points)
         distances = Hull.batch_min_distance(points, normals, offsets)
         self.pt_to_hull = pd.DataFrame(zip(points_df.index.values, distances),columns=['endmember','above_hull'])
-        self.pt_to_hull.to_csv(self.record_path+"/test_above_hull.csv")
-        print(self.pt_to_hull)
+        self.pt_to_hull.to_csv(self.record_path/"test_above_hull.csv")
         return 0
     
     def generate_DFT_POSCAR(self):
@@ -624,8 +615,8 @@ class Phase:
         # 添加选择类型标记（可选）
         self.upload_ref['selection_type'] = ['NEAR_HULL']*q_near + ['UNSTABLE']*q_above + ['RANDOM']*q_rand
         print(self.upload_ref)
-        os.makedirs(f'{self.record_path}/upload_summary/',exist_ok=True)
-        self.upload_ref.to_csv(f'{self.record_path}/upload_summary/upload_summary_{self.iter}.csv')
+        os.makedirs(self.record_path/'upload_summary/',exist_ok=True)
+        self.upload_ref.to_csv(self.record_path/f'upload_summary/upload_summary_{self.iter}.csv')
         print(list(self.upload_ref['endmember']))
         self.upload(list(self.upload_ref['endmember']))
         return 0

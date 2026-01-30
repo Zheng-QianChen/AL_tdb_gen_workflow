@@ -19,6 +19,9 @@ import src.POSCAR_generate
 from src.class_def import Phase
 from src.tdb_generator import tdb_generate_from_MLmodel
 
+from config import BASE_DATA_DIR
+import traceback
+
 # 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -92,17 +95,18 @@ class ALRunner:
             return False
         
     def output_tdb_file(self, user:str, mask:int, data_file:str=''):
-        print(data_file)
+        print("im in outer: "+data_file)
         if data_file == '':
             data_file = self.input_json
         with open(data_file, 'r', encoding='utf-8') as f:
             # data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
             data = json.load(f)
-        pkl_phase_path = data["AL_set"]["pkl_phase_path"]
-        file_path = data["record_path"]
+        pkl_phase_path = BASE_DATA_DIR / Path(self.data["AL_set"]["pkl_phase_path"])
+        file_path = BASE_DATA_DIR / Path(data["record_path"])
+        print(pkl_phase_path)
         # 读取或初始化迭代状态
-        if os.path.isfile(file_path+'/record.txt'):
-            iter, process = self.read_last_line(file_path=file_path+'/record.txt')
+        if os.path.isfile(file_path/'record.txt'):
+            iter, process = self.read_last_line(file_path=file_path/'record.txt')
             print(f"即将读取 {pkl_phase_path}/model_{iter:06d}_{process}.pd")
             # phase = Phase.load(f'{pkl_phase_path}/model_{iter:06d}_{process}.pd')
         else:
@@ -259,7 +263,7 @@ class ALRunner:
         
         phase_name = data["phase_name"]
         al_set = data["AL_set"]
-        record_path = data["record_path"] # 已经由 Manager 确保唯一性
+        record_path = BASE_DATA_DIR / Path(data["record_path"]) # 已经由 Manager 确保唯一性
 
         ELEMENT_SYMBOLS = [
             'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
@@ -281,10 +285,10 @@ class ALRunner:
         flag_to_primitive = data.get("structure_convert_to_primitive", "N").upper() in ['Y', 'YES']
         
         stru, replace_pattern = src.POSCAR_generate.replace_wyckoff(
-            data["structure_file"], 
+            BASE_DATA_DIR / Path(data["structure_file"]), 
             replacement_sequence=ELEMENT_SYMBOLS,
             convert_to_primatice=flag_to_primitive, 
-            output_file=data["structure_out_file"]
+            output_file=BASE_DATA_DIR / Path(data["structure_out_file"])
         )
         
         # 4. 构建 Phase 对象
@@ -312,9 +316,9 @@ class ALRunner:
             eigen_table, 
             al_set["eigen_weight"], 
             al_set["normalizer"],
-            al_set["generate_DFT_path"], 
-            al_set["calced_DFT_path"],
-            al_set["pkl_phase_path"], 
+            BASE_DATA_DIR / Path(al_set["generate_DFT_path"]), 
+            BASE_DATA_DIR / Path(al_set["calced_DFT_path"]),
+            BASE_DATA_DIR / Path(al_set["pkl_phase_path"]), 
             al_set["pkl_show_control"], 
             al_set["quest"]
         )
@@ -343,8 +347,7 @@ class ALRunner:
         # 初始化 iter.csv 文件
         iter_csv_path = os.path.join(record_path, "iter.csv")
         iter_df = pd.DataFrame(columns=[
-            "iter", "process", "num_DFT_points", 
-            "num_ML_points", "MAE", "RMSE", "R2"
+            "training_data_amount","RMSE(train)","RMSE(test)","fold_num_r2","r2_score","fold_num_r2","RMSE_score"
         ])
         iter_df.to_csv(iter_csv_path, index=False)
         logger.info(f"已初始化记录文件: {record_file} 和 {iter_csv_path}")
@@ -436,10 +439,12 @@ class ALRunner:
                 # self.data = json.load(f, object_hook=lambda d: {k.upper(): v for k, v in d.items()})
                 self.data = json.load(f)
             
-            pkl_phase_path = self.data["AL_set"]["pkl_phase_path"]
+            al_set = self.data["AL_set"]
+            pkl_phase_path = BASE_DATA_DIR / Path(self.data["AL_set"]["pkl_phase_path"])
             os.makedirs(pkl_phase_path, exist_ok=True)
-            os.makedirs(self.data["record_path"], exist_ok=True)
-            self.file_path = self.data["record_path"]+'/record.txt'
+            self.file_path = BASE_DATA_DIR / Path(self.data["record_path"])
+            os.makedirs(self.file_path, exist_ok=True)
+            self.file_path = self.file_path / Path('record.txt')
             
             # 读取或初始化迭代状态
             if os.path.isfile(self.file_path):
@@ -492,8 +497,6 @@ class ALRunner:
                 if not running:
                     break
                 
-                al_set = self.data["AL_set"]
-                pkl_phase_path = al_set["pkl_phase_path"]
                 
                 try:
                     # 状态0: 完成模型训练，生成新的quest
@@ -589,12 +592,33 @@ class ALRunner:
                         await self.send_message(f"迭代 {self.iter-1}: 机器学习模型训练完成，准备下一迭代")
                 
                 except Exception as e:
-                    error_msg = f"迭代过程出错: {str(e)}"
-                    logger.error(error_msg)
+                    # 获取详细的错误堆栈信息
+                    full_traceback = traceback.format_exc()
+                    
+                    # 提取文件名和行号的简短描述（方便显示给用户）
+                    # tb_next 之后是跳过当前这个 try-except 所在的函数层级，定位到报错点
+                    tb = e.__traceback__
+                    while tb.tb_next:
+                        tb = tb.tb_next
+                    filename = os.path.basename(tb.tb_frame.f_code.co_filename)
+                    line_no = tb.tb_lineno
+                    
+                    short_error = f"出错文件: {filename}, 行号: {line_no}, 错误: {str(e)}"
+                    error_msg = f"迭代过程出错: {short_error}"
+                    
+                    logger.error(f"详细堆栈:\n{full_traceback}") # 日志记详细的
+                    
                     await self.send_message(json.dumps({
                         "type": "error",
-                        "content": error_msg
+                        "content": error_msg,  # 发送给前端包含文件和行号的信息
+                        "traceback": full_traceback # 可选：把完整堆栈也发过去以便调试
                     }))
+                    # error_msg = f"迭代过程出错: {str(e)}"
+                    # logger.error(error_msg)
+                    # await self.send_message(json.dumps({
+                    #     "type": "error",
+                    #     "content": error_msg
+                    # }))
                     # 检测特定错误：数组可写性问题
                     if "cannot set WRITEABLE flag to True of this array" in str(e):
                         await self.send_message(json.dumps({

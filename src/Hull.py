@@ -95,35 +95,31 @@ def generate_lower_hull_hyperplanes(hull:ConvexHull, points:np.ndarray):
         np.array(norms)
     )
 
-def batch_min_distance(points, w:np.ndarray, b:np.ndarray):
-    """
-    批量计算所有点到超平面的最小距离
-    :param points: 点集矩阵 (n_points, n_dim)
-    :param w: 超平面法向量矩阵 (n_hyperplanes, n_dim)
-    :param b: 超平面偏移量 (n_hyperplanes,)
-    :param norms: 法向量模长 (n_hyperplanes,)
-    :return: 最小距离数组 (n_points,)
-    """
-    print(w)
-    print(w[:,-1])
-    valid_mask = np.ones(w.shape[0], dtype=bool)
-    valid_mask &= (np.abs(w[:,-1]) >= 1e-6)
-    w = w[valid_mask]
-    b = b[valid_mask]
-    b = b.reshape((1,w.shape[0]))
-    a_e = w[:,-1].reshape((1,w.shape[0]))
-    distances = np.dot(points, w.T) + b
-    distances = -( distances/ a_e)
-    eps = 1e-2
-    def is_same_sign(col):
-        base_sign = np.sign(np.mean(col))
-        return np.all(np.abs(col - base_sign * np.abs(col)) <= eps)
-    
-    sign_check = np.apply_along_axis(is_same_sign, axis=0, arr=distances)
-    print(np.mean(sign_check))
-    abs_distances = distances[:,sign_check]
-    abs_distances = np.abs(abs_distances)
-    return np.min(abs_distances, axis=1)
+# def batch_min_distance(points, w:np.ndarray, b:np.ndarray):
+#     """
+#     批量计算所有点到超平面的最小距离
+#     :param points: 点集矩阵 (n_points, n_dim)
+#     :param w: 超平面法向量矩阵 (n_hyperplanes, n_dim)
+#     :param b: 超平面偏移量 (n_hyperplanes,)
+#     :param norms: 法向量模长 (n_hyperplanes,)
+#     :return: 最小距离数组 (n_points,)
+#     """
+#     valid_mask = np.ones(w.shape[0], dtype=bool)
+#     valid_mask &= (np.abs(w[:,-1]) >= 1e-6)
+#     w = w[valid_mask]
+#     b = b[valid_mask]
+#     b = b.reshape((1,w.shape[0]))
+#     a_e = w[:,-1].reshape((1,w.shape[0]))
+#     distances = np.dot(points, w.T) + b
+#     distances = -( distances/ a_e)
+#     eps = 1e-2
+#     def is_same_sign(col):
+#         base_sign = np.sign(np.mean(col))
+#         return np.all(np.abs(col - base_sign * np.abs(col)) <= eps)
+#     sign_check = np.apply_along_axis(is_same_sign, axis=0, arr=distances)
+#     abs_distances = distances[:,sign_check]
+#     abs_distances = np.abs(abs_distances)
+#     return np.min(abs_distances, axis=1)
 
     # # 1. 筛选有效的超平面（排除法向量最后分量过小的平面）
     # valid_mask = np.abs(w[:, -1]) >= 1e-6
@@ -164,3 +160,32 @@ def batch_min_distance(points, w:np.ndarray, b:np.ndarray):
     #         min_distances[i:i+block_size] = np.inf
     
     # return min_distances
+
+    
+def batch_min_distance(points, w:np.ndarray, b:np.ndarray):
+    """
+    批量计算所有点到超平面的最小距离
+    :param points: 点集矩阵 (n_points, n_dim)
+    :param w: 超平面法向量矩阵 (n_hyperplanes, n_dim)
+    :param b: 超平面偏移量 (n_hyperplanes,)
+    :param norms: 法向量模长 (n_hyperplanes,)
+    :return: 最小距离数组 (n_points,)
+    """
+    # 1. 过滤掉几乎垂直于能量轴的面（beta_E 接近 0 的面无法计算投影）
+    valid_mask = np.ones(w.shape[0], dtype=bool)
+    E_axis_proj_mask = valid_mask & (np.abs(w[:,-1]) >= 1e-4)
+    w = w[E_axis_proj_mask]
+    b = b[E_axis_proj_mask]
+    b = b.reshape((1,w.shape[0]))
+    # 2. 提取分母 beta_E (a_e)
+    # w_valid[:, -1] 是法向量中对应能量轴的分量
+    a_e = w[:,-1].reshape((1,w.shape[0]))
+    # a_e (1, n_facets)
+    # numpy 广播机制计算所有点到所有面的 b
+    E_hull = np.dot(points[:,:-1], w[:,:-1].T) + b
+    E_hull = -( E_hull/ a_e)
+    # np.savetxt("temp.txt", partitioned)
+    distances = points[:,-1].reshape((points.shape[0],1)) - E_hull
+    distances_pos = np.where(distances > 1e-9, distances, np.inf)
+    distances = np.min(distances_pos, axis=1)
+    return distances.flatten()

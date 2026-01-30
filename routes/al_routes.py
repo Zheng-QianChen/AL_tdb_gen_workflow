@@ -7,7 +7,7 @@ from pathlib import Path
 al_router = APIRouter()
 
 def get_manager(request: Request):
-    """从 app state 中安全获取 manager"""
+    """Safely retrieve the manager from app state"""
     if not hasattr(request.app.state, "manager"):
         raise HTTPException(status_code=500, detail="ALManager not initialized in app state")
     return request.app.state.manager
@@ -15,82 +15,100 @@ def get_manager(request: Request):
 @al_router.post("/start")
 async def start_al(request: Request, data: dict = Body(...)):
     """
-    启动/重启特定任务
-    请求体示例: {"user_id": "guest", "PHASE_NAME": "Alpha", ...}
+    Start/Restart a specific task
+    Request body example: {"user_id": "guest", "PHASE_NAME": "Alpha", ...}
     """
     manager = get_manager(request)
     
-    # 构造或获取任务ID
+    # Construct or retrieve task ID
     user_id = data.get("user_id", "guest")
     configname = data.get("configname", "input")
     # config_dir = data.get("config", {})
     task_id = f"{user_id}_{configname}"
     
-    logger.info(f"接收到启动任务请求: {task_id}")
+    logger.info(f"Received request to start task: {task_id}")
     
-    # 如果任务已存在且在运行，先停止旧的
+    # If task exists and is running, stop the old one first
     if task_id in manager.tasks:
         old_runner = manager.tasks[task_id]
         await old_runner.stop()
-        del manager.tasks[task_id] # 移除旧实例以便重新创建
+        del manager.tasks[task_id] # Remove old instance for re-creation
     
-    # 使用你 Manager 里的核心启动方法
+    # Use the core startup method in your Manager
     success, msg = await manager.create_and_start_task(task_id, f"{RUN_DIR}/{configname}.json")
     
     if not success:
         raise HTTPException(status_code=400, detail=msg)
     
-    return {"status": "success", "task_id": task_id, "message": msg}
+    return {"status": "success",
+            "task_id": task_id,
+            "message": msg}
 
 
 @al_router.post("/pause")
-async def pause_al(request: Request, task_id: str = Body(..., embed=True)):
-    """暂停/继续特定任务"""
+async def pause_al(request: Request, data: dict = Body(...)):
+    """Pause/Resume a specific task"""
     manager = get_manager(request)
+    user_id = data.get("user_id", "guest")
+    configname = data.get("configname", "input")
+    # config_dir = data.get("config", {})
+    task_id = f"{user_id}_{configname}"
+
     if task_id not in manager.tasks:
-        raise HTTPException(status_code=404, detail="任务不存在")
+        raise HTTPException(status_code=404, detail="Task does not exist")
     
     runner = manager.tasks[task_id]
     paused = await runner.toggle_pause()
-    return {"status": "paused" if paused else "resumed", "paused": paused, "task_id": task_id}
+    return {"status": "paused" if paused else "resumed", 
+            "paused": paused, 
+            "task_id": task_id}
 
 @al_router.post("/stop")
-async def stop_al(request: Request, task_id: str = Body(..., embed=True)):
-    """停止特定任务"""
+async def stop_al(request: Request, data: dict = Body(...)):
+    """Stop a specific task"""
     manager = get_manager(request)
+    user_id = data.get("user_id", "guest")
+    configname = data.get("configname", "input")
+    # config_dir = data.get("config", {})
+    task_id = f"{user_id}_{configname}"
+
     if task_id in manager.tasks:
         runner = manager.tasks[task_id]
         asyncio.create_task(runner.stop())
         return {"status": "stopping", "task_id": task_id}
-    return {"status": "not_found", "message": "任务未运行"}
+    return {"status": "not_found", "message": "Task is not running"}
 
 @al_router.get("/status")
-async def get_status(request: Request, task_id: str = "guest_default"):
+async def get_status(request: Request,
+                     user_id: str = "guest", 
+                     configname: str = "input"
+):
     """
-    查询任务状态
-    访问示例: /status?task_id=guest_Alpha
+    Query task status
+    Access example: /status?task_id=guest_Alpha
     """
     manager = get_manager(request)
+    task_id = f"{user_id}_{configname}"
     
     if task_id not in manager.tasks:
         return {
             "running": False,
-            "status_text": "未启动",
+            "status_text": "task not found",
             "task_id": task_id
         }
     
     runner = manager.tasks[task_id]
     
     async with runner.state_lock:
-        status_text = "运行中"
+        status_text = "RUNNING"
         if not runner.running:
-            status_text = "已结束"
+            status_text = "ENDED"
         elif runner.paused:
-            status_text = "已暂停"
+            status_text = "PAUSED"
             
-        task_status = "运行中"
+        task_status = "RUNNING"
         if runner.main_task and runner.main_task.done():
-            task_status = "已完成/已停止"
+            task_status = "Completed/Stopped"
             
         return {
             "running": runner.running,
@@ -104,8 +122,8 @@ async def get_status(request: Request, task_id: str = "guest_default"):
             "task_id": task_id
         }
 
-# 注意：WebSocket 建议统一在 app.py 的端点处理，
-# 或者在此处根据 task_id 订阅
+# Note: It is recommended to handle WebSockets at the app.py endpoint
+# Or subscribe here based on task_id
 @al_router.websocket("/ws/{task_id}")
 async def websocket_endpoint(websocket: WebSocket, task_id: str = "guest_default"):
     manager = websocket.app.state.manager
@@ -116,7 +134,7 @@ async def websocket_endpoint(websocket: WebSocket, task_id: str = "guest_default
     
     try:
         while True:
-            # 接收前端指令 (例如暂停/停止)
+            # Receive frontend commands (e.g., pause/stop)
             data = await websocket.receive_json()
             if task_id in manager.tasks:
                 runner = manager.tasks[task_id]

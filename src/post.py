@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.metrics import root_mean_squared_error,r2_score, mean_absolute_error
 
 def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
-    data = pd.read_csv(csv_path+'/iter.csv')
+    data = pd.read_csv(f'{csv_path}/iter.csv')
 
     if style:
         # 设置全局样式，全局字体样式为罗马字体
@@ -24,7 +24,7 @@ def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
     # 创建一个包含2行3列的画布
     plt.figure(figsize=fig_size, dpi=dpi)
     # 数据生成
-    x = data["traning_data_amount"]
+    x = data["training_data_amount"]
     y1 = data["RMSE(train)"]
     y2 = data["RMSE(test)"]
     # 绘制主曲线
@@ -39,9 +39,9 @@ def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
         bbox_to_anchor=(1.0, 1.0),  # 默认位置是 (0,0)~1,1，此处保持右上角
     )
     plt.tight_layout()
-    os.makedirs(csv_path+'/fig',exist_ok=True)
-    plt.savefig(csv_path+'/fig/iter.png', bbox_inches='tight')
-    plt.savefig('static/fig/iter.png', bbox_inches='tight')
+    os.makedirs(f'{csv_path}/fig',exist_ok=True)
+    plt.savefig(f'{csv_path}/fig/iter.png', bbox_inches='tight')
+    # plt.savefig('static/fig/iter.png', bbox_inches='tight')
     
 
 def pred_calc_fig(pkl_phase_path,iter):
@@ -152,7 +152,7 @@ def pred_calc_fig(pkl_phase_path,iter):
     # 添加标签
     plt.xlabel('vasp', fontsize=14, fontname='SimHei')
     plt.ylabel('pred', fontsize=14, fontname='SimHei')
-    plt.title(f'模型预测效果评估 (第{phase.iter}轮测试集)', 
+    plt.title(f'pred-calc (with iter:{phase.iter})', 
              fontsize=16,
              fontname='SimHei',
              pad=15)
@@ -164,12 +164,12 @@ def pred_calc_fig(pkl_phase_path,iter):
     # 自动创建保存路径并保存
     save_path = (f"{save_dir}/fig/pred_test_{phase.name}_iter{phase.iter:04d}_process{process}.png")
     plt.savefig(save_path, bbox_inches='tight')
-    plt.savefig(f"static/fig/pred_test_{phase.name}_iter{phase.iter:04d}_process{process}.png", bbox_inches='tight')
+    # plt.savefig(f"static/fig/pred_test_{phase.name}_iter{phase.iter:04d}_process{process}.png", bbox_inches='tight')
     plt.close()
 
 
 def assess(file,MLmodel,X_imp,X,X_train,X_col,y,y_train,y_pred_train_MLmodel,y_test,y_pred_test_MLmodel):
-    model_log=open(file+'/log.txt','a')
+    model_log=open(f'{file}/log.txt','a')
     model_log.write('\n\n%s\n'%(datetime.now()))
     model_log.write('data_amount is %d\n'%(len(X)))
     # print(MLmodel)
@@ -205,7 +205,7 @@ def assess(file,MLmodel,X_imp,X,X_train,X_col,y,y_train,y_pred_train_MLmodel,y_t
     model_log.close()
 
     # 方便画图
-    iter_csv = open(file+'/iter.csv','a')
+    iter_csv = open(f'{file}/iter.csv','a')
     iter_csv.write(f"{len(X)},{rmse_tr_MLmodel},{rmse_te_MLmodel},{len(r2_scores_MLmodel)},{r2_scores_MLmodel.mean()},{len(rmse_scores_MLmodel)},{abs(rmse_scores_MLmodel.mean())}\n")
     iter_csv.close()
 

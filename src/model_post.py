@@ -145,8 +145,8 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
     plt.tight_layout()
     plt.savefig(save_fig_file, bbox_inches='tight', dpi=300, 
             transparent=False, facecolor='white')
-    plt.savefig(f'./static/fig/{save_fig_file.name}', bbox_inches='tight', dpi=300, 
-            transparent=False, facecolor='white')
+    # plt.savefig(f'./static/fig/{save_fig_file.name}', bbox_inches='tight', dpi=300, 
+    #         transparent=False, facecolor='white')
     # plt.show()
 
 if __name__=='__main__':

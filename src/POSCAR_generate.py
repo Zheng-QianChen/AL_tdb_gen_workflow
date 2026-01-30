@@ -12,6 +12,7 @@ import os
 import pandas as pd
 from pymatgen.core import Element, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pathlib import Path
 
 
 def whole_pool_generate(
@@ -97,6 +98,7 @@ def replace_wyckoff(input_file:str,
         by=["Wyckoff Symbol", "Original Element"]
     )
     print(wyckoff_df)
+    output_file = str(output_file)
     os.makedirs("/".join("/".join(output_file.split("\\")).split("/")[:-1]), exist_ok=True)
     wyckoff_df.to_csv(f'{output_file}_wyckoff_summary.csv')
     

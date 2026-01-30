@@ -1,30 +1,29 @@
-
-// 全局变量
+// Global Variables
 let currentStep = 1;
 const totalSteps = 5;
-let sublatticeNumber = 5; // 从input.json获取的值
+let sublatticeNumber = 3; // Value fetched from input.json
 let selectedModel = null;
-let sublAssessRunner = null; // 用于存储subl_assess实例引用
-// 缓存图片路径，避免重复请求
+let sublAssessRunner = null; // Used to store reference to subl_assess instance
+// Cache plot path to avoid repeated requests
 let cachedPlotPath = localStorage.getItem('cachedPlotPath') || null;
-const CACHE_EXPIRY = 3600000; // 缓存有效期1小时（毫秒）
+const CACHE_EXPIRY = 3600000; // Cache expiration: 1 hour (ms)
 let cachedPlotTimestamp = localStorage.getItem('cachedPlotTimestamp') ? 
     parseInt(localStorage.getItem('cachedPlotTimestamp')) : 0;
 
-// 交互式图表相关变量
+// Interactive Chart Related Variables
 let csvData = null;
 let chart = null;
 let chartConfig = null;
-let csvFilePath = "/static/table/model_score.csv"; // 默认CSV文件路径
+let csvFilePath = "/static/table/model_score.csv"; // Default CSV file path
 
-// DOM元素
+// DOM Elements
 const dropArea = document.getElementById('dropArea');
 const csvFileInput = document.getElementById('csvFile');
 const fileInfo = document.getElementById('fileInfo');
 const columnSelectors = document.getElementById('columnSelectors');
 const xAxisSelect = document.getElementById('xAxis');
 const yAxisContainer = document.getElementById('yAxisContainer');
-const addYAxisButton = document.getElementById('addYAxis'); // 修正变量名，避免与函数冲突
+const addYAxisButton = document.getElementById('addYAxis'); // Corrected variable name
 const chartTypeSelect = document.getElementById('chartType');
 const plotButton = document.getElementById('plotButton');
 const dataPreview = document.getElementById('dataPreview');
@@ -36,12 +35,12 @@ const zoomOutBtn = document.getElementById('zoomOut');
 const resetZoomBtn = document.getElementById('resetZoom');
 const downloadChartBtn = document.getElementById('downloadChart');
 const csvFileNameEl = document.getElementById('csvFileName');
-const csvFilePathInput = document.getElementById('csv-file-path');
+// const csvFilePathInput = document.getElementById('csv-file-path');
 
-// 初始化图表上下文
+// Initialize Chart Context
 const ctx = document.getElementById('dataChart').getContext('2d');
 
-// 步骤1: 确认计算按钮事件
+// Step 1: Confirm Calculation Button Event
 document.getElementById('step1-calculate').addEventListener('click', async () => {
     const userInput = document.getElementById('user-input');
     const maskInput = document.getElementById('mask-input');
@@ -51,36 +50,33 @@ document.getElementById('step1-calculate').addEventListener('click', async () =>
     const mask = maskInput.value.trim();
     const input_file_path = InputFilePathInput.value.trim();
     
-    // 获取CSV文件路径
-    csvFilePath = csvFilePathInput.value.trim() || "/static/table/model_score.csv";
-    
-    // 输入验证
+    // Input Validation
     if (!user) {
-        alert('请输入用户标识（user）');
+        alert('Please enter user identifier (user)');
         userInput.focus();
         return;
     }
     
     if (!mask || isNaN(parseInt(mask))) {
-        alert('请输入有效的掩码值（mask必须是整数）');
+        alert('Please enter a valid mask value (mask must be an integer)');
         maskInput.focus();
         return;
     }
     
     try {
-        // 显示计算状态
+        // Show Calculation Status
         const statusEl = document.getElementById('step1-status');
         const statusTextEl = document.getElementById('step1-status-text');
         statusEl.className = 'calculation-status status-pending';
-        statusTextEl.innerHTML = '正在生成TDB文件... <i class="fas fa-spinner fa-spin ml-1"></i>';
+        statusTextEl.innerHTML = 'Generating TDB file... <i class="fas fa-spinner fa-spin ml-1"></i>';
         
-        console.log('准备调用/generate_tdb API', {
+        console.log('Preparing to call /generate_tdb API', {
             user: user,
             mask: parseInt(mask),
             input_file_path: input_file_path
         });
         
-        // 调用API
+        // Call API
         const response = await fetch('/generate_tdb', {
             method: 'POST',
             headers: {
@@ -93,74 +89,67 @@ document.getElementById('step1-calculate').addEventListener('click', async () =>
             })
         });
         
-        console.log('API响应状态码:', response.status);
+        console.log('API Response Status:', response.status);
         const result = await response.json();
-        console.log('API响应结果:', result);
+        console.log('API Response Result:', result);
 
         if (response.ok && result.success) {
-            // 保存sublatticeNumber
-            sublatticeNumber = result.sublatticeNumber;
-            // 初始化亚点阵模型复选框
+            // Save sublatticeNumber
+            sublatticeNumber = parseInt(result.sublatticeNumber, 10);
             initSublatticeCheckboxes();
             
-            // 更新状态为成功
+            // Update status to Success
             statusEl.className = 'calculation-status status-success';
-            statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> TDB文件生成成功: ${result.file_path || '未知路径'}`;
+            statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> TDB File Generated Successfully: ${result.file_path || 'Unknown Path'}`;
             
-            // 启用下一步按钮
+            // Enable Next Button
             document.getElementById('step1-next').disabled = false;
         } else {
-            // 更新状态为错误
+            // Update status to Error
             statusEl.className = 'calculation-status status-error';
-            statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> 操作失败: ${result.message || '服务器未返回错误信息'}`;
+            statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> Operation Failed: ${result.message || 'Server did not return error details'}`;
         }
         
     } catch (error) {
-        console.error('调用API时发生错误:', error);
-        // 更新状态为错误
+        console.error('Error while calling API:', error);
+        // Update status to Error
         const statusEl = document.getElementById('step1-status');
         const statusTextEl = document.getElementById('step1-status-text');
         statusEl.className = 'calculation-status status-error';
-        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> 与服务器通信失败: ${error.message}`;
+        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> Server Communication Failed: ${error.message}`;
     }
 });
 
-// 步骤1: 下一步按钮事件
+// Step 1: Next Button Event
 document.getElementById('step1-next').addEventListener('click', () => {
     navigateToStep(2);
 });
 
-// 步骤2: 确认计算按钮事件
+// Step 2: Confirm Calculation Button Event
 document.getElementById('step2-calculate').addEventListener('click', async function() {
-    console.log('检测到确认计算按钮点击');
+    console.log('Confirm Calculation button clicked');
     
-    // 获取选中的模型编号
+    // Get selected model numbers
     const selectedCheckboxes = document.querySelectorAll('#sublattice-checkboxes input:checked');
     const choosenModels = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.value));
     
-    console.log('选中的模型:', choosenModels);
-    
-    // // 验证是否选择了至少一个模型
-    // if (choosenModels.length === 0) {
-    //     showError('请至少选择一个模型进行分析');
-    //     return;
-    // }
+    console.log('Selected Models:', choosenModels);
     
     try {
-        // 显示计算状态
+        // Show Calculation Status
         const statusEl = document.getElementById('step2-status');
         const statusTextEl = document.getElementById('step2-status-text');
         statusEl.className = 'calculation-status status-pending';
         const processText = choosenModels.length === 0 
-            ? '处理空集请求... <i class="fas fa-spinner fa-spin ml-1"></i>'
-            : '正在分析模型... <i class="fas fa-spinner fa-spin ml-1"></i>';
+            ? 'Processing empty request... <i class="fas fa-spinner fa-spin ml-1"></i>'
+            : 'Analyzing models... <i class="fas fa-spinner fa-spin ml-1"></i>';
         statusTextEl.innerHTML = processText;
         
-        // 禁用计算按钮
+        // Disable Calculation Button
         this.disabled = true;
         
-        // 第一步：分析模型
-        console.log('准备调用API:', '/analyze_models');
+        // Step 2.1: Analyze Models
+        console.log('Calling API: /analyze_models');
         let response = await fetch('/analyze_models', {
             method: 'POST',
             headers: {
@@ -169,24 +158,24 @@ document.getElementById('step2-calculate').addEventListener('click', async funct
             body: JSON.stringify(choosenModels)
         });
         
-        console.log('分析模型API响应状态:', response.status);
+        console.log('Analyze Models API Status:', response.status);
         
         if (!response.ok) {
-            throw new Error(`服务器返回错误: ${response.status} ${response.statusText}`);
+            throw new Error(`Server Error: ${response.status} ${response.statusText}`);
         }
         
         let result = await response.json();
-        console.log('分析模型API响应结果:', result);
+        console.log('Analyze Models API Result:', result);
         
         if (!result.success) {
-            throw new Error(`分析失败: ${result.message || '未知错误'}`);
+            throw new Error(`Analysis Failed: ${result.message || 'Unknown Error'}`);
         }
         
-        // 更新状态为处理中
-        statusTextEl.innerHTML = '正在生成可视化图表... <i class="fas fa-spinner fa-spin ml-1"></i>';
+        // Update Status to Processing
+        statusTextEl.innerHTML = 'Generating visualization plot... <i class="fas fa-spinner fa-spin ml-1"></i>';
         
-        // 第二步：调用绘图接口
-        console.log('准备调用绘图API:', '/plot_base_analyze_models');
+        // Step 2.2: Call Plotting API
+        console.log('Calling Plotting API: /plot_base_analyze_models');
         response = await fetch('/plot_base_analyze_models', {
             method: 'POST',
             headers: {
@@ -194,160 +183,159 @@ document.getElementById('step2-calculate').addEventListener('click', async funct
             }
         });
         
-        console.log('绘图API响应状态:', response.status);
+        console.log('Plotting API Status:', response.status);
         
         if (!response.ok) {
-            throw new Error(`绘图API返回错误: ${response.status} ${response.statusText}`);
+            throw new Error(`Plotting API Error: ${response.status} ${response.statusText}`);
         }
         
         result = await response.json();
-        console.log('绘图API响应结果:', result);
+        console.log('Plotting API Result:', result);
         
         if (result.success) {
-            // 假设后端返回的图片绝对路径在result.plot_file中
             if (result.plot_file) {
-                // 缓存图片路径和时间戳
+                csvFilePath = result.score_file || csvFilePath;
+                // Cache plot path and timestamp
                 cachedPlotPath = result.plot_file;
                 cachedPlotTimestamp = Date.now();
                 localStorage.setItem('cachedPlotPath', cachedPlotPath);
                 localStorage.setItem('cachedPlotTimestamp', cachedPlotTimestamp.toString());
                 
-                // 更新状态为成功
+                // Update Status to Success
                 statusEl.className = 'calculation-status status-success';
-                statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> 模型分析和绘图成功，共分析了 ${choosenModels.length} 个模型`;
+                statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> Model Analysis and Plotting Successful. Analyzed ${choosenModels.length} models.`;
                 
-                // 启用下一步按钮
+                // Enable Next Button
                 document.getElementById('step2-next').disabled = false;
             } else {
-                throw new Error('服务器未返回图片路径');
+                throw new Error('Server did not return plot path');
             }
         } else {
-            throw new Error(`绘图失败: ${result.message || '未知错误'}`);
+            throw new Error(`Plotting Failed: ${result.message || 'Unknown Error'}`);
         }
         
     } catch (error) {
-        console.error('操作过程中发生错误:', error);
-        // 更新状态为错误
+        console.error('Error during operation:', error);
+        // Update Status to Error
         const statusEl = document.getElementById('step2-status');
         const statusTextEl = document.getElementById('step2-status-text');
         statusEl.className = 'calculation-status status-error';
-        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> 操作失败: ${error.message}`;
+        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> Operation Failed: ${error.message}`;
     } finally {
-        // 恢复计算按钮状态
+        // Restore Calculation Button State
         this.disabled = false;
     }
 });
 
-// 步骤2: 下一步按钮事件
+// Step 2: Next Button Event
 document.getElementById('step2-next').addEventListener('click', function() {
     navigateToStep(3);
-    // 导航后显示图片和加载CSV数据
+    // Display plot and load CSV data after navigation
     checkAndDisplayCachedPlot();
     loadCSVData();
 });
 
-// 步骤3: 确认计算按钮事件
+// Step 3: Confirm Calculation Button Event
 document.getElementById('step3-calculate').addEventListener('click', async function() {
     try {
-        // 显示计算状态
+        // Show Calculation Status
         const statusEl = document.getElementById('step3-status');
         const statusTextEl = document.getElementById('step3-status-text');
         statusEl.className = 'calculation-status status-pending';
-        statusTextEl.innerHTML = '正在生成可视化结果... <i class="fas fa-spinner fa-spin ml-1"></i>';
+        statusTextEl.innerHTML = 'Generating visualization results... <i class="fas fa-spinner fa-spin ml-1"></i>';
         
-        // 禁用计算按钮
+        // Disable Calculation Button
         this.disabled = true;
         
-        // 模拟计算过程
+        // Simulate calculation process
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // 加载CSV数据
+        // Load CSV Data
         await loadCSVData();
         
-        // 检查是否有缓存的图片
+        // Check for cached plot
         checkAndDisplayCachedPlot();
         
-        // 更新状态为成功
+        // Update Status to Success
         statusEl.className = 'calculation-status status-success';
-        statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> 可视化结果生成成功`;
+        statusTextEl.innerHTML = `<i class="fas fa-check-circle me-2"></i> Visualization Results Generated Successfully`;
         
-        // 启用下一步按钮
+        // Enable Navigation Buttons
         document.getElementById('step3-next').disabled = false;
         document.getElementById('step3-to-5').disabled = false;
         
     } catch (error) {
-        console.error('可视化计算过程中发生错误:', error);
-        // 更新状态为错误
+        console.error('Error during visualization calculation:', error);
+        // Update Status to Error
         const statusEl = document.getElementById('step3-status');
         const statusTextEl = document.getElementById('step3-status-text');
         statusEl.className = 'calculation-status status-error';
-        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> 可视化失败: ${error.message}`;
+        statusTextEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> Visualization Failed: ${error.message}`;
     } finally {
-        // 恢复计算按钮状态
+        // Restore Calculation Button State
         this.disabled = false;
     }
 });
 
-// 步骤3: 下一步按钮事件
+// Step 3: Next Button Event
 document.getElementById('step3-next').addEventListener('click', function() {
     navigateToStep(4);
 });
 
-// 步骤3: 直接输出模型按钮事件
+// Step 3: Direct Output Model Button Event
 document.getElementById('step3-to-5').addEventListener('click', function() {
     navigateToStep(5);
 });
 
-// DOM元素加载完成后执行
+// Execute when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-
     initModelConfirmEvent();
     Step5initModelConfirmEvent();
 
-    // 初始化亚点阵模型复选框
+    // Initialize Sublattice Model Checkboxes
     initSublatticeCheckboxes();
     
-    // 初始化事件监听器
+    // Initialize Event Listeners
     initEventListeners();
     
-    // 初始化交互式图表事件
+    // Initialize Interactive Chart Events
     initChartEventListeners();
     
-    // 如果当前在步骤3，且有缓存的图片路径，则显示图片
+    // If currently on Step 3 and cache exists, show plot
     if (window.location.hash === '#step3' || currentStep === 3) {
         checkAndDisplayCachedPlot();
-        // 尝试加载CSV数据
+        // Attempt to load CSV data
         loadCSVData();
     }
 });
 
 document.getElementById('updateChart').addEventListener('click', function() {
-    // 获取所有选中的选项
+    // Get all selected options
     const yAxisSelect = document.getElementById('yAxisSelect');
     const selectedYValues = Array.from(yAxisSelect.selectedOptions).map(option => option.value);
     
-    // 后续处理逻辑需要根据选中的多个值进行调整
+    // Update logic based on multiple selected values
     updateChart(selectedYValues);
 });
 
-// 初始化图表事件监听器
+// Initialize Chart Event Listeners
 function initChartEventListeners() {
-    // 添加Y列按钮事件
+    // Add Y-Axis Button Event
     addYAxisButton.addEventListener('click', addYAxisConfig);
     
-    // 生成图表按钮事件
+    // Plot Button Event
     plotButton.addEventListener('click', generateChart);
     
-    // 图表控制事件
+    // Chart Control Events
     zoomInBtn.addEventListener('click', () => {
         if (chart) {
-            chart.zoom(1.3); // 放大1.3倍
+            chart.zoom(1.3); // Zoom in 1.3x
         }
     });
     
     zoomOutBtn.addEventListener('click', () => {
         if (chart) {
-            chart.zoom(0.7); // 缩小到0.7倍
+            chart.zoom(0.7); // Zoom out to 0.7x
         }
     });
     
@@ -359,10 +347,10 @@ function initChartEventListeners() {
     
     downloadChartBtn.addEventListener('click', () => {
         if (chart) {
-            // 获取图表的图片URL
+            // Get Image URL of the chart
             const imageURL = document.getElementById('dataChart').toDataURL('image/png');
             
-            // 创建下载链接
+            // Create download link
             const downloadLink = document.createElement('a');
             downloadLink.href = imageURL;
             downloadLink.download = 'model-analysis-chart.png';
@@ -371,24 +359,24 @@ function initChartEventListeners() {
     });
 }
 
-// 加载CSV数据
+// Load CSV Data
 function loadCSVData() {
     if (!csvFilePath) return;
     
-    // 显示文件名
+    // Display filename
     csvFileNameEl.textContent = csvFilePath.split('/').pop();
     
-    // 尝试从服务器加载CSV文件
+    // Attempt to load CSV file from server
     return new Promise((resolve, reject) => {
         fetch(csvFilePath)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`无法加载CSV文件: ${response.statusText}`);
+                    throw new Error(`Unable to load CSV file: ${response.statusText}`);
                 }
                 return response.text();
             })
             .then(csvText => {
-                // 解析CSV文本
+                // Parse CSV Text
                 Papa.parse(csvText, {
                     header: true,
                     dynamicTyping: true,
@@ -399,31 +387,31 @@ function loadCSVData() {
                         resolve();
                     },
                     error: function(error) {
-                        showError(`解析CSV时出错: ${error.message}`);
+                        showError(`Error parsing CSV: ${error.message}`);
                         console.error(error);
                         reject(error);
                     }
                 });
             })
             .catch(error => {
-                showError(`加载CSV文件失败: ${error.message}`);
-                console.error('加载CSV文件时出错:', error);
+                showError(`Failed to load CSV file: ${error.message}`);
+                console.error('Error loading CSV file:', error);
                 
-                // 提供示例数据用于演示
+                // Provide sample data for demonstration
                 provideSampleData();
                 resolve();
             });
     });
 }
 
-// 提供示例数据用于演示
+// Provide sample data for demonstration
 function provideSampleData() {
-    const sampleCSV = `model,RMSE,准确率,F1分数,训练时间
-模型1,0.87,0.89,0.87,12.5
-模型2,1.23,0.92,0.90,18.3
-模型3,1.56,0.87,0.85,15.2
-模型4,1.89,0.91,0.89,16.7
-模型5,2.10,0.88,0.86,14.9`;
+    const sampleCSV = `model,RMSE,Accuracy,F1-Score,Train-Time
+Model1,0.87,0.89,0.87,12.5
+Model2,1.23,0.92,0.90,18.3
+Model3,1.56,0.87,0.85,15.2
+Model4,1.89,0.91,0.89,16.7
+Model5,2.10,0.88,0.86,14.9`;
     
     Papa.parse(sampleCSV, {
         header: true,
@@ -432,12 +420,12 @@ function provideSampleData() {
             csvData = results;
             populateColumnSelectors(results.meta.fields);
             showDataPreview(results.data);
-            showAlert('使用示例数据进行可视化演示');
+            showAlert('Using sample data for visualization demo');
         }
     });
 }
 
-// 添加Y列配置
+// Add Y-Axis Configuration
 function addYAxisConfig() {
     const yAxisGroups = document.querySelectorAll('.y-axis-group');
     const newIndex = yAxisGroups.length;
@@ -447,30 +435,29 @@ function addYAxisConfig() {
     
     yAxisGroup.innerHTML = `
         <div class="flex justify-between items-center mb-2">
-            <span class="text-sm font-medium">Y轴 ${newIndex + 1}</span>
+            <span class="text-sm font-medium">Y-Axis ${newIndex + 1}</span>
             <button class="btn btn-sm btn-danger remove-y-axis">
                 <i class="fa fa-times"></i>
             </button>
         </div>
         <select class="yAxis form-select form-select-sm mb-2" multiple size="3">
-            <!-- 选项将动态生成 -->
-        </select>
+            </select>
         <div class="flex items-center gap-2">
             <select class="chart-type-selector form-select form-select-sm" data-axis="${newIndex}">
-                <option value="line">折线图</option>
-                <option value="bar">柱状图</option>
-                <option value="scatter">散点图</option>
+                <option value="line">Line Chart</option>
+                <option value="bar">Bar Chart</option>
+                <option value="scatter">Scatter Plot</option>
             </select>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="yAxisIndependent-${newIndex}" checked>
-                <label class="form-check-label text-sm" for="yAxisIndependent-${newIndex}">独立轴</label>
+                <label class="form-check-label text-sm" for="yAxisIndependent-${newIndex}">Independent Axis</label>
             </div>
         </div>
     `;
     
     yAxisContainer.appendChild(yAxisGroup);
     
-    // 复制选项
+    // Clone options from X-Axis
     if (xAxisSelect.options.length > 0) {
         const newYSelect = yAxisGroup.querySelector('.yAxis');
         Array.from(xAxisSelect.options).forEach(option => {
@@ -481,7 +468,7 @@ function addYAxisConfig() {
         });
     }
     
-    // 添加删除事件
+    // Add delete event
     yAxisGroup.querySelector('.remove-y-axis').addEventListener('click', function() {
         yAxisGroup.remove();
         updateYAxisUI();
@@ -490,18 +477,17 @@ function addYAxisConfig() {
     updateYAxisUI();
 }
 
-
-// 更新Y轴UI状态
+// Update Y-Axis UI Status
 function updateYAxisUI() {
     const yAxisGroups = document.querySelectorAll('.y-axis-group');
     const removeButtons = document.querySelectorAll('.remove-y-axis');
     
-    // 更新序号
+    // Update Index Labels
     yAxisGroups.forEach((group, index) => {
-        group.querySelector('.text-sm.font-medium').textContent = `Y轴 ${index + 1}`;
+        group.querySelector('.text-sm.font-medium').textContent = `Y-Axis ${index + 1}`;
     });
     
-    // 控制删除按钮状态
+    // Control delete button state
     if (yAxisGroups.length <= 1) {
         removeButtons[0].disabled = true;
     } else {
@@ -509,7 +495,7 @@ function updateYAxisUI() {
     }
 }
 
-// 更新删除按钮状态
+// Update Remove Column Buttons State
 function updateRemoveButtons() {
     const removeButtons = document.querySelectorAll('.remove-y-column');
     if (removeButtons.length <= 1) {
@@ -519,12 +505,12 @@ function updateRemoveButtons() {
     }
 }
 
-// 填充列选择器
+// Populate Column Selectors
 function populateColumnSelectors(fields) {
-    // 清空现有选项
+    // Clear existing options
     xAxisSelect.innerHTML = '';
     
-    // 添加选项
+    // Add options
     fields.forEach(field => {
         const xOption = document.createElement('option');
         xOption.value = field;
@@ -532,12 +518,12 @@ function populateColumnSelectors(fields) {
         xAxisSelect.appendChild(xOption);
     });
     
-    // 更新所有Y轴选择器
+    // Update all Y-Axis selectors
     document.querySelectorAll('.yAxis').forEach((select, index) => {
-        // 保存当前选中的值
+        // Save current selection
         const currentValue = select.value;
         
-        // 清空并重新填充选项
+        // Clear and refill options
         select.innerHTML = '';
         fields.forEach(field => {
             const yOption = document.createElement('option');
@@ -546,35 +532,35 @@ function populateColumnSelectors(fields) {
             select.appendChild(yOption);
         });
         
-        // 尝试恢复之前的选择
+        // Try to restore previous selection
         if (currentValue && fields.includes(currentValue)) {
             select.value = currentValue;
         } else if (index < fields.length && fields[index] !== xAxisSelect.value) {
-            // 否则选择第一个不同于X轴的选项
+            // Otherwise select first option different from X-Axis
             select.value = fields.find(f => f !== xAxisSelect.value) || fields[0];
         }
     });
     
-    // 默认选择第一列作为X轴
+    // Default to first column for X-Axis
     if (fields.length >= 1) {
         xAxisSelect.selectedIndex = 0;
     }
     
-    // 确保至少有一个Y轴选择器
+    // Ensure at least one Y-Axis selector exists
     if (document.querySelectorAll('.yAxis').length === 0) {
         addYColumn();
     }
 }
 
-// 显示数据预览
+// Show Data Preview Table
 function showDataPreview(data) {
     previewTable.innerHTML = '';
     
-    // 最多显示5行预览
+    // Display up to 5 rows
     const previewData = data.slice(0, 5);
     const fields = Object.keys(previewData[0] || {});
     
-    // 创建表头
+    // Create Header
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     fields.forEach(field => {
@@ -586,7 +572,7 @@ function showDataPreview(data) {
     thead.appendChild(headerRow);
     previewTable.appendChild(thead);
     
-    // 创建表体
+    // Create Body
     const tbody = document.createElement('tbody');
     previewData.forEach(row => {
         const tr = document.createElement('tr');
@@ -600,22 +586,22 @@ function showDataPreview(data) {
     });
     previewTable.appendChild(tbody);
     
-    // 如果数据超过5行，显示提示
+    // Show hint if data exceeds 5 rows
     if (data.length > 5) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
         td.colSpan = fields.length;
-        td.textContent = `... 还有 ${data.length - 5} 行数据未显示`;
+        td.textContent = `... and ${data.length - 5} more rows not displayed`;
         td.className = 'px-2 py-1 text-center text-gray-500';
         tr.appendChild(td);
         tbody.appendChild(tr);
     }
 }
 
-// 生成图表
+// Generate Chart
 function generateChart() {
     if (!csvData) {
-        showError('没有可用的CSV数据，请检查文件路径');
+        showError('No CSV data available, please check file path');
         return;
     }
     
@@ -623,14 +609,14 @@ function generateChart() {
     const yAxisGroups = document.querySelectorAll('.y-axis-group');
     
     if (!xAxis || yAxisGroups.length === 0) {
-        alert('请选择X轴和至少一个Y轴配置');
+        alert('Please select X-Axis and at least one Y-Axis configuration');
         return;
     }
     
-    // 隐藏占位符
+    // Hide placeholder
     chartPlaceholder.classList.add('hidden');
     
-    // 准备数据集和Y轴配置
+    // Prepare Datasets and Y-Axis configs
     const datasets = [];
     const yAxes = [];
     const colors = ['#3B82F6', '#10B981', '#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
@@ -640,37 +626,37 @@ function generateChart() {
         const chartType = group.querySelector('.chart-type-selector').value;
         const isIndependent = group.querySelector('.form-check-input').checked;
         
-        // 获取当前Y轴选中的所有数据列
+        // Get all selected columns for current Y-Axis
         const selectedColumns = Array.from(ySelect.selectedOptions).map(option => option.value);
         
         if (selectedColumns.length === 0) return;
         
-        // 为独立Y轴创建配置
+        // Create config for independent Y-Axis
         if (isIndependent) {
             yAxes.push({
                 id: `y-axis-${axisIndex}`,
                 position: axisIndex % 2 === 0 ? 'left' : 'right',
                 grid: {
-                    drawOnChartArea: false, // 不在主图表区域绘制网格
+                    drawOnChartArea: false, // Don't draw grid on main chart area
                 },
                 title: {
                     display: true,
-                    text: `Y轴 ${axisIndex + 1}`
+                    text: `Y-Axis ${axisIndex + 1}`
                 }
             });
         } else if (yAxes.length === 0) {
-            // 默认Y轴
+            // Default Y-Axis
             yAxes.push({
                 id: 'y-axis-0',
                 position: 'left',
                 title: {
                     display: true,
-                    text: '值'
+                    text: 'Value'
                 }
             });
         }
         
-        // 为每个选中的列创建数据集
+        // Create dataset for each selected column
         selectedColumns.forEach((column, colIndex) => {
             const colorIndex = (axisIndex * 10 + colIndex) % colors.length;
             const color = colors[colorIndex];
@@ -694,7 +680,7 @@ function generateChart() {
         });
     });
     
-    // 图表配置
+    // Chart.js Configuration
     chartConfig = {
         data: {
             datasets: datasets
@@ -719,7 +705,7 @@ function generateChart() {
                 },
                 title: {
                     display: true,
-                    text: `多Y轴数据可视化: ${xAxis} 对比分析`
+                    text: `Multi Y-Axis Visualization: ${xAxis} Comparative Analysis`
                 }
             },
             scales: {
@@ -736,66 +722,66 @@ function generateChart() {
                 y: yAxes.length > 0 ? undefined : {
                     title: {
                         display: true,
-                        text: '值'
+                        text: 'Value'
                     }
                 }
             }
         }
     };
     
-    // 添加多Y轴配置
+    // Add Multiple Y-Axes Config
     yAxes.forEach(axis => {
         chartConfig.options.scales[axis.id] = axis;
     });
     
-    // 销毁现有图表（如果存在）
+    // Destroy existing chart if any
     if (chart) {
         chart.destroy();
     }
     
-    // 创建新图表
+    // Create new chart
     chart = new Chart(ctx, chartConfig);
 }
 
-// 检查并显示缓存的图片
+// Check and display cached plot
 function checkAndDisplayCachedPlot() {
     const now = Date.now();
-    // 检查缓存是否存在且未过期
+    // Check if cache exists and is not expired
     if (cachedPlotPath && (now - cachedPlotTimestamp) < CACHE_EXPIRY) {
         displayPlotImage(cachedPlotPath);
     } else if (cachedPlotPath) {
-        // 缓存过期，清除缓存
+        // Expired, clear cache
         clearPlotCache();
     }
 }
 
-// 显示图片
+// Display Image
 function displayPlotImage(imagePath) {
     const loading = document.getElementById('plot-loading');
     const error = document.getElementById('plot-error');
     const image = document.getElementById('model-plot-image');
     
-    // 重置状态
+    // Reset status
     loading.style.display = 'flex';
     error.style.display = 'none';
     image.style.display = 'none';
     
-    // 创建图片对象来预加载，检测是否能成功加载
+    // Preload image to check success
     const img = new Image();
     img.src = imagePath;
     
     img.onload = function() {
-        // 图片加载成功
+        // Success
         loading.style.display = 'none';
         image.src = imagePath;
         image.style.display = 'block';
     };
     
     img.onerror = function() {
-        // 图片加载失败
+        // Failure
         loading.style.display = 'none';
         error.style.display = 'block';
-        error.textContent = `无法加载图片: ${imagePath}\n请尝试重新生成或检查路径是否正确。`;
+        error.textContent = `Unable to load image: ${imagePath}\nPlease try regenerating or check the path.`;
     };
 }
 
@@ -846,10 +832,10 @@ function renderModelCardsFromCSV() {
             <table class="model-table table table-hover table-sm">
             <thead class="table-light">
                 <tr>
-                <th>选择</th>
+                <th>choose</th>
                 <th>Site</th>
-                <th>模型公式</th>
-                <th>RMSE值</th>
+                <th>mdoel</th>
+                <th>RMSE</th>
                 </tr>
             </thead>
             <tbody id="model-table-body"></tbody>
@@ -944,10 +930,10 @@ function Step5renderModelCardsFromCSV() {
             <table class="model-table table table-hover table-sm">
             <thead class="table-light">
                 <tr>
-                <th>选择</th>
+                <th>choose</th>
                 <th>Site</th>
-                <th>模型公式</th>
-                <th>RMSE值</th>
+                <th>mdoel</th>
+                <th>RMSE</th>
                 </tr>
             </thead>
             <tbody id="step5-model-table-body"></tbody>
@@ -1176,7 +1162,7 @@ function renderDynamicElementGroups(elementGroups) {
         // 组标题
         const groupTitle = document.createElement('div');
         groupTitle.className = 'element-group-title';
-        groupTitle.textContent = `组${groupIndex + 1}（原始元素：${elementList.join(', ')}）`;
+        groupTitle.textContent = `site ${groupIndex + 1}( include elements ${elementList.join(', ')})`;
         groupWrapper.appendChild(groupTitle);
 
         // 创建组内三框容器
@@ -1187,19 +1173,19 @@ function renderDynamicElementGroups(elementGroups) {
         const boxConfigs = [
             { 
                 id: `to-delete-${groupIndex}`, 
-                title: '确定要删除', 
+                title: 'exclude', 
                 badgeClass: 'bg-danger',
                 icon: 'trash'
             },
             { 
                 id: `can-delete-${groupIndex}`, 
-                title: '可以被删除', 
+                title: 'need to try', 
                 badgeClass: 'bg-warning',
                 icon: 'question-circle'
             },
             { 
                 id: `must-keep-${groupIndex}`, 
-                title: '必须保留', 
+                title: 'include', 
                 badgeClass: 'bg-success',
                 icon: 'check-circle'
             }
@@ -1286,7 +1272,7 @@ function Step5renderDynamicElementGroups(elementGroups) {
         // 组标题
         const groupTitle = document.createElement('div');
         groupTitle.className = 'element-group-title';
-        groupTitle.textContent = `组${groupIndex + 1}（原始元素：${elementList.join(', ')}）`;
+        groupTitle.textContent = `site ${groupIndex + 1} ( include elements ${elementList.join(', ')})`;
         groupWrapper.appendChild(groupTitle);
 
         // 创建组内两框容器
@@ -1296,13 +1282,13 @@ function Step5renderDynamicElementGroups(elementGroups) {
         const boxConfigs = [
             { 
                 id: `to-delete-${groupIndex}`, 
-                title: '可以排出的元素', 
+                title: 'exclude elements', 
                 badgeClass: 'bg-danger',
                 icon: 'trash'
             },
             { 
                 id: `must-keep-${groupIndex}`, 
-                title: '相模型中选择的元素', 
+                title: 'include elements', 
                 badgeClass: 'bg-success',
                 icon: 'check-circle'
             }

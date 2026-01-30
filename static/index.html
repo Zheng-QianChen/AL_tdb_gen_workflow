@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="index.title">AL process controller</title>
+    <title data-i18n="index.title">AL Process Controller</title>
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/all.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
@@ -12,7 +12,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-atom me-2"></i><span data-i18n="common.brand">AL 循环控制面板</span>
+                <i class="fas fa-atom me-2"></i><span data-i18n="common.brand">AL Loop Control Panel</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -21,22 +21,22 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="index.html">
-                            <i class="fas fa-home me-1"></i> <span data-i18n="common.nav_home">首页</span>
+                            <i class="fas fa-home me-1"></i> <span data-i18n="common.nav_home">Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="data_preparation.html">
-                            <i class="fas fa-database me-1"></i> <span data-i18n="common.nav_prep">数据准备及模型设置</span>
+                            <i class="fas fa-database me-1"></i> <span data-i18n="common.nav_prep">Data Preparation & Model Setup</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="visualization.html">
-                            <i class="fas fa-chart-line me-1"></i> <span data-i18n="common.nav_viz">可视化及ML模型分析</span>
+                            <i class="fas fa-chart-line me-1"></i> <span data-i18n="common.nav_viz">Visualization & ML Model Analysis</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="model_analysis.html">
-                            <i class="fas fa-microscope me-1"></i> <span data-i18n="common.nav_analysis">tdb模型分析及输出</span>
+                            <i class="fas fa-microscope me-1"></i> <span data-i18n="common.nav_analysis">TDB Model Analysis & Output</span>
                         </a>
                     </li>
                     <li class="nav-item ms-lg-3">
@@ -52,8 +52,8 @@
 
     <div class="container py-4">
         <div class="text-center mb-5">
-            <h1 class="display-4" data-i18n="index.main_header">AL 循环控制面板</h1>
-            <p class="lead" data-i18n="index.main_sub">自动化材料发现与机器学习工作流</p>
+            <h1 class="display-4" data-i18n="index.main_header">AL Loop Control Panel</h1>
+            <p class="lead" data-i18n="index.main_sub">Automated Materials Discovery and Machine Learning Workflow</p>
         </div>
 
         <div class="row mb-5">
@@ -61,8 +61,8 @@
                 <a href="data_preparation.html" class="text-decoration-none">
                     <div class="card card-option text-center p-4 h-100">
                         <i class="fas fa-database text-primary mb-3"></i>
-                        <h4 data-i18n="common.nav_prep">数据准备及模型设置</h4>
-                        <p class="text-muted" data-i18n="index.card_prep_desc">配置输入数据、模型参数和训练设置</p>
+                        <h4 data-i18n="common.nav_prep">Data Preparation & Model Setup</h4>
+                        <p class="text-muted" data-i18n="index.card_prep_desc">Configure input data, model parameters and training settings</p>
                     </div>
                 </a>
             </div>
@@ -70,8 +70,8 @@
                 <a href="visualization.html" class="text-decoration-none">
                     <div class="card card-option text-center p-4 h-100">
                         <i class="fas fa-chart-line text-success mb-3"></i>
-                        <h4 data-i18n="common.nav_viz">可视化及ML模型分析</h4>
-                        <p class="text-muted" data-i18n="index.card_viz_desc">查看训练过程、结果和ML模型的可视化</p>
+                        <h4 data-i18n="common.nav_viz">Visualization & ML Model Analysis</h4>
+                        <p class="text-muted" data-i18n="index.card_viz_desc">View training process, results and ML model visualizations</p>
                     </div>
                 </a>
             </div>
@@ -79,8 +79,8 @@
                 <a href="model_analysis.html" class="text-decoration-none">
                     <div class="card card-option text-center p-4 h-100">
                         <i class="fas fa-microscope text-info mb-3"></i>
-                        <h4 data-i18n="common.nav_analysis">tdb模型分析及输出</h4>
-                        <p class="text-muted" data-i18n="index.card_analysis_desc">分析简化模型并输出文件</p>
+                        <h4 data-i18n="common.nav_analysis">TDB Model Analysis & Output</h4>
+                        <p class="text-muted" data-i18n="index.card_analysis_desc">Analyze simplified model and output files</p>
                     </div>
                 </a>
             </div>
@@ -92,17 +92,17 @@
                     <div class="col-md-7">
                         <div class="input-group">
                             <span class="input-group-text bg-primary text-white">
-                                <i class="fas fa-file-alt me-2"></i><span data-i18n="index.load_config_label">加载配置文件</span>
+                                <i class="fas fa-file-alt me-2"></i><span data-i18n="index.load_config_label">Load Configuration File</span>
                             </span>
                             <input type="text" id="target-config-file" class="form-control" placeholder="input.json" value="input.json">
                             <button class="btn btn-outline-primary" type="button" onclick="loadSpecificConfig()">
-                                <i class="fas fa-download me-1"></i><span data-i18n="index.btn_load_apply">读取并应用</span>
+                                <i class="fas fa-download me-1"></i><span data-i18n="index.btn_load_apply">Load & Apply</span>
                             </button>
                         </div>
                     </div>
                     <div class="col-md-5 text-end text-muted small">
                         <i class="fas fa-info-circle me-1"></i>
-                        <span data-i18n="index.load_config_tip">从 data/runs 目录读取指定的 JSON 配置</span>
+                        <span data-i18n="index.load_config_tip">Load specified JSON configuration from data/runs directory</span>
                     </div>
                 </div>
             </div>
@@ -112,26 +112,26 @@
             <div class="col-12">
                 <div class="card system-status-card" style="min-height: 160px;">
                     <div class="card-body">
-                        <h5 class="card-title mb-4" data-i18n="index.sys_status_title">系统状态</h5>
+                        <h5 class="card-title mb-4" data-i18n="index.sys_status_title">System Status</h5>
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="small text-muted" data-i18n="index.status_phase">当前探索的相</div>
-                                <div id="phase-name" class="fs-5"><span data-i18n="index.loading">加载中...</span></div>
+                                <div class="small text-muted" data-i18n="index.status_phase">Current Phase Being Explored</div>
+                                <div id="phase-name" class="fs-5"><span data-i18n="index.loading">Loading...</span></div>
                             </div>
                             <div class="col-md-3">
-                                <div class="small text-muted" data-i18n="index.status_iter">当前迭代</div>
-                                <div id="current-iteration" class="fs-5"><span data-i18n="index.loading">加载中...</span></div>
+                                <div class="small text-muted" data-i18n="index.status_iter">Current Iteration</div>
+                                <div id="current-iteration" class="fs-5"><span data-i18n="index.loading">Loading...</span></div>
                             </div>
                             <div class="col-md-3">
-                                <div class="small text-muted" data-i18n="index.status_op">当前操作</div>
+                                <div class="small text-muted" data-i18n="index.status_op">Current Operation</div>
                                 <div class="fs-5">
                                     <span id="current-operation-number"></span>
-                                    <span id="current-operation-text" class="operation-status operation-unknown" data-i18n="index.op_unknown">未知</span>
+                                    <span id="current-operation-text" class="operation-status operation-unknown" data-i18n="index.op_unknown">Unknown</span>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="small text-muted" data-i18n="index.status_model">学习模型</div>
-                                <div id="ml-model" class="fs-5"><span data-i18n="index.loading">加载中...</span></div>
+                                <div class="small text-muted" data-i18n="index.status_model">Learning Model</div>
+                                <div id="ml-model" class="fs-5"><span data-i18n="index.loading">Loading...</span></div>
                             </div>
                         </div>
                     </div>
@@ -141,26 +141,26 @@
 
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-terminal me-2"></i><span data-i18n="index.console_title">控制台</span></h5>
+                <h5 class="mb-0"><i class="fas fa-terminal me-2"></i><span data-i18n="index.console_title">Console</span></h5>
             </div>
             <div class="card-body">
-                <div id="status" data-i18n="index.status_connecting">连接中…</div>
+                <div id="status" data-i18n="index.status_connecting">Connecting...</div>
                 <div id="log" class="console-output"></div>
                 <div class="controls">
                     <button onclick="doStart()" id="btnStart" class="btn btn-primary">
-                        <i class="fas fa-play"></i> <span data-i18n="index.btn_start">开始</span>
+                        <i class="fas fa-play"></i> <span data-i18n="index.btn_start">Start</span>
                     </button>
                     <button onclick="togglePause()" id="btnPause" class="btn btn-warning" disabled>
-                        <i class="fas fa-pause"></i> <span data-i18n="index.btn_pause">暂停 / 继续</span>
+                        <i class="fas fa-pause"></i> <span data-i18n="index.btn_pause">Pause / Resume</span>
                     </button>
                     <button onclick="doStop()" id="btnStop" class="btn btn-danger" disabled>
-                        <i class="fas fa-stop"></i> <span data-i18n="index.btn_stop">停止</span>
+                        <i class="fas fa-stop"></i> <span data-i18n="index.btn_stop">Stop</span>
                     </button>
                     <button onclick="fetchSystemStatus()" id="btnRefresh" class="btn btn-info text-white">
-                        <i class="fas fa-sync"></i> <span data-i18n="index.btn_refresh">刷新</span>
+                        <i class="fas fa-sync"></i> <span data-i18n="index.btn_refresh">Refresh</span>
                     </button>
                     <!-- <button onclick="reloadInputJson()" id="btnReloadInput" class="btn btn-secondary">
-                        <i class="fas fa-file-import"></i> <span data-i18n="index.btn_reload">重新载入input.json</span>
+                        <i class="fas fa-file-import"></i> <span data-i18n="index.btn_reload">Reload input.json</span>
                     </button> -->
                 </div>
             </div>

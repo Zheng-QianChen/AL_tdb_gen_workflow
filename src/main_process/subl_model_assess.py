@@ -32,14 +32,14 @@ class subl_assess:
 
     def init_this(self):
         # 体系包含的所有元素
-        site_elements = self.input_data['tdb_model'.upper()]['comp'.upper()]
+        site_elements = self.input_data['tdb_model']['comp']
         self.site_elements = site_elements
         elements_list = [string for sublist in self.site_elements for string in sublist]
         elements_list = list(set(elements_list))
         elements_list.sort()
         self.elements_list = elements_list
         # 表示亚点阵模型的占位码(以字母表示)
-        name_list_number = self.input_data['tdb_model'.upper()]['sublattice_number'.upper()]
+        name_list_number = self.input_data['tdb_model']['sublattice_number']
         letters = []
         name_list = []
         for letter in range(1,name_list_number+1):
@@ -52,7 +52,7 @@ class subl_assess:
             letters = []
         self.name_list = name_list
         # site_weight 是最后生成tdb的点阵上占位的原子比例
-        self.site_weight = self.input_data['tdb_model'.upper()]['occup_atoms_in_tdb'.upper()]
+        self.site_weight = self.input_data['tdb_model']['occup_atoms_in_tdb']
         # 初始化分析表格
         print(self.vasp_ml_data_path)
         self.vasp_ml_data = self.reset_vasp_ml_data()
@@ -63,18 +63,17 @@ class subl_assess:
         self.vasp_ml_data = pd.read_csv(self.vasp_ml_data_path, index_col=0)
     
     def get_model_result_raw(self, choosen:list=None):
-        print('im in get_model_result_raw')
         if not choosen:
             # choosen = range(2,len(self.site_weight))
             return True
         # 生成待选模型
-        print(choosen)
         candidate_model = generate.model_list_generator(m=len(self.site_weight), name_list=self.name_list)
+        print(71)
+        print(candidate_model)
         for i in range(len(candidate_model)-1, -1, -1):  # 反向遍历索引
             if candidate_model[i][0] not in choosen:      # 若模型标识不在choosen中
                 del candidate_model[i]                     # 删除原始列表中的元素
         # 获取result的data文件
-        print(candidate_model)
         print(self.vasp_ml_data_path)
         self.reset_vasp_ml_data()
         print(self.vasp_ml_data)
@@ -135,10 +134,11 @@ class subl_assess:
         return True
     
     def plot_model_result_raw(self):
+        print(self.working_path)
         model_score_file = Path(f"{self.working_path}/model_score.csv")
         plot_file = Path(f"{self.working_path}/summary_fig.png")
         mPost.subl_model_summary_plot(csv_file_path=model_score_file,save_fig_file=plot_file)
-        return {"state":True, "plot_file":plot_file}
+        return {"state":True, "plot_file":plot_file, "score_file":model_score_file}
 
     def output_all_tdb_file_assessed(self, candidate_model:list, site_elements:list[list[str]]=None, tor:float= 1e-10, save_path:Path=None):
         '''
@@ -276,7 +276,7 @@ class subl_assess:
         new_table['sub_symb'] = new_table['endmember'].apply(lambda x: '_'.join(sorted(list(set(x.split(':'))))))
         new_table['sub_num'] = new_table['endmember'].apply(lambda x: len((set(x.split(':')))))
         new_table = new_table.sort_values(by=['sub_num','sub_symb'])
-        new_table['name'] = self.input_data["phase_name".upper()]
+        new_table['name'] = self.input_data["phase_name"]
         indices = '_'.join(map(str,indices))
 
         os.makedirs(tdb_output_path, exist_ok=True)
@@ -320,7 +320,7 @@ class subl_assess:
         new_table['sub_name'] = new_table['endmember'].apply(lambda x: self.extract_and_rejoin(x, indices))
         new_table = new_table.rename(columns={"4": "energy", "5":"Ref", })
         new_table['sub_symb'] = new_table['endmember'].apply(lambda x: '_'.join(sorted(list(set(x.split(':'))))))
-        new_table['name'] = self.input_data["phase_name".upper()]
+        new_table['name'] = self.input_data["phase_name"]
         new_table['energy'] = new_table['Energy']
         new_table['Ref'] = new_table['from']
         new_table['above_hull_new_model'] = new_table['above_hull']

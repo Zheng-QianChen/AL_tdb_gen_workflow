@@ -1,64 +1,182 @@
+// --- 1. Get the currently monitored filename ---
+const urlParams = new URLSearchParams(window.location.search);
+// Priority: get task or filename parameter from URL, default to input.json if not present
+let activeConfigName = urlParams.get('task') || urlParams.get('filename') || 'input.json';
 
-// 定义变量
-let itermax = 0;  // 当前迭代变量
-let process = 0;  // 当前操作变量
-let phaseName = ""; // 相名称
+// --- 2. Dynamic base path variables ---
+let recordPath = null; 
+// Image path will now be dynamically generated based on recordPath/fig
+let IMAGE_BASE_PATH = '';
+let csvPath = null; // iter.csv path
+// Define variables
+let itermax = 0;  // Current iteration variable
+let process = 0;  // Current operation variable
+let phaseName = ""; // Phase name
 
-// 图片基础路径
-const IMAGE_BASE_PATH = '/static/fig/';
-
-// 图片缓存 - 使用localStorage存储图片数据
+// Image cache - use localStorage to store image data
 const IMAGE_CACHE = "al_visualization_image_cache";
 
-// 数据缓存
+// Data cache
 const DATA_CACHE = "al_visualization_data_cache";
 
-// 其他迭代数据变量
+
+// Data cache
 let totalIterations = 0;
 let currentIteration = 1;
-let recordPath = null;
-let csvPath = null; // iter.csv路径
-let csvData = []; // 存储解析后的CSV数据
-let csvRawContent = ""; // 存储原始CSV内容用于错误诊断
+let fetchTimeout = null;
+let csvData = []; // Store parsed CSV data
+let csvRawContent = ""; // Store raw CSV content for error diagnosis
 
-// 预测图片的迭代范围
+// Prediction image iteration range
 let predImageMinIter = 1;
 let predImageMaxIter = 0;
-let currentPredIter1 = 1;  // 第二张图：默认iter0001
-let currentPredIter2 = 1;  // 第三张图：默认itermax
+let currentPredIter1 = 1;  // Second image: default iter0001
+let currentPredIter2 = 1;  // Third image: default itermax
 
-// 初始化函数
+window.addToLog = function(msg, type) { console.log(`[${type}] ${msg}`); };
+
+window.onload = function() {
+    // Automatically get task name from URL (e.g., index.html?task=A.json)
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskFromUrl = urlParams.get('task');
+    if (taskFromUrl) {
+        activeConfigName = taskFromUrl;
+        const input = document.getElementById('target-config-file');
+        if (input) input.value = taskFromUrl;
+    }
+    bindEvents();
+    loadSpecificConfig();
+    
+};
+
+function bindEvents() {
+    console.log("Binding button events...");
+    
+    // 1. Initialize data fetch timer, etc.
+    initDataFetch();
+    
+    // 2. Bind iteration control button events
+    const iterBtns = [
+        { id: 'first-iter', action: () => changeIteration(1) },
+        { id: 'prev-iter',  action: () => changeIteration(currentIteration - 1) },
+        { id: 'next-iter',  action: () => changeIteration(currentIteration + 1) },
+        { id: 'last-iter',  action: () => changeIteration(itermax) }
+    ];
+
+    iterBtns.forEach(btn => {
+        const el = document.getElementById(btn.id);
+        if (el) el.onclick = btn.action;
+    });
+    
+    // 3. Prediction image 1 navigation control (second image)
+    const pred1Btns = [
+        { id: 'first-pred-1', action: () => updatePredImage(1, predImageMinIter) },
+        { id: 'prev-pred-1',  action: () => updatePredImage(1, currentPredIter1 - 1) },
+        { id: 'next-pred-1',  action: () => updatePredImage(1, currentPredIter1 + 1) },
+        { id: 'last-pred-1',  action: () => updatePredImage(1, itermax) }
+    ];
+
+    pred1Btns.forEach(btn => {
+        const el = document.getElementById(btn.id);
+        if (el) el.onclick = btn.action;
+    });
+    
+    const iterPred1 = document.getElementById('iter-pred-1');
+    if (iterPred1) {
+        iterPred1.onchange = function() {
+            const iter = parseInt(this.value);
+            if (!isNaN(iter)) updatePredImage(1, iter);
+        };
+    }
+    
+    // 4. Prediction image 2 navigation control (third image)
+    const pred2Btns = [
+        { id: 'first-pred-2', action: () => updatePredImage(2, predImageMinIter) },
+        { id: 'prev-pred-2',  action: () => updatePredImage(2, currentPredIter2 - 1) },
+        { id: 'next-pred-2',  action: () => updatePredImage(2, currentPredIter2 + 1) },
+        { id: 'last-pred-2',  action: () => updatePredImage(2, itermax) }
+    ];
+
+    pred2Btns.forEach(btn => {
+        const el = document.getElementById(btn.id);
+        if (el) el.onclick = btn.action;
+    });
+    
+    const iterPred2 = document.getElementById('iter-pred-2');
+    if (iterPred2) {
+        iterPred2.onchange = function() {
+            const iter = parseInt(this.value);
+            if (!isNaN(iter)) updatePredImage(2, iter);
+        };
+    }
+    
+    // 5. Tab switching listener
+    const tabElements = document.querySelectorAll('#vizTabs button[data-bs-toggle="tab"]');
+    tabElements.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function() {
+            updateAllImages();
+        });
+    });
+}
+
+async function fetchSystemStatus() {
+    try {
+        // [KEY] Include specific filename when requesting backend
+        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(activeConfigName)}`);
+        const data = await response.json();
+        
+        if (data.record_path) {
+            // Dynamically construct image address: record_path + /fig/
+            let base = data.record_path.endsWith('/') ? data.record_path : data.record_path + '/';
+            window.IMAGE_BASE_PATH = '/get_data_file/'+data.record_path + '/fig/';
+            
+            // Update path text on page for debugging
+            const pathDisplay = document.getElementById('logs-image-path');
+            if (pathDisplay) pathDisplay.textContent = `Current Path: ${window.IMAGE_BASE_PATH}`;
+        }
+        
+        // Update iteration data
+        // itermax = data.itermax || 0;
+        // process = data.process || 0;
+
+        // Trigger UI and image updates
+        updateUIWithConfig(data);
+
+        await readRecordFile(); 
+        await readCsvFile();
+        
+        updateAllImages(); 
+        updateIterationDisplay();
+        
+    } catch (e) {
+        console.error("Failed to sync task status:", e);
+    }
+}
+
+// Initialization function
 function initDataFetch() {
-    // 重置加载状态
+    // Reset loading state
     resetLoadingState();
     
-    // 初始化缓存
+    // Initialize cache
     initImageCache();
     initDataCache();
     
-    // 首次加载数据
-    fetchSystemStatus();
-    
-    // 设置定时器定期同步数据（每3秒）
-    setInterval(() => {
-        fetchSystemStatus();
-    }, 3000);
-    
-    // 绑定错误详情显示按钮事件
+    // Bind error details display button event
     document.getElementById('show-error-details').addEventListener('click', function() {
         const detailsElement = document.getElementById('csv-error-details');
         if (detailsElement.style.display === 'none' || detailsElement.style.display === '') {
             detailsElement.style.display = 'block';
-            this.textContent = '隐藏详情';
+            this.textContent = 'Hide Details';
         } else {
             detailsElement.style.display = 'none';
-            this.textContent = '显示详情';
+            this.textContent = 'Show Details';
         }
     });
     
-    // 绑定强制刷新按钮事件
+    // Bind force refresh button event
     document.getElementById('force-refresh-main').addEventListener('click', function() {
-        // 清除缓存中该图片的记录
+        // Clear cache record for this image
         const formattedIter = String(currentIteration).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}iter.png`;
         
@@ -67,62 +185,106 @@ function initDataFetch() {
             if (cache[baseImageUrl]) {
                 delete cache[baseImageUrl];
                 localStorage.setItem(IMAGE_CACHE, JSON.stringify(cache));
-                console.log('已清除综合指标图缓存');
+                console.log('Comprehensive metrics chart cache cleared');
             }
         } catch (e) {
-            console.error('清除缓存失败:', e);
+            console.error('Failed to clear cache:', e);
         }
         
-        // 显示刷新中状态
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 刷新中...';
+        // Display refreshing status
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
         this.disabled = true;
         
-        // 重新加载图片
+        // Reload image
         updateMainImage().then(() => {
-            // 恢复按钮状态
-            this.innerHTML = '<i class="fas fa-sync-alt"></i> 强制刷新综合指标图';
+            // Restore button status
+            this.innerHTML = '<i class="fas fa-sync-alt"></i> Force Refresh Comprehensive Metrics Chart';
             this.disabled = false;
         }).catch(() => {
-            // 即使失败也恢复按钮状态
-            this.innerHTML = '<i class="fas fa-sync-alt"></i> 强制刷新综合指标图';
+            // Restore button status even on failure
+            this.innerHTML = '<i class="fas fa-sync-alt"></i> Force Refresh Comprehensive Metrics Chart';
             this.disabled = false;
         });
     });
+    
+    // Set timer to sync data periodically (every 3 seconds)
+    setInterval(() => {
+        fetchSystemStatus(activeConfigName);
+    }, 3000);
 }
 
-// 初始化图片缓存
+
+// Function to change input.json configuration file
+async function loadSpecificConfig() {
+    const filenameInput = document.getElementById('target-config-file');
+    const filename = filenameInput.value.trim();
+    if (!filename) {
+        console.error("Please enter filename");
+        return;
+    }
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+
+    try {
+        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`);
+        if (response.ok) {
+            // On success, refresh system status display (e.g., ML model name, current phase name, etc.)
+            activeConfigName = filename; // Update currently monitored filename
+            // If backend directly returns new configuration content, update UI directly
+            const data = await response.json();
+            recordPath = '/get_data_file/'+data.record_path + '/record.txt';
+            csvPath = '/get_data_file/'+data.record_path + '/iter.csv';
+            const url = new URL(window.location);
+            url.searchParams.set('task', filename); // Use task parameter uniformly
+            window.history.pushState({}, '', url);
+        } else {
+            console.error("Loading failed: " + (result.detail || "File does not exist"));
+        }
+    } catch (error) {
+        console.error("Error loading configuration:", error);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+    fetchSystemStatus(activeConfigName);
+}
+
+
+// Initialize image cache
 function initImageCache() {
     if (!localStorage.getItem(IMAGE_CACHE)) {
         localStorage.setItem(IMAGE_CACHE, JSON.stringify({}));
     }
 }
 
-// 初始化数据缓存
+// Initialize data cache
 function initDataCache() {
     if (!localStorage.getItem(DATA_CACHE)) {
         localStorage.setItem(DATA_CACHE, JSON.stringify({}));
     }
 }
 
-// 从缓存获取图片
+// Get image from cache
 function getImageFromCache(url) {
     try {
         const cache = JSON.parse(localStorage.getItem(IMAGE_CACHE) || '{}');
         return cache[url] || null;
     } catch (e) {
-        console.error('获取图片缓存失败:', e);
+        console.error('Failed to get image cache:', e);
         return null;
     }
 }
 
-// 将图片存入缓存
+// Save image to cache
 function saveImageToCache(url, dataUrl) {
     try {
         const cache = JSON.parse(localStorage.getItem(IMAGE_CACHE) || '{}');
-        // 限制缓存大小，只保留最近的20张图片
+        // Limit cache size, keep only the most recent 20 images
         const cacheEntries = Object.entries(cache);
         if (cacheEntries.length >= 20) {
-            // 删除最早的缓存
+            // Delete oldest cache
             const oldestKey = cacheEntries[0][0];
             delete cache[oldestKey];
         }
@@ -132,22 +294,22 @@ function saveImageToCache(url, dataUrl) {
         };
         localStorage.setItem(IMAGE_CACHE, JSON.stringify(cache));
     } catch (e) {
-        console.error('保存图片缓存失败:', e);
+        console.error('Failed to save image cache:', e);
     }
 }
 
-// 从缓存获取数据
+// Get data from cache
 function getDataFromCache(path) {
     try {
         const cache = JSON.parse(localStorage.getItem(DATA_CACHE) || '{}');
         return cache[path] || null;
     } catch (e) {
-        console.error('获取数据缓存失败:', e);
+        console.error('Failed to get data cache:', e);
         return null;
     }
 }
 
-// 保存数据到缓存
+// Save data to cache
 function saveDataToCache(path, data) {
     try {
         const cache = JSON.parse(localStorage.getItem(DATA_CACHE) || '{}');
@@ -157,11 +319,11 @@ function saveDataToCache(path, data) {
         };
         localStorage.setItem(DATA_CACHE, JSON.stringify(cache));
     } catch (e) {
-        console.error('保存数据缓存失败:', e);
+        console.error('Failed to save data cache:', e);
     }
 }
 
-// 重置加载状态
+// Reset loading state
 function resetLoadingState() {
     const loadingElements = [
         'phase-name', 'current-iteration', 'current-operation-number',
@@ -173,226 +335,195 @@ function resetLoadingState() {
     loadingElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            element.innerHTML = '<span class="loading-spinner"></span>加载中...';
+            element.innerHTML = '<span class="loading-spinner"></span>Loading...';
         }
     });
     
     const operationText = document.getElementById('current-operation-text');
     if (operationText) {
-        operationText.className = 'operation-status operation-unknown';
-        operationText.textContent = '未知';
+        operationText.className = 'operation-status','operation-unknown';
+        operationText.textContent = 'Unknown';
     }
     
-    // 隐藏错误信息
+    // Hide error messages
     document.getElementById('data-error').style.display = 'none';
     document.getElementById('csv-error-details').style.display = 'none';
 }
 
-// 获取操作状态的文本描述
+// Get operation status text description
 function getOperationText(operationCode) {
     const operationMap = {
-        '0': '生成查询点',
-        '1': '等待DFT计算',
-        '2': '模型训练'
+        '0': 'generating DFT inputs',
+        '1': 'waiting DFT results',
+        '2': 'training ML model',
     };
-    return operationMap[operationCode] || `未知操作 (${operationCode})`;
+    return operationMap[operationCode] || `unknown (${operationCode})`;
 }
 
-// 获取操作状态的CSS类
+// Get operation status CSS class
 function getOperationClass(operationCode) {
-    return operationCode ? `operation-status operation-${operationCode}` : 'operation-status operation-unknown';
+    // Return an array containing all class names to be added
+    if (operationCode !== undefined && operationCode !== null) {
+        return ['operation-status', `operation-${operationCode}`];
+    }
+    return ['operation-status', 'operation-unknown'];
 }
 
-// 从后端API获取系统状态
-function fetchSystemStatus() {
-    // 定义需要操作的元素ID和对应的数据路径
+
+function updateUIWithConfig(data) {
+    if (!data) return;
+
+    // 1. Define mapping relationships
     const statusMappings = [
-        { id: 'phase-name', path: 'phase_name', defaultValue: '未设置' },
-        { id: 'ml-model', path: 'AL_set.ML_model', defaultValue: '未设置' }
+        { id: 'phase-name', path: 'phase_name', defaultValue: 'Not Set' },
+        { id: 'ml-model', path: 'AL_set.ML_model', defaultValue: 'Not Set' }
     ];
 
-    // 设置超时
-    const abortController = new AbortController();
-    const timeoutId = setTimeout(() => abortController.abort(), 10000); // 10秒超时
-    
-    fetch('/static/run/input.json', { signal: abortController.signal })
-        .then(response => {
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP错误，状态码: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('成功获取系统状态数据:', data);
-            
-            // 逐个设置每个状态值
-            statusMappings.forEach(item => {
-                // 按路径获取值
-                const value = item.path.split('.').reduce((obj, key) => {
-                    return obj && obj[key] !== undefined ? obj[key] : undefined;
-                }, data);
-                
-                // 设置值，使用默认值
-                const element = document.getElementById(item.id);
-                if (element) {
-                    element.textContent = value !== undefined ? value : item.defaultValue;
-                    
-                    // 保存相名称
-                    if (item.id === 'phase-name' && value) {
-                        phaseName = value;
-                    }
-                }
-            });
-            
-            // 保存record_path并读取记录文件和CSV数据
-            if (data.record_path) {
-                recordPath = data.record_path + '/record.txt';
-                csvPath = data.record_path + '/iter.csv'; // iter.csv与record.txt同目录
-                readRecordFile();
-                readCsvFile(); // 读取CSV文件
-            } else {
-                console.log('未在input.json中找到record_path');
-                document.getElementById('current-iteration').textContent = '无路径';
-                document.getElementById('current-operation-number').textContent = '无路径';
-            }
-        })
-        .catch(error => {
-            clearTimeout(timeoutId);
-            console.error('获取系统状态失败:', error);
-            
-            // 显示错误信息
-            if (error.name === 'AbortError') {
-                document.getElementById('phase-name').textContent = '加载超时';
-                document.getElementById('ml-model').textContent = '加载超时';
-            } else {
-                document.getElementById('phase-name').textContent = '获取失败';
-                document.getElementById('ml-model').textContent = '获取失败';
-            }
-        });
+    // 2. Update basic text information
+    statusMappings.forEach(item => {
+        const value = item.path.split('.').reduce((obj, key) => {
+            return obj && obj[key] !== undefined ? obj[key] : undefined;
+        }, data);
+        
+        const element = document.getElementById(item.id);
+        if (element) {
+            element.textContent = value !== undefined ? value : item.defaultValue;
+        }
+    });
+
+    // 3. Handle record file path linkage
+    if (data.record_path) {
+        // Update global recordPath for use by readRecordFile
+        recordPath = '/get_data_file/'+data.record_path + '/record.txt';
+        csvPath = '/get_data_file/'+data.record_path + '/iter.csv';
+        IMAGE_BASE_PATH = '/get_data_file/'+data.record_path + '/fig/';
+        phaseName = data.phase_name || '';
+    } else {
+        recordPath = null;
+        document.getElementById('current-iteration').textContent = 'No Path';
+        document.getElementById('current-operation-number').textContent = 'No Path';
+    }
 }
 
-// 读取记录文件获取迭代信息
-function readRecordFile() {
+// Read record file to get iteration information
+async function readRecordFile() {
     if (!recordPath) {
-        console.log('未获取到record_path，无法读取记录文件');
+        console.error('record_path not obtained, cannot read record file', 'warning');
+        document.getElementById('current-iteration').textContent = 'Cannot Retrieve';
+        document.getElementById('current-operation-number').textContent = 'Cannot Retrieve';
         return;
     }
     
     try {
-        // 设置超时
+        // Set timeout
         const abortController = new AbortController();
-        const timeoutId = setTimeout(() => abortController.abort(), 10000);
+        const timeoutId = setTimeout(() => abortController.abort(), 10000); // 10 second timeout
         
-        // 发送文件路径到后端，由后端读取文件内容
-        fetch('/read-record', {
+        console.info(`try to read local file: ${recordPath}`, 'info');
+        
+        // Send file path to backend, have backend read file content
+        const response = await fetch('/read-record', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ file_path: recordPath }),
             signal: abortController.signal
-        })
-        .then(response => {
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP状态码: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (!result.success) {
-                throw new Error(result.error || '未知错误');
-            }
-            
-            // 分割成行并过滤空行
-            const lines = result.content.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-            
-            if (lines.length === 0) {
-                console.log('记录文件为空');
-                document.getElementById('current-iteration').textContent = '无数据';
-                document.getElementById('current-operation-number').textContent = '无数据';
-                return;
-            }
-            
-            // 获取最后一行
-            const lastLine = lines[lines.length - 1];
-            // 分割成两个数字
-            const [iteration, operation] = lastLine.split(/\s+/).map(num => num.trim());
-            
-            if (iteration && operation) {
-                // 更新变量
-                let Itermax = parseInt(iteration);
-                process = operation;
-                
-                // 根据process调整itermax
-                if (process != 2) {
-                    newItermax = Math.max(1, Itermax - 1);
-                }
-                
-                // 更新UI显示
-                document.getElementById('current-iteration').textContent = Itermax;
-                document.getElementById('current-operation-number').textContent = process;
-                
-                const operationTextEl = document.getElementById('current-operation-text');
-                operationTextEl.textContent = getOperationText(process);
-                operationTextEl.className = getOperationClass(process);
-                
-                // 如果是新的迭代，更新当前迭代
-                if (newItermax !== itermax) {
-                    itermax = newItermax;
-                    currentIteration = itermax;
-                    
-                    // 设置总迭代数等于itermax
-                    totalIterations = itermax;
-                    predImageMaxIter = totalIterations;
-                    
-                    // 更新第三张图为最新迭代
-                    currentPredIter2 = itermax;
-                    
-                    updateIterationDisplay();
-                    updateAllImages();
-                    updateMetricsFromCsv(); // 从CSV更新指标
-                }
-            } else {
-                console.log(`记录文件最后一行格式不正确: "${lastLine}"`);
-                document.getElementById('current-iteration').textContent = '格式错误';
-                document.getElementById('current-operation-number').textContent = '格式错误';
-            }
-        })
-        .catch(error => {
-            clearTimeout(timeoutId);
-            console.error('读取记录文件错误:', error);
-            
-            if (error.name === 'AbortError') {
-                document.getElementById('current-iteration').textContent = '读取超时';
-                document.getElementById('current-operation-number').textContent = '读取超时';
-            } else {
-                document.getElementById('current-iteration').textContent = '读取失败';
-                document.getElementById('current-operation-number').textContent = '读取失败';
-            }
         });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.error(`Record file does not exist: ${recordPath}`, 'warning');
+                document.getElementById('current-iteration').textContent = 'File Not Found';
+                document.getElementById('current-operation-number').textContent = 'File Not Found';
+            } else {
+                console.error(`Failed to read record file: HTTP status code ${response.status}`, 'error');
+                document.getElementById('current-iteration').textContent = 'Read Failed';
+                document.getElementById('current-operation-number').textContent = 'Read Failed';
+            }
+            return;
+        }
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            console.error(`Failed to read record file: ${result.error || 'Unknown error'}`, 'error');
+            document.getElementById('current-iteration').textContent = 'Read Failed';
+            document.getElementById('current-operation-number').textContent = 'Read Failed';
+            return;
+        }
+        
+        // Split into lines and filter empty lines
+        const lines = result.content.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+        
+        if (lines.length === 0) {
+            console.error('Record file is empty', 'info');
+            document.getElementById('current-iteration').textContent = 'No Data';
+            document.getElementById('current-operation-number').textContent = 'No Data';
+            return;
+        }
+        
+        // Get last line
+        const lastLine = lines[lines.length - 1];
+        // Split into two numbers
+        const [iteration, operation] = lastLine.split(/\s+/).map(num => num.trim());
+        
+        if (iteration && operation) {
+            // Update variables
+            itermax = parseInt(iteration);
+            process = operation;
+            // Adjust itermax based on process
+            if (process != 2) {
+                itermax = Math.max(1, itermax - 1);
+            }
+            predImageMaxIter = itermax;
+            totalIterations = itermax;
+
+            // Adjust itermax based on process
+            document.getElementById('current-iteration').textContent = iteration;
+            document.getElementById('current-operation-number').textContent = operation;
+
+            const operationTextEl = document.getElementById('current-operation-text');
+            operationTextEl.textContent = getOperationText(operation);
+            
+            operationTextEl.className = 'operation-status';
+            const opClass = getOperationClass(operation);
+            if (opClass) {
+                operationTextEl.classList.add(opClass); 
+            }
+            console.info(`Updated iteration info: iteration ${iteration}, operation ${operation} (${getOperationText(operation)})`, 'status-update');
+        } else {
+            console.error(`Last line of record file has incorrect format: "${lastLine}"`, 'error');
+            document.getElementById('current-iteration').textContent = 'Format Error';
+            document.getElementById('current-operation-number').textContent = 'Format Error';
+        }
     } catch (error) {
-        console.error('读取记录文件时发生错误:', error);
-        document.getElementById('current-iteration').textContent = '加载失败';
-        document.getElementById('current-operation-number').textContent = '加载失败';
+        if (error.name === 'AbortError') {
+            console.error('Reading record file timed out', 'error');
+        } else {
+            console.error(`Error occurred while reading record file: ${error.message}`, 'error');
+        }
+        console.error('Record file read error:', error);
+        document.getElementById('current-iteration').textContent = 'Load Failed';
+        document.getElementById('current-operation-number').textContent = 'Load Failed';
     }
 }
 
-// 修改readCsvFile函数，增加错误处理和调试信息
+
+
+// Modified readCsvFile function with enhanced error handling and debugging info
 function readCsvFile() {
     if (!csvPath) {
-        console.log('未获取到csvPath，无法读取CSV文件');
-        showDataError('未找到iter.csv文件路径');
+        console.log('csvPath not obtained, cannot read CSV file');
+        showDataError('iter.csv file path not found');
         return;
     }
-    
-    // 打印调试信息，确认请求的路径
-    console.log('尝试读取CSV文件:', csvPath);
+    // Print debug info to confirm requested path
+    console.log('Attempting to read CSV file:', csvPath);
     
     try {
         const abortController = new AbortController();
@@ -409,99 +540,99 @@ function readCsvFile() {
         .then(response => {
             clearTimeout(timeoutId);
             
-            // 打印HTTP响应状态
-            console.log('CSV文件请求响应状态:', response.status);
+            // Print HTTP response status
+            console.log('CSV file request response status:', response.status);
             
             if (!response.ok) {
-                throw new Error(`HTTP状态码: ${response.status}`);
+                throw new Error(`HTTP status code: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
-            // 提取CSV字符串内容
+            // Extract CSV string content
             const content = result.content;
             
-            // 打印原始内容预览，帮助调试
-            console.log('CSV文件内容预览:', content.substring(0, 200) + (content.length > 200 ? '...' : ''));
+            // Print raw content preview to help debugging
+            console.log('CSV file content preview:', content.substring(0, 200) + (content.length > 200 ? '...' : ''));
             
             csvRawContent = content;
             csvData = parseCsvContent(content);
             saveDataToCache(csvPath, csvData);
             updateMetricsFromCsv();
-            console.log(`成功解析CSV数据，共${csvData.length}条记录`);
+            console.log(`Successfully parsed CSV data, ${csvData.length} records total`);
         })
         .catch(error => {
             clearTimeout(timeoutId);
-            console.error('读取CSV文件错误:', error);
+            console.error('CSV file read error:', error);
             
-            // 更详细的错误信息
+            // More detailed error information
             let errorMsg, errorDetails;
             if (error.name === 'AbortError') {
-                errorMsg = 'CSV文件读取超时';
-                errorDetails = `超时错误: 读取文件 ${csvPath} 超过10秒未响应`;
+                errorMsg = 'CSV file read timeout';
+                errorDetails = `Timeout error: reading file ${csvPath} did not respond within 10 seconds`;
             } else {
-                errorMsg = `CSV文件读取失败: ${error.message}`;
-                errorDetails = `错误详情: ${error.stack}\n文件路径: ${csvPath}`;
+                errorMsg = `CSV file read failed: ${error.message}`;
+                errorDetails = `Error details: ${error.stack}\nFile path: ${csvPath}`;
             }
             
             showDataError(errorMsg, errorDetails);
         });
     } catch (error) {
-        console.error('读取CSV文件时发生错误:', error);
-        showDataError(`处理CSV时出错: ${error.message}`, 
-            `错误详情: ${error.stack}\n文件路径: ${csvPath}`);
+        console.error('Error occurred while reading CSV file:', error);
+        showDataError(`Error processing CSV: ${error.message}`, 
+            `Error details: ${error.stack}\nFile path: ${csvPath}`);
     }
 }
 
 
-// 修改CSV解析函数，放宽格式要求
+// Modified CSV parsing function with relaxed format requirements
 function parseCsvContent(content) {
     const data = [];
     let errorDetails = [];
     
     if (!content.trim()) {
-        errorDetails.push("CSV文件内容为空");
-        showDataError("CSV文件内容为空", errorDetails.join("\n"));
+        errorDetails.push("CSV file content is empty");
+        showDataError("CSV file content is empty", errorDetails.join("\n"));
         return data;
     }
     
-    // 分割行并过滤空行
+    // Split lines and filter empty lines
     const lines = content.split('\n')
         .map((line, index) => ({ line: line.trim(), row: index + 1 }))
         .filter(item => item.line.length > 0);
     
     if (lines.length < 2) {
-        errorDetails.push(`CSV文件内容不足，至少需要标题行和一行数据，实际只有${lines.length}行`);
-        showDataError("CSV文件格式错误", errorDetails.join("\n"));
+        errorDetails.push(`CSV file content insufficient, needs at least header row and one data row, actually only has ${lines.length} rows`);
+        showDataError("CSV file format error", errorDetails.join("\n"));
         return data;
     }
     
-    // 解析标题行
+    // Parse header row
     const headerLine = lines[0];
     const headers = headerLine.line.split(',').map(header => header.trim());
     
-    // 打印标题行信息用于调试
-    console.log(`CSV标题行: ${headers.length}列 -`, headers);
+    // Print header row info for debugging
+    console.log(`CSV header row: ${headers.length} columns -`, headers);
     
-    // 放宽列数检查，只警告不阻断
+    // Relax column count check, only warn without blocking
     if (headers.length !== 7) {
-        errorDetails.push(`警告: 标题行格式不符合预期，预期7列，实际${headers.length}列`);
-        errorDetails.push(`标题行内容: "${headerLine.line}"`);
+        errorDetails.push(`Warning: Header row format does not match expectations, expected 7 columns, actually ${headers.length} columns`);
+        errorDetails.push(`Header row content: "${headerLine.line}"`);
     }
     
-    // 解析数据行
+    // Parse data rows
     for (let i = 1; i < lines.length; i++) {
         const lineItem = lines[i];
         const values = lineItem.line.split(',').map(value => value.trim());
         
-        // 同样放宽列数检查
+        // Also relax column count check
         if (values.length !== 7) {
-            errorDetails.push(`警告: 行 ${lineItem.row} 列数不符合预期: 预期7列，实际${values.length}列`);
-            // 不跳过，尝试解析可用数据
+            errorDetails.push(`Warning: Row ${lineItem.row} column count does not match expectations: expected 7 columns, actually ${values.length} columns`);
+            // Don't skip, try to parse available data
         }
         
         try {
-            // 更健壮的解析逻辑，处理可能的缺失值
+            // More robust parsing logic, handle possible missing values
             const record = {
                 iteration: i,
                 trainingDataAmount: values[0] ? parseInt(values[0]) : null,
@@ -513,68 +644,68 @@ function parseCsvContent(content) {
                 rmseScore: values[6] ? parseFloat(values[6]) : null
             };
             
-            // 允许部分字段为空，但至少需要有部分有效数据
+            // Allow some fields to be empty, but need at least some valid data
             const hasValidData = Object.values(record).some(v => v !== null && !isNaN(v));
             if (hasValidData) {
                 data.push(record);
             } else {
-                errorDetails.push(`行 ${lineItem.row} 没有有效数据: "${lineItem.line}"`);
+                errorDetails.push(`Row ${lineItem.row} has no valid data: "${lineItem.line}"`);
             }
         } catch (error) {
-            errorDetails.push(`解析行 ${lineItem.row} 时出错: ${error.message}`);
-            errorDetails.push(`行内容: "${lineItem.line}"`);
+            errorDetails.push(`Error parsing row ${lineItem.row}: ${error.message}`);
+            errorDetails.push(`Row content: "${lineItem.line}"`);
         }
     }
     
-    // 即使有错误，只要有数据就使用
+    // Even if there are errors, use data if available
     if (data.length > 0) {
         if (errorDetails.length > 0) {
-            showDataError(`CSV文件解析有${errorDetails.length}个警告，但已成功解析${data.length}条有效记录`, 
-                errorDetails.join("\n\n") + "\n\n将使用可用数据继续运行");
+            showDataError(`CSV file parsing has ${errorDetails.length} warnings, but successfully parsed ${data.length} valid records`, 
+                errorDetails.join("\n\n") + "\n\nWill continue with available data");
         }
         return data;
     } else {
-        errorDetails.push("未解析到任何有效数据记录");
-        showDataError("未找到有效的CSV数据", errorDetails.join("\n"));
+        errorDetails.push("No valid data records parsed");
+        showDataError("No valid CSV data found", errorDetails.join("\n"));
         return [];
     }
 }
 
-// 从CSV更新指标显示
+// Update metrics display from CSV
 function updateMetricsFromCsv() {
     if (csvData.length === 0) {
-        showDataError('未找到有效的CSV数据', 
-            `CSV文件路径: ${csvPath}\n` +
-            `原始内容预览: ${csvRawContent.substring(0, 500)}${csvRawContent.length > 500 ? '...' : ''}`);
+        showDataError('No valid CSV data found', 
+            `CSV file path: ${csvPath}\n` +
+            `Raw content preview: ${csvRawContent.substring(0, 500)}${csvRawContent.length > 500 ? '...' : ''}`);
         return;
     }
     
-    // 根据当前迭代查找数据
+    // Find data based on current iteration
     let csvRecord = null;
     
-    // 找到与当前迭代匹配的记录
+    // Find record matching current iteration
     if (currentIteration && !isNaN(currentIteration)) {
-        // 迭代从1开始，数组索引从0开始
+        // Iterations start from 1, array index starts from 0
         const index = Math.min(currentIteration - 1, csvData.length - 1);
         if (index >= 0) {
             csvRecord = csvData[index];
         }
     }
     
-    // 如果没有找到，使用最后一条记录
+    // If not found, use last record
     if (!csvRecord && csvData.length > 0) {
         csvRecord = csvData[csvData.length - 1];
     }
     
-    // 更新显示
+    // Update display
     if (csvRecord) {
         document.getElementById('data-count').textContent = csvRecord.trainingDataAmount;
         document.getElementById('train-rmse').textContent = csvRecord.rmseTrain.toFixed(3);
         document.getElementById('test-rmse').textContent = csvRecord.rmseTest.toFixed(3);
-        document.getElementById('cv-info').textContent = `${csvRecord.foldNumRMSE}折: ${csvRecord.rmseScore.toFixed(3)}`;
+        document.getElementById('cv-info').textContent = `${csvRecord.foldNumRMSE} fold: ${csvRecord.rmseScore.toFixed(3)}`;
         document.getElementById('r2-score').textContent = csvRecord.r2Score.toFixed(3);
         
-        // 更新预测图的R²值
+        // Update prediction chart R² values
         document.getElementById('pred-r2-1').textContent = `R²: ${csvRecord.r2Score.toFixed(3)}`;
         document.getElementById('pred-r2-2').textContent = `R²: ${csvRecord.r2Score.toFixed(3)}`;
     } else {
@@ -587,37 +718,37 @@ function updateMetricsFromCsv() {
         document.getElementById('pred-r2-2').textContent = 'R²: N/A';
     }
     
-    // 隐藏错误信息
+    // Hide error messages
     document.getElementById('data-error').style.display = 'none';
     document.getElementById('csv-error-details').style.display = 'none';
 }
 
-// 显示数据错误信息
+// Display data error message
 function showDataError(message, details) {
     const errorElement = document.getElementById('data-error');
     const detailsElement = document.getElementById('csv-error-details');
     
-    errorElement.innerHTML = `数据错误: ${message} <button class="btn btn-sm btn-danger show-details-btn" id="show-error-details">显示详情</button>`;
+    errorElement.innerHTML = `Data Error: ${message} <button class="btn btn-sm btn-danger show-details-btn" id="show-error-details">Show Details</button>`;
     errorElement.style.display = 'block';
     
-    // 格式化详细信息
+    // Format detailed information
     if (details) {
-        // 替换换行符为HTML换行
+        // Replace newlines with HTML breaks
         let formattedDetails = details.replace(/\n/g, '<br>');
-        // 显示文件路径
+        // Display file path
         if (csvPath) {
-            formattedDetails = `文件路径: ${csvPath}<br><br>${formattedDetails}`;
+            formattedDetails = `File path: ${csvPath}<br><br>${formattedDetails}`;
         }
         detailsElement.innerHTML = formattedDetails;
     } else {
-        detailsElement.innerHTML = `文件路径: ${csvPath}<br>未提供详细错误信息`;
+        detailsElement.innerHTML = `File path: ${csvPath}<br>No detailed error information provided`;
     }
     
-    // 自动隐藏详情
+    // Automatically hide details
     detailsElement.style.display = 'none';
 }
 
-// 更新迭代显示
+// Update iteration display
 function updateIterationDisplay() {
     document.getElementById('current-iter').textContent = currentIteration;
     document.getElementById('iter-pred-1').value = currentPredIter1;
@@ -627,33 +758,33 @@ function updateIterationDisplay() {
     document.getElementById('pred-range-2').textContent = `1 - ${predImageMaxIter}`;
 }
 
-// 更新所有图片
+// Update all images
 function updateAllImages() {
-    // 使用Promise确保图片加载状态可控
+    // Use Promise to ensure image loading state is controllable
     updateMainImage()
-        .then(() => console.log('主图加载完成'))
-        .catch(err => console.error('主图加载失败:', err));
+        .then(() => console.log('Main image loading complete'))
+        .catch(err => console.error('Main image loading failed:', err));
         
     updatePredImage(1, currentPredIter1)
-        .then(() => console.log('预测图1加载完成'))
-        .catch(err => console.error('预测图1加载失败:', err));
+        .then(() => console.log('Prediction image 1 loading complete'))
+        .catch(err => console.error('Prediction image 1 loading failed:', err));
         
     updatePredImage(2, currentPredIter2)
-        .then(() => console.log('预测图2加载完成'))
-        .catch(err => console.error('预测图2加载失败:', err));
+        .then(() => console.log('Prediction image 2 loading complete'))
+        .catch(err => console.error('Prediction image 2 loading failed:', err));
         
     updateOtherTabImages(currentIteration);
 }
 
-// 更新主图片 - 使用缓存机制
+// Update main image - using cache mechanism
 function updateMainImage() {
     return new Promise((resolve, reject) => {
         if (!phaseName) {
-            reject(new Error('未获取到相名称'));
+            reject(new Error('Phase name not obtained'));
             return;
         }
         
-        // 显示加载状态
+        // Display loading state
         const loadingElement = document.getElementById('main-loading');
         const imageElement = document.getElementById('main-image');
         const pathElement = document.getElementById('main-image-path');
@@ -663,72 +794,72 @@ function updateMainImage() {
         loadingElement.style.display = 'block';
         imageElement.style.display = 'none';
         statusElement.style.display = 'block';
-        statusElement.textContent = '加载中...';
+        statusElement.textContent = 'Loading...';
         cacheIndicator.style.display = 'none';
         
-        // 构建图片URL，包含相名称
+        // Build image URL, including phase name
         const formattedIter = String(currentIteration).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}iter.png`;
         
-        // 检查缓存
+        // Check cache
         const cachedImage = getImageFromCache(baseImageUrl);
         if (cachedImage) {
-            // 使用缓存图片
+            // Use cached image
             imageElement.src = cachedImage.data;
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
-            statusElement.textContent = '加载完成';
+            statusElement.textContent = 'Loading Complete';
             cacheIndicator.style.display = 'block';
-            pathElement.textContent = `图片路径: ${baseImageUrl} (已缓存)`;
-            console.log('使用缓存加载主图:', baseImageUrl);
+            pathElement.textContent = `Image path: ${baseImageUrl} (Cached)`;
+            console.log('Using cache to load main image:', baseImageUrl);
             resolve();
             return;
         }
         
-        // 添加时间戳避免缓存
+        // Add timestamp to avoid caching
         const timestamp = new Date().getTime();
         const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
         
-        // 显示图片路径
-        pathElement.textContent = `图片路径: ${baseImageUrl}`;
+        // Display image path
+        pathElement.textContent = `Image path: ${baseImageUrl}`;
         
-        // 清除之前的事件监听
+        // Clear previous event listeners
         imageElement.onload = null;
         imageElement.onerror = null;
         
-        // 清除之前的图片源，确保重新加载
+        // Clear previous image source to ensure reload
         imageElement.src = '';
         
-        // 创建图片对象用于预加载
+        // Create image object for preloading
         const img = new Image();
         
-        // 设置超时时间为20秒
+        // Set timeout to 20 seconds
         const timeout = setTimeout(() => {
-            statusElement.textContent = '加载超时，重试中...';
+            statusElement.textContent = 'Loading timeout, retrying...';
             
-            // 第一次超时后尝试重新加载
+            // Retry reload after first timeout
             img.src = '';
             setTimeout(() => {
                 const newTimestamp = new Date().getTime();
                 img.src = `${baseImageUrl}?timestamp=${newTimestamp}`;
             }, 1000);
             
-            // 第二次超时则显示错误
+            // Show error on second timeout
             const secondTimeout = setTimeout(() => {
                 loadingElement.innerHTML = `
                     <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-                    <p class="mt-2">图片加载超时</p>
-                    <p class="text-muted">请检查网络连接或文件路径</p>
-                    <button class="btn btn-sm btn-primary mt-2" onclick="updateMainImage()">重试</button>
+                    <p class="mt-2">Image loading timeout</p>
+                    <p class="text-muted">Please check network connection or file path</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="updateMainImage()">Retry</button>
                 `;
                 statusElement.style.display = 'none';
-                reject(new Error('图片加载超时'));
+                reject(new Error('Image loading timeout'));
             }, 20000);
             
-            // 如果第二次加载成功，清除第二次超时
+            // If second load succeeds, clear second timeout
             img.onload = function() {
                 clearTimeout(secondTimeout);
-                // 转换为dataURL并存入缓存
+                // Convert to dataURL and save to cache
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -740,17 +871,17 @@ function updateMainImage() {
                 loadingElement.style.display = 'none';
                 imageElement.style.display = 'block';
                 imageElement.src = dataUrl;
-                statusElement.textContent = '加载完成';
-                console.log('综合训练指标视图加载成功（重试后）');
+                statusElement.textContent = 'Loading Complete';
+                console.log('Comprehensive training metrics view loaded successfully (after retry)');
                 resolve();
             };
         }, 20000);
         
-        // 图片加载成功
+        // Image loading success
         img.onload = function() {
             clearTimeout(timeout);
             
-            // 转换为dataURL并存入缓存
+            // Convert to dataURL and save to cache
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -762,44 +893,46 @@ function updateMainImage() {
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
             imageElement.src = dataUrl;
-            statusElement.textContent = '加载完成';
-            console.log('综合训练指标视图加载成功');
+            statusElement.textContent = 'Loading Complete';
+            console.log('Comprehensive training metrics view loaded successfully');
             resolve();
         };
         
         img.onerror = function(error) {
             clearTimeout(timeout);
-            console.error('综合训练指标视图加载失败:', error);
+            console.error('Comprehensive training metrics view loading failed:', error);
             loadingElement.innerHTML = `
                 <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-                <p class="mt-2">图片加载失败</p>
-                <p class="text-muted">请检查文件是否存在: ${baseImageUrl}</p>
-                <button class="btn btn-sm btn-primary mt-2" onclick="updateMainImage()">重试</button>
+                <p class="mt-2">Image loading failed</p>
+                <p class="text-muted">Please check if file exists: ${baseImageUrl}</p>
+                <button class="btn btn-sm btn-primary mt-2" onclick="updateMainImage()">Retry</button>
             `;
             statusElement.style.display = 'none';
             reject(error);
         };
         
-        // 尝试加载图片
+        // Attempt to load image
         img.src = imageUrl;
     });
 }
 
-// 更新预测图片 - 使用缓存机制
+// Update prediction image - using cache mechanism
 function updatePredImage(processNum, iter) {
+    console.log(`Updating prediction image ${processNum}, iteration: ${iter} in ${predImageMinIter} - ${predImageMaxIter}`);
     return new Promise((resolve, reject) => {
         if (!phaseName) {
-            reject(new Error('未获取到相名称'));
+            reject(new Error('Phase name not obtained'));
             return;
         }
+
         
-        // 确保迭代在有效范围内
+        // Ensure iteration is within valid range
         if (iter < predImageMinIter || iter > predImageMaxIter || predImageMaxIter === 0) {
-            reject(new Error('迭代值超出有效范围'));
+            reject(new Error('Iteration value out of valid range'));
             return;
         }
         
-        // 更新当前迭代
+        // Update current iteration
         if (processNum === 1) {
             currentPredIter1 = iter;
             document.getElementById('iter-pred-1').value = iter;
@@ -808,7 +941,7 @@ function updatePredImage(processNum, iter) {
             document.getElementById('iter-pred-2').value = iter;
         }
         
-        // 显示加载状态
+        // Display loading state
         const loadingElement = document.getElementById(`pred-loading-${processNum}`);
         const imageElement = document.getElementById(`pred-image-${processNum}`);
         const pathElement = document.getElementById(`pred-image-path-${processNum}`);
@@ -818,35 +951,35 @@ function updatePredImage(processNum, iter) {
         loadingElement.style.display = 'block';
         imageElement.style.display = 'none';
         statusElement.style.display = 'block';
-        statusElement.textContent = '加载中...';
+        statusElement.textContent = 'Loading...';
         cacheIndicator.style.display = 'none';
         
-        // 构建图片URL，包含相名称，process固定为2
+        // Build image URL, including phase name, process fixed at 2
         const formattedIter = String(iter).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}pred_test_${phaseName}_iter${formattedIter}_process2.png`;
         
-        // 检查缓存
+        // Check cache
         const cachedImage = getImageFromCache(baseImageUrl);
         if (cachedImage) {
-            // 使用缓存图片
+            // Use cached image
             imageElement.src = cachedImage.data;
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
-            statusElement.textContent = '加载完成';
+            statusElement.textContent = 'Loading Complete';
             cacheIndicator.style.display = 'block';
-            pathElement.textContent = `图片路径: ${baseImageUrl} (已缓存)`;
-            console.log(`使用缓存加载预测图${processNum}:`, baseImageUrl);
+            pathElement.textContent = `Image path: ${baseImageUrl} (Cached)`;
+            console.log(`Using cache to load prediction image ${processNum}:`, baseImageUrl);
             
-            // 从CSV数据更新R²值
+            // Update R² value from CSV data
             if (csvData.length > 0) {
                 const r2Element = document.getElementById(`pred-r2-${processNum}`);
-                // 迭代从1开始，数组索引从0开始
+                // Iterations start from 1, array index starts from 0
                 const index = Math.min(iter - 1, csvData.length - 1);
                 let r2Value = null;
                 if (index >= 0) {
                     r2Value = csvData[index].r2Score;
                 }
-                // 如果没有对应的值，使用最后一个
+                // If no corresponding value, use the last one
                 if (r2Value === null && csvData.length > 0) {
                     r2Value = csvData[csvData.length - 1].r2Score;
                 }
@@ -858,47 +991,47 @@ function updatePredImage(processNum, iter) {
             return;
         }
         
-        // 添加时间戳避免缓存
+        // Add timestamp to avoid caching
         const timestamp = new Date().getTime();
         const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
         
-        // 显示图片路径
-        pathElement.textContent = `图片路径: ${baseImageUrl}`;
+        // Display image path
+        pathElement.textContent = `Image path: ${baseImageUrl}`;
         
-        // 清除之前的事件监听
+        // Clear previous event listeners
         imageElement.onload = null;
         imageElement.onerror = null;
         
-        // 创建图片对象用于预加载
+        // Create image object for preloading
         const img = new Image();
         
-        // 设置超时时间为20秒
+        // Set timeout to 20 seconds
         const timeout = setTimeout(() => {
-            statusElement.textContent = '加载超时，重试中...';
+            statusElement.textContent = 'Loading timeout, retrying...';
             
-            // 第一次超时后尝试重新加载
+            // Retry reload after first timeout
             img.src = '';
             setTimeout(() => {
                 const newTimestamp = new Date().getTime();
                 img.src = `${baseImageUrl}?timestamp=${newTimestamp}`;
             }, 1000);
             
-            // 第二次超时则显示错误
+            // Show error on second timeout
             const secondTimeout = setTimeout(() => {
                 loadingElement.innerHTML = `
                     <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-                    <p class="mt-2">图片加载超时</p>
-                    <p class="text-muted">请检查文件是否存在: ${baseImageUrl}</p>
-                    <button class="btn btn-sm btn-primary mt-2" onclick="updatePredImage(${processNum}, ${iter})">重试</button>
+                    <p class="mt-2">Image loading timeout</p>
+                    <p class="text-muted">Please check if file exists: ${baseImageUrl}</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="updatePredImage(${processNum}, ${iter})">Retry</button>
                 `;
                 statusElement.style.display = 'none';
-                reject(new Error('图片加载超时'));
+                reject(new Error('Image loading timeout'));
             }, 20000);
             
-            // 如果第二次加载成功，清除第二次超时
+            // If second load succeeds, clear second timeout
             img.onload = function() {
                 clearTimeout(secondTimeout);
-                // 转换为dataURL并存入缓存
+                // Convert to dataURL and save to cache
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -910,9 +1043,9 @@ function updatePredImage(processNum, iter) {
                 loadingElement.style.display = 'none';
                 imageElement.style.display = 'block';
                 imageElement.src = dataUrl;
-                statusElement.textContent = '加载完成';
+                statusElement.textContent = 'Loading Complete';
                 
-                // 更新R²值
+                // Update R² value
                 if (csvData.length > 0) {
                     const r2Element = document.getElementById(`pred-r2-${processNum}`);
                     const index = Math.min(iter - 1, csvData.length - 1);
@@ -931,11 +1064,11 @@ function updatePredImage(processNum, iter) {
             };
         }, 20000);
         
-        // 图片加载成功
+        // Image loading success
         img.onload = function() {
             clearTimeout(timeout);
             
-            // 转换为dataURL并存入缓存
+            // Convert to dataURL and save to cache
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -947,9 +1080,9 @@ function updatePredImage(processNum, iter) {
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
             imageElement.src = dataUrl;
-            statusElement.textContent = '加载完成';
+            statusElement.textContent = 'Loading Complete';
             
-            // 更新R²值
+            // Update R² value
             if (csvData.length > 0) {
                 const r2Element = document.getElementById(`pred-r2-${processNum}`);
                 const index = Math.min(iter - 1, csvData.length - 1);
@@ -971,35 +1104,35 @@ function updatePredImage(processNum, iter) {
             clearTimeout(timeout);
             loadingElement.innerHTML = `
                 <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-                <p class="mt-2">图片加载失败</p>
-                <p class="mt-2">请检查文件是否存在: ${baseImageUrl}</p>
-                <button class="btn btn-sm btn-primary mt-2" onclick="updatePredImage(${processNum}, ${iter})">重试</button>
+                <p class="mt-2">Image loading failed</p>
+                <p class="mt-2">Please check if file exists: ${baseImageUrl}</p>
+                <button class="btn btn-sm btn-primary mt-2" onclick="updatePredImage(${processNum}, ${iter})">Retry</button>
             `;
             statusElement.style.display = 'none';
-            reject(new Error('图片加载失败'));
+            reject(new Error('Image loading failed'));
         };
         
-        // 尝试加载图片
+        // Attempt to load image
         img.src = imageUrl;
     });
 }
 
-// 更新其他标签页的图片
+// Update images in other tabs
 function updateOtherTabImages(iter) {
-    // 确保迭代在有效范围内
+    // Ensure iteration is within valid range
     if (iter < 1 || iter > totalIterations || totalIterations === 0 || !phaseName) return;
     
-    // 更新凸包信息图片
+    // Update convex hull info image
     updateTabImage('convex-hull', iter, 'convex_hull');
     
-    // 更新特征分析图片
+    // Update feature analysis image
     updateTabImage('features', iter, 'features_importance');
     
-    // 更新日志信息图片
+    // Update log info image
     updateTabImage('logs', iter, 'training_logs');
 }
 
-// 更新指定标签页的图片
+// Update image for specified tab
 function updateTabImage(tabId, iter, imagePrefix) {
     const loadingElement = document.getElementById(`${tabId}-loading`);
     const imageElement = document.getElementById(`${tabId}-image`);
@@ -1008,57 +1141,57 @@ function updateTabImage(tabId, iter, imagePrefix) {
     
     if (!loadingElement || !imageElement || !pathElement) return;
     
-    // 显示加载状态
+    // Display loading state
     loadingElement.style.display = 'block';
     imageElement.style.display = 'none';
     cacheIndicator.style.display = 'none';
     
-    // 构建图片URL，包含相名称
+    // Build image URL, including phase name
     const formattedIter = String(iter).padStart(4, '0');
     const baseImageUrl = `${IMAGE_BASE_PATH}${imagePrefix}_${phaseName}_iter${formattedIter}_process2.png`;
     
-    // 检查缓存
+    // Check cache
     const cachedImage = getImageFromCache(baseImageUrl);
     if (cachedImage) {
-        // 使用缓存图片
+        // Use cached image
         imageElement.src = cachedImage.data;
         loadingElement.style.display = 'none';
         imageElement.style.display = 'block';
         cacheIndicator.style.display = 'block';
-        pathElement.textContent = `图片路径: ${baseImageUrl} (已缓存)`;
-        console.log(`使用缓存加载${tabId}图:`, baseImageUrl);
+        pathElement.textContent = `Image path: ${baseImageUrl} (Cached)`;
+        console.log(`Using cache to load ${tabId} image:`, baseImageUrl);
         return;
     }
     
-    // 添加时间戳避免缓存
+    // Add timestamp to avoid caching
     const timestamp = new Date().getTime();
     const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
     
-    // 显示图片路径
-    pathElement.textContent = `图片路径: ${baseImageUrl}`;
+    // Display image path
+    pathElement.textContent = `Image path: ${baseImageUrl}`;
     
-    // 清除之前的事件监听
+    // Clear previous event listeners
     imageElement.onload = null;
     imageElement.onerror = null;
     
-    // 创建图片对象用于预加载
+    // Create image object for preloading
     const img = new Image();
     
-    // 设置超时
+    // Set timeout
     const timeout = setTimeout(() => {
         loadingElement.innerHTML = `
             <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-            <p class="mt-2">图片加载超时</p>
-            <p class="mt-2">请检查网络连接或文件路径</p>
-            <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">重试</button>
+            <p class="mt-2">Image loading timeout</p>
+            <p class="mt-2">Please check network connection or file path</p>
+            <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">Retry</button>
         `;
     }, 20000);
     
-    // 图片加载成功
+    // Image loading success
     img.onload = function() {
         clearTimeout(timeout);
         
-        // 转换为dataURL并存入缓存
+        // Convert to dataURL and save to cache
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
@@ -1077,104 +1210,27 @@ function updateTabImage(tabId, iter, imagePrefix) {
         clearTimeout(timeout);
         loadingElement.innerHTML = `
             <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-            <p class="mt-2">图片加载失败</p>
-            <p class="mt-2">请检查文件是否存在: ${baseImageUrl}</p>
-            <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">重试</button>
+            <p class="mt-2">Image loading failed</p>
+            <p class="mt-2">Please check if file exists: ${baseImageUrl}</p>
+            <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">Retry</button>
         `;
     };
     
     img.src = imageUrl;
 }
 
-// 切换迭代
+// Switch iteration
 function changeIteration(iter) {
     if (iter < 1 || iter > totalIterations || totalIterations === 0) return;
-    
+    console.log(`Attempting to switch to: ${iter}, current max range: ${totalIterations}`);
+    if (iter < 1 || iter > totalIterations || totalIterations === 0) {
+        console.warn("Switch failed: out of range or data not ready");
+        return;
+    }
     currentIteration = iter;
     updateIterationDisplay();
-    
-    // 从CSV更新指标
+    // Update metrics from CSV
     updateMetricsFromCsv();
-    
-    // 更新所有相关图片
+    // Update all related images
     updateAllImages();
 }
-
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化数据获取
-    initDataFetch();
-    
-    // 绑定迭代控制按钮事件
-    document.getElementById('first-iter').addEventListener('click', () => {
-        changeIteration(1);
-    });
-    
-    document.getElementById('prev-iter').addEventListener('click', () => {
-        changeIteration(currentIteration - 1);
-    });
-    
-    document.getElementById('next-iter').addEventListener('click', () => {
-        changeIteration(currentIteration + 1);
-    });
-    
-    document.getElementById('last-iter').addEventListener('click', () => {
-        changeIteration(itermax);
-    });
-    
-    // 预测图片1导航控制（第二张图）
-    document.getElementById('first-pred-1').addEventListener('click', () => {
-        updatePredImage(1, predImageMinIter);
-    });
-    
-    document.getElementById('prev-pred-1').addEventListener('click', () => {
-        updatePredImage(1, currentPredIter1 - 1);
-    });
-    
-    document.getElementById('next-pred-1').addEventListener('click', () => {
-        updatePredImage(1, currentPredIter1 + 1);
-    });
-    
-    document.getElementById('last-pred-1').addEventListener('click', () => {
-        updatePredImage(1, itermax);
-    });
-    
-    document.getElementById('iter-pred-1').addEventListener('change', function() {
-        const iter = parseInt(this.value);
-        if (!isNaN(iter)) {
-            updatePredImage(1, iter);
-        }
-    });
-    
-    // 预测图片2导航控制（第三张图）
-    document.getElementById('first-pred-2').addEventListener('click', () => {
-        updatePredImage(2, predImageMinIter);
-    });
-    
-    document.getElementById('prev-pred-2').addEventListener('click', () => {
-        updatePredImage(2, currentPredIter2 - 1);
-    });
-    
-    document.getElementById('next-pred-2').addEventListener('click', () => {
-        updatePredImage(2, currentPredIter2 + 1);
-    });
-    
-    document.getElementById('last-pred-2').addEventListener('click', () => {
-        updatePredImage(2, itermax);
-    });
-    
-    document.getElementById('iter-pred-2').addEventListener('change', function() {
-        const iter = parseInt(this.value);
-        if (!isNaN(iter)) {
-            updatePredImage(2, iter);
-        }
-    });
-    
-    // 标签页切换时更新图片
-    const tabElements = document.querySelectorAll('#vizTabs button[data-bs-toggle="tab"]');
-    tabElements.forEach(tab => {
-        tab.addEventListener('shown.bs.tab', function() {
-            updateAllImages();
-        });
-    });
-});

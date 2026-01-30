@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Request, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import asyncio,fastapi
-from config import logger, executor
+from config import logger, executor, RUN_DIR, BASE_DATA_DIR
+from src.main_process.al_worker import ALRunner
 from src.main_process.subl_model_assess import subl_assess
 import src.generate as generate
 from pathlib import Path
@@ -10,150 +11,166 @@ from pathlib import Path
 tdb_router = APIRouter()
 subl_assess_runner:subl_assess = None
 
-# 定义请求模型
+# Define request model
 class TdbGenerationRequest(BaseModel):
     user: str
     mask: int
     input_file_path: str
 
 @tdb_router.post("/generate_tdb")
-async def generate_tdb(request: TdbGenerationRequest):
+async def generate_tdb(
+    request: Request,
+    data: TdbGenerationRequest
+):
+    manager = request.app.state.manager
     global subl_assess_runner
-    """生成TDB文件"""
+    """Generate TDB file"""
     try:
-        logger.info(f"收到TDB文件生成请求: user={request.user}, mask={request.mask}, input.json = {request.input_file_path}")
+        # Construct or retrieve task ID
+        user_id = data.user if data.user else "guest"
+        configname = data.input_file_path if data.input_file_path else "input"
+        # config_dir = data.get("config", {})
+        task_id = f"{user_id}_{configname}"
+        data.input_file_path = f"{RUN_DIR}/{configname}.json"
+
+        logger.info(f"Received TDB file generation data: user={data.user}, mask={data.mask}, input.json = {data.input_file_path}")
         
-        # 检查runner实例是否有效
-        if not runner:
-            logger.error("ALRunner实例未初始化")
+        await manager.create_and_start_task(task_id, f"{RUN_DIR}/{configname}.json")
+        loop_runner = manager.tasks.get(task_id)
+        loop_runner = manager.tasks.get(task_id)
+
+        # Check if the runner instance is valid
+        if not loop_runner:
+            logger.error("ALRunner instance not initialized")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "服务器内部错误: ALRunner未初始化"}
+                content={"success": False, "message": "Internal server error: uninitialized ALRunner instance   "}
             )
         
-        # 调用ALRunner的output_tdb_file方法（内部已处理phase初始化）
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(
             executor,
-            runner.output_tdb_file,
-            request.user,
-            request.mask,
-            request.input_file_path
+            loop_runner.output_tdb_file,
+            data.user,
+            data.mask,
+            data.input_file_path
         )
+        print(result)
         
         if result:
             print(result)
-            logger.info(f"TDB文件生成成功: {result['file_path'],result['file_name_tdb']}")
+            logger.info(f"TDB file generated successfully: {result['file_path'],result['file_name_tdb']}")
             subl_assess_runner = subl_assess(input_data_file=result['input_data'],
                                              vasp_ml_data_path=result['file_path'] / result['file_name_csv'],
                                              record_path=result['file_path'])
             print(len(subl_assess_runner.site_weight))
+            print(78)
             return {
                 "success": True, 
-                "message": "TDB文件生成成功",
+                "message": "TDB file generated successfully",
                 "file_path": result['file_path'] / result['file_name_tdb'],
                 "sublatticeNumber":len(subl_assess_runner.site_weight)
             }
         else:
-            logger.error("TDB文件生成失败")
+            logger.error("TDB file generation failed")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "TDB文件生成失败"}
+                content={"success": False, "message": "TDB file generation failed"}
             )
             
     except Exception as e:
-        logger.error(f"生成TDB文件时发生错误: {str(e)}", exc_info=True)
+        logger.error(f"Error occurred while generating TDB file: {str(e)}", exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": f"生成TDB文件错误: {str(e)}"}
+            content={"success": False, "message": f"Error occurred while generating TDB file: {str(e)}"}
         )
     
 
 @tdb_router.post("/analyze_models")
 async def analyze_models(choosen:list[int] = fastapi.Body(...)):
-    """进行模型分析"""
+    """Perform model analysis"""
     try:
-        logger.info(f"收到亚点阵模型分析请求: {len(choosen)}")
+        logger.info(f"Received sublattice model analysis request: {len(choosen)}")
         
-        # 检查runner实例是否有效
+        # Check if the runner instance is valid
         if not subl_assess_runner:
-            logger.error(" subl_assess_runner 实例未初始化")
+            logger.error(" subl_assess_runner instance is not initialized")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "服务器内部错误: subl_assess_runner 未初始化"}
+                content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
             )
         
-        # 调用ALRunner的output_tdb_file方法（内部已处理phase初始化）
         result = subl_assess_runner.get_model_result_raw(choosen)
         
         if result:
             print(result)
-            logger.info(f"模型分析已完成")
+            logger.info(f"Model analysis completed")
             return {
                 "success": True, 
-                "message": "模型分析已完成"
+                "message": "Model analysis completed"
             }
         else:
-            logger.error("模型分析失败")
+            logger.error("Model analysis failed")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "模型分析失败"}
+                content={"success": False, "message": "Model analysis failed"}
             )
             
     except Exception as e:
-        logger.error(f"模型分析时发生错误: {str(e)}", exc_info=True)
+        logger.error(f"Model analysis failed: {str(e)}", exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": f"模型分析时发生错误: {str(e)}"}
+            content={"success": False, "message": f"Model analysis failed: {str(e)}"}
         )
     
 
 @tdb_router.post("/plot_base_analyze_models")
 async def plot_base_analyze_models():
-    """进行绘图"""
+    """Perform plotting / generating figures"""
     try:
-        # logger.info(f"收到亚点阵模型分析请求: {len(choosen)}")
         
-        # 检查runner实例是否有效
+        # Check if the runner instance is valid
         if not subl_assess_runner:
-            logger.error(" subl_assess_runner 实例未初始化")
+            logger.error(" subl_assess_runner instance not initialized")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "服务器内部错误: subl_assess_runner 未初始化"}
+                content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
             )
         
-        # 调用ALRunner的output_tdb_file方法（内部已处理phase初始化）
+        # utilize the existing subl_assess_runner to plot
         result = subl_assess_runner.plot_model_result_raw()
         
         if result['state']:
             result['plot_file'] = Path(result['plot_file'])
             print(result['plot_file'])
-            logger.info(f"模型分析图已完成，存储位置为：{result['plot_file']}")
-            fig_name = result['plot_file'].name
+            logger.info(f"Model analysis plot completed, stored at：{result['plot_file']}")
+            fig_name = result['plot_file'].relative_to(BASE_DATA_DIR)
+            csv_name = result['score_file'].relative_to(BASE_DATA_DIR)
             return {
-                "plot_file": f'/static/fig/{fig_name}',
+                "plot_file": f'/get_data_file/{fig_name}',
+                "score_file": f'/get_data_file/{csv_name}',
                 "success": True, 
-                "message": "模型分析已完成"
+                "message": "Model analysis plot completed"
             }
         else:
-            logger.error("模型分析失败")
+            logger.error("Model analysis plotting failed")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "message": "模型分析失败"}
+                content={"success": False, "message": "Model analysis plotting failed"}
             )
             
     except Exception as e:
-        logger.error(f"绘图时发生错误: {str(e)}", exc_info=True)
+        logger.error(f"Failed in plotting: {str(e)}", exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": f"绘图时发生错误: {str(e)}"}
+            content={"success": False, "message": f"Failed in plotting: {str(e)}"}
         )
     
 
 class ElementGroupsRequest(BaseModel):
     selected_model: str = ""
 
-# 响应体：返回元素二维列表
+# Response body: return a 2D list of elements
 class ElementGroupsResponse(BaseModel):
     success: bool = True
     element_groups: list[list[str]]
@@ -161,7 +178,7 @@ class ElementGroupsResponse(BaseModel):
 
 @tdb_router.post("/get_element_groups", response_model=ElementGroupsResponse)
 async def get_element_groups(req: ElementGroupsRequest):
-    # 模拟后端返回的二维列表（实际需从数据库/配置文件读取）
+    # Mock a 2D list returned from the backend
     print(req.selected_model)
     model_summary = req.selected_model.split('.')[0]
     model_summary = model_summary.split('_')
@@ -180,7 +197,7 @@ async def get_element_groups(req: ElementGroupsRequest):
     return {
         "success": True,
         "element_groups": mock_element_groups,
-        "message": f"为模型{req.selected_model}返回元素组"
+        "message": f"elements groups responce for {req.selected_model}"
     }
 
 class FilterSubmitRequest(BaseModel):
@@ -196,13 +213,13 @@ class FilterSubmitResponse(BaseModel):
 @tdb_router.post("/submit_filtered_elements", response_model=FilterSubmitResponse)
 async def submit_filtered_elements(req: FilterSubmitRequest):
     print("im in /submit_filtered_elements")
-    # 实际逻辑：更新模型的元素配置（如写入数据库/文件）
-    print(f"模型{req.selected_model}删除元素：{req.need_del},保留元素{req.fix},待分析元素{req.analys}")
+    # Actually needs to be read from a database or config file
+    print(f"model {req.selected_model}: delete elements {req.need_del}, fixed (retained) elements {req.fix}, waiting to analysis {req.analys}")
 
     
     return {
         "success": True,
-        "message": "元素过滤已生效"
+        "message": "Element filtering has taken effect"
     }
 
 
@@ -220,14 +237,14 @@ class AmodelTdbGenerateResponse(BaseModel):
 @tdb_router.post("/tdb_generate_model_assessed", response_model=AmodelTdbGenerateResponse)
 async def tdb_generate_model_assessed(req: AmodelTdbGenerateRequest):
     print("im in /tdb_generate_model_assessed")
-    # 实际逻辑：更新模型的元素配置（如写入数据库/文件）
-    print(f"模型{req.selected_model['model_name']}输出地址{req.output_path}元素：{req.element_groups},{req.file_format},待分析元素{req.file_format}")
+    # Actual logic: update the model's element configuration
+    print(f"model {req.selected_model['model_name']} files will be save in {req.output_path}, elements: {req.element_groups},{req.file_format},waiting to analysis{req.file_format}")
     temp_summary = req.selected_model['model_name']
     temp_summary = temp_summary.split(".")
     if len(temp_summary) != 2:
         return{
             "success": False,
-            "message": f"文件名有问题，模板为\"4_A_B_C_D_A.csv\",\n现在为：{req.selected_model['model_name']}\n请检查是否与自动设置的一致。"
+            "message": f"file name has something wrong \"4_A_B_C_D_A.csv\",\n now is {req.selected_model['model_name']}\n please check it"
         }
     temp_summary = temp_summary[0].split("_")
     model = []
@@ -238,12 +255,12 @@ async def tdb_generate_model_assessed(req: AmodelTdbGenerateRequest):
     site_element_new = req.element_groups
     print(site_element_new)
         
-    # 检查runner实例是否有效
+    # Check if the runner instance is valid
     if not subl_assess_runner:
-        logger.error(" subl_assess_runner 实例未初始化")
+        logger.error(" subl_assess_runner instance not initialized")
         return JSONResponse(
             status_code=500,
-            content={"success": False, "message": "服务器内部错误: subl_assess_runner 未初始化"}
+            content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
         )
     
     subl_assess_runner.output_all_tdb_file_assessed(candidate_model=[model],
@@ -251,5 +268,5 @@ async def tdb_generate_model_assessed(req: AmodelTdbGenerateRequest):
     
     return {
         "success": True,
-        "message": "输出完成"
+        "message": "output TDB file with assessed model completed"
     }

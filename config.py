@@ -1,6 +1,5 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from src.main_process.al_worker import ALRunner
 from pathlib import Path
 
 # 配置日志
@@ -11,7 +10,6 @@ executor = ThreadPoolExecutor(max_workers=1)
 
 # 安全配置
 ALLOWED_BASE_DIR = ""  # 请根据实际情况修改
-
 # 路径配置
 # 其他html文件的路径
 STATIC_DIR = Path("./static")
@@ -22,7 +20,3 @@ RUN_DIR = Path("./data/run")
 # 相分析的路径
 WORKING_DIR = Path("./data/Phase_data")
 BASE_DATA_DIR = Path("./data")
-    
-# # 导出ALRunner类，供其他模块使用
-# __all__ = ['runner', 'logger', 'executor', 'ALLOWED_BASE_DIR', 
-#            'UPLOAD_DIR', 'STATIC_DIR', 'RUN_DIR', 'ALRunner']

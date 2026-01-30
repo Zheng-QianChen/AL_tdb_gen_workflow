@@ -7,76 +7,73 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-# 1. 导入配置
+# 1. import config and logger
 from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR
-# 2. 导入路由
+# 2. import routes
 from routes.main_routes import main_router
 from routes.al_routes import al_router
 from routes.file_routes import file_router
 from routes.tdb_routes import tdb_router
-# 3. 导入你更新后的 Manager
+# 3. import AL Manager
 from src.main_process.al_manager import ALManager
 
-# 初始化日志
+# init logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("AL_APP")
 
-# 初始化应用
+# init FastAPI app
 app = FastAPI(title="AL TDB Generator Multi-Task System")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许所有来源
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 manager = ALManager()
-app.state.manager = manager  # 必须这一步，路由里的 get_manager 才能生效
-
-# 实例化全局管理器
-manager = ALManager()
+app.state.manager = manager
 
 # ==========================================
-# 静态文件配置
+# static files mounting
 # ==========================================
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 app.mount("/working", StaticFiles(directory=str(WORKING_DIR)), name="working")
 
 # ==========================================
-# 首页与核心路由
+# index and root route
 # ==========================================
 
 @app.get("/")
 async def get_index():
-    """解决 404 问题：访问根域名直接返回原本的页面"""
+    """root route serving index.html"""
     index_path = Path(STATIC_DIR) / "index.html"
     if index_path.exists():
         return FileResponse(index_path)
-    return JSONResponse(status_code=404, content={"message": "首页 index.html 未在 static 目录找到"})
+    return JSONResponse(status_code=404, content={"message": "Index file not found. Please ensure static files are built."})
 
-# 注册原有功能模块路由
+# init and include routers
 app.include_router(main_router)
 app.include_router(al_router)
 app.include_router(file_router)
 app.include_router(tdb_router)
 
 # ==========================================
-# 多任务控制接口 (基于你最新的 Manager 逻辑)
+# Multi-task AL WebSocket and API
 # ==========================================
 
 
 @app.post("/api/start_task")
 async def start_new_al_task(request: Request):
-    """启动一个新的 AL 循环任务"""
+    """start a new AL task via API"""
     try:
         raw_data = await request.json()
-        # 构造唯一 Task ID (建议由前端传入或根据参数生成)
+        # construct unique task_id
         user_id = raw_data.get("user_id", "guest")
         phase_name = raw_data.get("PHASE_NAME", "default")
         task_id = f"{user_id}_{phase_name}"
         
-        # 调用你定义的 Manager 启动逻辑
+        # manager will start a new AL task
         success, msg = await manager.create_and_start_task(task_id, raw_data)
         
         return {
@@ -85,25 +82,25 @@ async def start_new_al_task(request: Request):
             "message": msg
         }
     except Exception as e:
-        logger.error(f"启动任务接口失败: {e}")
+        logger.error(f"Fail to starting this task: {e}")
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
 @app.websocket("/ws")
 async def al_websocket_endpoint(websocket: WebSocket, task: str= "default"):
     """
-    多任务 WebSocket 通道
-    前端连接示例: ws://localhost:8089/ws?task=guest_BetaPhase
+    Multi-task WebSocket channel
+    Frontend connection example: ws://localhost:8089/ws?task=guest_BetaPhase
     """
     await websocket.accept()
 
     task_id = task
 
-    # 使用你 Manager 中的订阅逻辑
+    # Use the subscription logic from the Manager
     manager.subscribe(task_id, websocket)
-    logger.info(f"客户端已订阅任务消息: {task_id}")
+    logger.info(f"Client subscribed to task messages: {task_id}")
     
     try:
-        # 如果 Runner 已经存在，发送一个初始状态快照
+        # If Runner already exists, send an initial state snapshot
         if task_id in manager.tasks:
             runner = manager.tasks[task_id]
             await websocket.send_json({
@@ -114,7 +111,7 @@ async def al_websocket_endpoint(websocket: WebSocket, task: str= "default"):
                 "paused": runner.paused
             })
 
-        # 保持连接，处理前端发来的控制指令
+        # Keep connection alive and process incoming control commands
         while True:
             data = await websocket.receive_json()
             action = data.get("action")
@@ -125,41 +122,41 @@ async def al_websocket_endpoint(websocket: WebSocket, task: str= "default"):
                     await runner.toggle_pause()
                 elif action == "stop":
                     await runner.stop()
-                    # 停止后可以根据需要选择是否 break 连接
+                    # Optional: can choose to break connection after stopping
                     
     except WebSocketDisconnect:
         manager.unsubscribe(task_id, websocket)
-        logger.info(f"客户端取消订阅: {task_id}")
+        logger.info(f"Client unsubscribed: {task_id}")
     except Exception as e:
-        logger.error(f"WS 异常: {e}")
+        logger.error(f"WebSocket Exception: {e}")
         manager.unsubscribe(task_id, websocket)
 
 # ==========================================
-# 生命周期管理
+# Lifecycle Management
 # ==========================================
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    logger.info("系统正在关闭，正在停止所有运行中的 AL 任务...")
-    # 停止 Manager 管理的所有任务
+    logger.info("System shutting down, stopping all active AL tasks...")
+    # Stop all tasks managed by the Manager
     stop_tasks = [runner.stop() for runner in manager.tasks.values()]
     if stop_tasks:
         await asyncio.gather(*stop_tasks)
-    # 关闭全局线程池
+    # Shutdown the global thread pool
     manager.executor.shutdown(wait=True)
-    logger.info("所有资源已释放")
+    logger.info("All resources released")
 
 # ==========================================
-# 启动入口
+# Entry Point
 # ==========================================
 
 if __name__ == "__main__":
-    # 确保任务运行根目录存在
+    # Ensure the root directory for task execution exists
     os.makedirs("static/run", exist_ok=True)
     
-    port = 8092
-    print(f"\n--- AL 多任务系统已启动 ---")
-    print(f"主界面地址: http://localhost:{port}")
-    print(f"API 文档地址: http://localhost:{port}/docs\n")
+    port = 8003
+    print(f"\n--- AL system is running ---")
+    print(f"Main interface URL: http://localhost:{port}")
+    print(f"API documentation URL: http://localhost:{port}/docs\n")
     
     uvicorn.run(app, host="0.0.0.0", port=port)
