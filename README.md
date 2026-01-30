@@ -220,6 +220,7 @@ AL_tdb_gen_workflow/
 ├── static/              # Frontend assets (HTML, JS, CSS)
 ├── working/             # Active computation directory
 └── environment.yml      # Conda environment specification
+```
 
 ---
 
@@ -229,13 +230,13 @@ AL_tdb_gen_workflow/
 ![alt text](manual/image1.png)
 
 ### 2. Run
-```
+```bash
 python app.py
 ```
 ![alt text](image.png)
 
 open local website as feedback:
-```
+```text
  --- AL system is running ---
 Main interface URL: http://localhost:8003
 API documentation URL: http://localhost:8003/docs
