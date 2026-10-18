@@ -1,0 +1,55 @@
+[
+  {
+    "material": "AlNi",
+    "file": "alni-4slx.TDB",
+    "url": "https://raw.githubusercontent.com/sundmanbo/opencalphad/2182307cd22019542206bc12b7779ff48e2b6609/examples/macros/alni-4slx.TDB",
+    "sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+    "kind": "author_repository_working_example",
+    "phase": "FCC4",
+    "actual_sublattices": 4,
+    "magnetism": "magnetic disordered reference, no independent ordered TC/BMAGN parameters",
+    "note": "Sundman's OpenCalphad example dated 2017-08-02; includes Dupin/Sundman references, REF0 without bibliography and an 'at work' reference. Not asserted to be a final journal-supplement database."
+  },
+  {
+    "material": "FeNi",
+    "file": "feni_cac.tdb",
+    "url": "https://zenodo.org/api/records/7767663/files/feni_cac.tdb/content",
+    "sha256": "c9697d880eeba14a801cdd4af6635de0165d8b56ded5976a95f48ac04bf35978",
+    "md5": "e8b53870903f159d5d7770f815e844d7",
+    "kind": "published_research_dataset",
+    "assessment_doi": "10.1016/j.intermet.2010.02.026",
+    "dataset_doi": "10.5281/zenodo.7767663",
+    "dataset_article_doi": "10.1038/s41524-023-01058-9",
+    "phase": "FCC4",
+    "actual_sublattices": 5,
+    "magnetism": "ordered TC and BMAGN corrections plus magnetic disordered reference",
+    "note": "NIMS 2012 transcription of Cacciamani et al. 2010, distributed by Yang/Oyedeji with the 2023 publication; retains the header's documented sign corrections and vacancy-energy convention. BCC4 is not tested because every substitutional site permits VA."
+  },
+  {
+    "material": "AlFe",
+    "file": "AlFe-4SLBF.TDB",
+    "url": "https://raw.githubusercontent.com/sundmanbo/REDUNDANTXML/d40337bea26d9c72d8c2f8343cfdbc80c98841c5/software/examples/AlFe-4SLBF.TDB",
+    "sha256": "e08f375f7573fdedd89cbefc6f7ba3a2c6dbec3c3063ce408531a09a083e4891",
+    "kind": "author_repository_material_example",
+    "related_assessment_doi": "10.1016/j.actamat.2009.02.046",
+    "phase": "BCC_4SL",
+    "actual_sublattices": 5,
+    "magnetism": "ordered TC and BMAGN corrections plus magnetic disordered reference",
+    "note": "Sundman's author repository; file header dated 2008-08-15. Related to the Al-Fe 4SL assessment; byte identity with the 2009 journal supplement is not asserted."
+  },
+  {
+    "material": "AlFeNb",
+    "file": "ALFENB-B2-4SL.TDB",
+    "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0364591616302358-mmc2.zip",
+    "archive_member": "ALFENB-B2-4SL.TDB",
+    "archive_sha256": "f6b4312515c281ed3355b8f15d301c4d65d89ba4474f06bac4ec09d051bd5b87",
+    "sha256": "097b66eeac4803061c1da7529b7672495468d3d9c7e0108b9dffd1216c554cbc",
+    "kind": "publisher_supplement",
+    "assessment_doi": "10.1016/j.calphad.2017.03.005",
+    "index_url": "https://avdwgroup.engin.brown.edu/",
+    "phase": "B2_4SL",
+    "actual_sublattices": 5,
+    "magnetism": "ordered TC and BMAGN corrections plus magnetic disordered reference",
+    "note": "Guo et al. 2017 supplement located through TDBDB. Four substitutional sublattices plus fixed VA; MU_4SL in the same file is not a magnetic ordering validation."
+  }
+]

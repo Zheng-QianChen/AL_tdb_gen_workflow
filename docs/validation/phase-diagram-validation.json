@@ -1,0 +1,374 @@
+{
+  "date": "2026-10-18",
+  "tests": {
+    "tests": "57",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0"
+  },
+  "real_material_cases": [
+    {
+      "name": "AlZn",
+      "summary": {
+        "total_points": 1476,
+        "accepted_points": 1476,
+        "failed_points": 0,
+        "sampling_verified_points": 1476,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "FCC_A1",
+          "FCC_A1 + HCP_A3",
+          "FCC_A1 + LIQUID",
+          "FCC_A1#1 + FCC_A1#2",
+          "HCP_A3",
+          "HCP_A3 + LIQUID",
+          "LIQUID"
+        ]
+      },
+      "boundaries": {
+        "status": "partial",
+        "algorithm": "pycalphad zero-phase-fraction mapping",
+        "x": "X_ZN",
+        "y": "T",
+        "rejected_points": 8,
+        "interior_grid_seeds": 1,
+        "iterations": 159,
+        "warning": "2 tracing branches terminated unsuccessfully; inspect line_terminations",
+        "line_terminations": {
+          "NEW_NODE_FOUND": 6,
+          "FAILED": 2
+        }
+      },
+      "engine": {
+        "name": "pycalphad",
+        "version": "0.11.1",
+        "model": "ThermodynamicModel (partition magnetic parameters before IHJ energy)",
+        "model_sha256": "ecec6af2c604de7238a7b70c0c1c59f5579dba5c77ee11c9db7abec88c5b4809"
+      },
+      "sources": [
+        {
+          "file": "alzn_mey.tdb",
+          "sha256": "36591722726fdaeb1e08b90da913e2533611f30ddd81469170e3f8c3c7f09568"
+        }
+      ],
+      "result_file": "data/phase_diagrams/diagram_ca1815c593bf/diagram.json",
+      "failed_points": []
+    },
+    {
+      "name": "CrTiV",
+      "summary": {
+        "total_points": 136,
+        "accepted_points": 136,
+        "failed_points": 0,
+        "sampling_verified_points": 136,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "BCC_A2",
+          "BCC_A2 + LAVES_C15",
+          "BCC_A2 + LAVES_C36"
+        ]
+      },
+      "boundaries": {
+        "status": "partial",
+        "algorithm": "pycalphad zero-phase-fraction mapping",
+        "x": "X_TI",
+        "y": "X_V",
+        "rejected_points": 0,
+        "interior_grid_seeds": 0,
+        "iterations": 35,
+        "warning": "1 tracing branches terminated unsuccessfully; inspect line_terminations",
+        "line_terminations": {
+          "NEW_NODE_FOUND": 2,
+          "FAILED": 1
+        }
+      },
+      "engine": {
+        "name": "pycalphad",
+        "version": "0.11.1",
+        "model": "ThermodynamicModel (partition magnetic parameters before IHJ energy)",
+        "model_sha256": "ecec6af2c604de7238a7b70c0c1c59f5579dba5c77ee11c9db7abec88c5b4809"
+      },
+      "sources": [
+        {
+          "file": "crtiv_ghosh.tdb",
+          "sha256": "8131bf968a193ca49d562ea16364947d2ae2c1156d1a66b22f8029972c5aff8f"
+        }
+      ],
+      "result_file": "data/phase_diagrams/diagram_5ab1a15e53b3/diagram.json",
+      "failed_points": []
+    },
+    {
+      "name": "AlCrNi",
+      "summary": {
+        "total_points": 136,
+        "accepted_points": 135,
+        "failed_points": 1,
+        "sampling_verified_points": 135,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "B2",
+          "B2 + L12_FCC",
+          "B2 + L12_FCC#1 + L12_FCC#2",
+          "B2 + LIQUID",
+          "B2#1 + B2#2",
+          "B2#1 + B2#2 + L12_FCC",
+          "B2#1 + B2#2 + LIQUID",
+          "L12_FCC",
+          "L12_FCC#1 + L12_FCC#2",
+          "LIQUID"
+        ]
+      },
+      "boundaries": {
+        "status": "partial",
+        "algorithm": "pycalphad zero-phase-fraction mapping",
+        "x": "X_CR",
+        "y": "X_NI",
+        "rejected_points": 0,
+        "interior_grid_seeds": 5,
+        "iterations": 206,
+        "warning": "10 tracing branches terminated unsuccessfully; inspect line_terminations",
+        "line_terminations": {
+          "NEW_NODE_FOUND": 9,
+          "FAILED": 10
+        }
+      },
+      "engine": {
+        "name": "pycalphad",
+        "version": "0.11.1",
+        "model": "ThermodynamicModel (partition magnetic parameters before IHJ energy)",
+        "model_sha256": "ecec6af2c604de7238a7b70c0c1c59f5579dba5c77ee11c9db7abec88c5b4809"
+      },
+      "sources": [
+        {
+          "file": "alcrni.tdb",
+          "sha256": "000e9e00d0b501b77a583f5c64e93cea1cf8658d38fb5e78afd6d7e9bce6d7de"
+        }
+      ],
+      "result_file": "data/phase_diagrams/diagram_4a8d245935d6/diagram.json",
+      "failed_points": [
+        {
+          "point_id": 34,
+          "T_K": 1273.15,
+          "P_Pa": 101325,
+          "path_coordinate": null,
+          "composition": {
+            "AL": 0.13333333333333333,
+            "CR": 0.2,
+            "NI": 0.6666666666666666
+          },
+          "status": "failed",
+          "attempts": [
+            {
+              "density": 100,
+              "status": "failed",
+              "error": "Sampled state lies 19.708 J/mol-atoms below equilibrium tangent plane"
+            },
+            {
+              "density": 200,
+              "status": "failed",
+              "error": "Sampled state lies 19.708 J/mol-atoms below equilibrium tangent plane"
+            }
+          ],
+          "phases": [],
+          "assemblage": "FAILED"
+        }
+      ]
+    }
+  ],
+  "synthetic_cases": [
+    {
+      "mode": "ternary",
+      "status": "calculated",
+      "summary": {
+        "total_points": 231,
+        "accepted_points": 231,
+        "failed_points": 0,
+        "sampling_verified_points": 231,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "SOLID_AL",
+          "SOLID_AL + SOLID_FE",
+          "SOLID_AL + SOLID_FE + SOLID_NI",
+          "SOLID_AL + SOLID_NI",
+          "SOLID_FE",
+          "SOLID_FE + SOLID_NI",
+          "SOLID_NI"
+        ]
+      },
+      "boundary_status": "completed"
+    },
+    {
+      "mode": "isopleth",
+      "status": "calculated",
+      "summary": {
+        "total_points": 651,
+        "accepted_points": 651,
+        "failed_points": 0,
+        "sampling_verified_points": 651,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "LIQUID",
+          "LIQUID + SOLID_AL",
+          "LIQUID + SOLID_AL + SOLID_CR + SOLID_FE",
+          "LIQUID + SOLID_AL + SOLID_NI",
+          "LIQUID + SOLID_CR + SOLID_FE + SOLID_NI",
+          "LIQUID + SOLID_NI",
+          "SOLID_AL + SOLID_CR + SOLID_FE",
+          "SOLID_AL + SOLID_CR + SOLID_FE + SOLID_NI",
+          "SOLID_CR + SOLID_FE + SOLID_NI"
+        ]
+      },
+      "boundary_status": "not_requested"
+    },
+    {
+      "mode": "property",
+      "status": "calculated",
+      "summary": {
+        "total_points": 76,
+        "accepted_points": 76,
+        "failed_points": 0,
+        "sampling_verified_points": 76,
+        "needs_refinement_points": 0,
+        "assemblages": [
+          "LIQUID",
+          "LIQUID + SOLID_NI",
+          "SOLID_AL + SOLID_NI"
+        ]
+      },
+      "boundary_status": "not_requested"
+    }
+  ],
+  "thermocalc": {
+    "engine": "Thermo-Calc Education 2026b",
+    "constraint": "all-phase global equilibrium",
+    "scope": "G-only cross-check; phase compositions/fractions and topology not certified",
+    "tdb_sha256": "36591722726fdaeb1e08b90da913e2533611f30ddd81469170e3f8c3c7f09568",
+    "import_audit": {
+      "accepted_for_comparison": true,
+      "GES": "6",
+      "errors": [],
+      "reference_file_missing": false
+    },
+    "normalization": {
+      "full_comment_lines_removed": 38,
+      "imported_sha256": "30a294d07884d232f20ae44be2e5967881df751e96fead1603bca55322d4ca59",
+      "non_comment_lines_identical": true
+    },
+    "returncode": 0,
+    "timed_out": false,
+    "stopped_after_normal_macro_completion": false,
+    "normal_macro_completion": true,
+    "checks": [
+      {
+        "point_id": 594,
+        "T_K": 580.0,
+        "composition": {
+          "ZN": 0.5,
+          "AL": 0.5
+        },
+        "project_G": -23395.987049041833,
+        "thermocalc_G": -23395.991,
+        "delta_G": -0.0039509581692982465,
+        "converged_marker": true,
+        "result_file": "data\\phase_diagram_validation_20261018\\thermocalc-alzn-comment-lines\\point_000.txt",
+        "energy_agrees": true
+      },
+      {
+        "point_id": 1004,
+        "T_K": 780.0,
+        "composition": {
+          "ZN": 0.5,
+          "AL": 0.5
+        },
+        "project_G": -36484.26507221335,
+        "thermocalc_G": -36484.27,
+        "delta_G": -0.004927786649204791,
+        "converged_marker": true,
+        "result_file": "data\\phase_diagram_validation_20261018\\thermocalc-alzn-comment-lines\\point_001.txt",
+        "energy_agrees": true
+      },
+      {
+        "point_id": 512,
+        "T_K": 540.0,
+        "composition": {
+          "ZN": 0.5,
+          "AL": 0.5
+        },
+        "project_G": -21136.06666724367,
+        "thermocalc_G": -21136.068,
+        "delta_G": -0.0013327563283382915,
+        "converged_marker": true,
+        "result_file": "data\\phase_diagram_validation_20261018\\thermocalc-alzn-comment-lines\\point_002.txt",
+        "energy_agrees": true
+      },
+      {
+        "point_id": 1045,
+        "T_K": 800.0,
+        "composition": {
+          "ZN": 0.5,
+          "AL": 0.5
+        },
+        "project_G": -38065.46057133801,
+        "thermocalc_G": -38065.466,
+        "delta_G": -0.005428661992482375,
+        "converged_marker": true,
+        "result_file": "data\\phase_diagram_validation_20261018\\thermocalc-alzn-comment-lines\\point_003.txt",
+        "energy_agrees": true
+      }
+    ]
+  },
+  "http": {
+    "page_status": 200,
+    "calculation_status": "calculated",
+    "summary": {
+      "total_points": 1,
+      "accepted_points": 1,
+      "failed_points": 0,
+      "sampling_verified_points": 1,
+      "needs_refinement_points": 0,
+      "assemblages": [
+        "LIQUID"
+      ]
+    },
+    "downloads": {
+      "json": {
+        "status": 200,
+        "bytes": 7118
+      },
+      "csv": {
+        "status": 200,
+        "bytes": 716
+      },
+      "phases": {
+        "status": 200,
+        "bytes": 255
+      },
+      "boundaries": {
+        "status": 200,
+        "bytes": 31
+      },
+      "request": {
+        "status": 200,
+        "bytes": 639
+      },
+      "png": {
+        "status": 200,
+        "bytes": 63232
+      },
+      "svg": {
+        "status": 200,
+        "bytes": 53507
+      },
+      "html": {
+        "status": 200,
+        "bytes": 2318
+      }
+    }
+  },
+  "browser_interaction_test": "Not run: CUA runtime failed to initialize in this workspace.",
+  "limitations": [
+    "Finite sampling and local searches do not prove global stability or exhaustive phase topology.",
+    "Real-material phase boundary tracing remains partial.",
+    "Thermo-Calc cross-check covers total Gibbs energy at four points; fractions, site occupations and topology are not certified."
+  ]
+}

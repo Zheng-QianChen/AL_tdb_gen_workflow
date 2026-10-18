@@ -1,0 +1,158 @@
+[
+  {
+    "source": "data\\literature_sources_20261018\\alni-4slx.TDB",
+    "source_sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+    "prepared": "data\\pandat_literature_validation_0a76eb40994c\\conversion_recheck\\alni-4slx.TDB",
+    "prepared_sha256": "917924ec911889fd2112478ee9a7816787593c13c320c4efa95eee35dc367d79",
+    "phase": "FCC4",
+    "retained_phases": [
+      "A1",
+      "FCC4"
+    ],
+    "source_selected_parameters": 35,
+    "prepared_parameters": 35,
+    "ordered_magnetic_parameters": 0,
+    "transformations": [
+      "retain target and its disordered reference",
+      "write symmetry-equivalent parameters explicitly",
+      "use alphabetic type codes on the described phase",
+      "DISORDER_PART keyword",
+      "LN and explicit function-reference markers"
+    ],
+    "equivalence": {
+      "seed": 20261018,
+      "states_per_temperature": 32,
+      "temperatures_K": [
+        300,
+        500,
+        650,
+        800,
+        1050,
+        1400
+      ],
+      "max_abs_G_J_mol_atoms": 0.0,
+      "max_abs_TC_K": 8.526512829121202e-14,
+      "max_abs_BMAG": 5.551115123125783e-17,
+      "tolerance": 1e-06,
+      "status": "passed"
+    },
+    "identical_to_external_input": true
+  },
+  {
+    "source": "data\\literature_sources_20261018\\feni_cac.tdb",
+    "source_sha256": "c9697d880eeba14a801cdd4af6635de0165d8b56ded5976a95f48ac04bf35978",
+    "prepared": "data\\pandat_literature_validation_0a76eb40994c\\conversion_recheck\\feni_cac.tdb",
+    "prepared_sha256": "46add0817b433a94d6866648f0266799ccac4ed7855d38779876e4468e0c97bd",
+    "phase": "FCC4",
+    "retained_phases": [
+      "FCC4",
+      "FCC_A1"
+    ],
+    "source_selected_parameters": 59,
+    "prepared_parameters": 59,
+    "ordered_magnetic_parameters": 28,
+    "transformations": [
+      "retain target and its disordered reference",
+      "write symmetry-equivalent parameters explicitly",
+      "use alphabetic type codes on the described phase",
+      "DISORDER_PART keyword",
+      "LN and explicit function-reference markers"
+    ],
+    "equivalence": {
+      "seed": 20261018,
+      "states_per_temperature": 32,
+      "temperatures_K": [
+        300,
+        500,
+        650,
+        800,
+        1050,
+        1400
+      ],
+      "max_abs_G_J_mol_atoms": 0.0,
+      "max_abs_TC_K": 0.0,
+      "max_abs_BMAG": 0.0,
+      "tolerance": 1e-06,
+      "status": "passed"
+    },
+    "identical_to_external_input": true
+  },
+  {
+    "source": "data\\literature_sources_20261018\\AlFe-4SLBF.TDB",
+    "source_sha256": "e08f375f7573fdedd89cbefc6f7ba3a2c6dbec3c3063ce408531a09a083e4891",
+    "prepared": "data\\pandat_literature_validation_0a76eb40994c\\conversion_recheck\\AlFe-4SLBF.TDB",
+    "prepared_sha256": "c7cc9fe3f824de69b8695cac1cbf84095ac164a672174fd3fc4a60e6c99a8e72",
+    "phase": "BCC_4SL",
+    "retained_phases": [
+      "A2_BCC",
+      "BCC_4SL"
+    ],
+    "source_selected_parameters": 74,
+    "prepared_parameters": 74,
+    "ordered_magnetic_parameters": 44,
+    "transformations": [
+      "retain target and its disordered reference",
+      "write symmetry-equivalent parameters explicitly",
+      "use alphabetic type codes on the described phase",
+      "DISORDER_PART keyword",
+      "LN and explicit function-reference markers"
+    ],
+    "equivalence": {
+      "seed": 20261018,
+      "states_per_temperature": 32,
+      "temperatures_K": [
+        300,
+        500,
+        650,
+        800,
+        1050,
+        1400
+      ],
+      "max_abs_G_J_mol_atoms": 0.0,
+      "max_abs_TC_K": 0.0,
+      "max_abs_BMAG": 0.0,
+      "tolerance": 1e-06,
+      "status": "passed"
+    },
+    "identical_to_external_input": true
+  },
+  {
+    "source": "data\\literature_sources_20261018\\ALFENB-B2-4SL.TDB",
+    "source_sha256": "097b66eeac4803061c1da7529b7672495468d3d9c7e0108b9dffd1216c554cbc",
+    "prepared": "data\\pandat_literature_validation_0a76eb40994c\\conversion_recheck\\ALFENB-B2-4SL.TDB",
+    "prepared_sha256": "b67a9a3969e2f5246f09741d6b2bb477dfac95dffc4b7235cbad0798bd1c17f2",
+    "phase": "B2_4SL",
+    "retained_phases": [
+      "B2_4SL",
+      "BCC_A2"
+    ],
+    "source_selected_parameters": 141,
+    "prepared_parameters": 141,
+    "ordered_magnetic_parameters": 36,
+    "transformations": [
+      "retain target and its disordered reference",
+      "write symmetry-equivalent parameters explicitly",
+      "use alphabetic type codes on the described phase",
+      "DISORDER_PART keyword",
+      "LN and explicit function-reference markers"
+    ],
+    "equivalence": {
+      "seed": 20261018,
+      "states_per_temperature": 97,
+      "temperatures_K": [
+        300,
+        500,
+        650,
+        800,
+        1050,
+        1400
+      ],
+      "max_abs_G_J_mol_atoms": 0.0,
+      "max_abs_TC_K": 0.0,
+      "max_abs_BMAG": 0.0,
+      "tolerance": 1e-06,
+      "status": "passed"
+    },
+    "identical_to_external_input": true
+  }
+]

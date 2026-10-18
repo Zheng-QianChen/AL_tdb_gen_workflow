@@ -1,22 +1,48 @@
+"""Application paths are independent of the shell's working directory."""
 import logging
-from concurrent.futures import ThreadPoolExecutor
+import os
 from pathlib import Path
 
-# 配置日志
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("al_tdb")
+PROJECT_ROOT = Path(__file__).resolve().parent
+STATIC_DIR = PROJECT_ROOT / "static"
+if STATIC_DIR.is_dir():
+    DEFAULT_DATA_DIR = PROJECT_ROOT / "data"
+else:
+    # Wheel assets live with the package; mutable runs belong to the user.
+    from altdb import __file__ as package_file
+    STATIC_DIR = Path(package_file).resolve().parent / "web_assets"
+    DEFAULT_DATA_DIR = Path.home() / ".altdb" / "data"
+BASE_DATA_DIR = Path(os.environ.get("AL_TDB_DATA_DIR", DEFAULT_DATA_DIR)).resolve()
+UPLOAD_DIR = BASE_DATA_DIR / "uploads"
+RUN_DIR = BASE_DATA_DIR / "run"
+WORKING_DIR = BASE_DATA_DIR / "Phase_data"
+ALLOWED_BASE_DIR = BASE_DATA_DIR
+HOST = os.environ.get("AL_TDB_HOST", "127.0.0.1")
+PORT = int(os.environ.get("AL_TDB_PORT", "8003"))
 
-executor = ThreadPoolExecutor(max_workers=1)
 
-# 安全配置
-ALLOWED_BASE_DIR = "."  # 请根据实际情况修改
-# 路径配置
-# 其他html文件的路径
-STATIC_DIR = Path("./static")
-# 上传文件的路径
-UPLOAD_DIR = Path("./data/uploads")
-# input.json 的路径
-RUN_DIR = Path("./data/run")
-# 相分析的路径
-WORKING_DIR = Path("./data/Phase_data")
-BASE_DATA_DIR = Path("./data")
+def safe_name(value):
+    value = str(value).strip()
+    if not value or value in {".", ".."} or any(c in value for c in '/\\:\x00'):
+        raise ValueError("Expected a filename or task name without path separators")
+    if value.endswith((".", " ")):
+        raise ValueError("Invalid filename suffix")
+    stem = value.split(".")[0].upper()
+    if stem in {"CON", "PRN", "AUX", "NUL", *[f"COM{i}" for i in range(1, 10)], *[f"LPT{i}" for i in range(1, 10)]}:
+        raise ValueError("Reserved filename")
+    return value
+
+
+def resolve_data_path(value):
+    """Accept data-relative paths and old data/... paths, but never escape data/."""
+    text = str(value).replace("\\", "/")
+    if text.startswith("/get_data_file/"):
+        text = text[len("/get_data_file/"):]
+    if text.startswith("data/"):
+        text = text[5:]
+    path = Path(text)
+    target = (path if path.is_absolute() else BASE_DATA_DIR / path).resolve()
+    if not target.is_relative_to(BASE_DATA_DIR):
+        raise ValueError("Path must stay within the application data directory")
+    return target

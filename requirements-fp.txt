@@ -1,0 +1,3 @@
+-r requirements.txt
+dpdata==1.1.0
+dpdispatcher==1.1.0

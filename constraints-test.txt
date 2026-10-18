@@ -1,0 +1,20 @@
+# Direct dependency versions used for the regression environment.
+numpy==2.3.5
+pandas==2.3.3
+scipy==1.16.3
+scikit-learn==1.8.0
+pymatgen==2025.10.7
+matplotlib==3.10.8
+fastapi==0.128.0
+pydantic==2.12.5
+uvicorn==0.40.0
+python-multipart==0.0.21
+pytest==8.4.2
+httpx==0.28.1
+pycalphad==0.11.1
+symengine==0.13.0
+tinydb==4.9.0
+filelock==4.2.1
+textual==8.2.8
+dpdata==1.1.0
+dpdispatcher==1.1.0

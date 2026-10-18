@@ -1,0 +1,24 @@
+name: regression-tests
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt -c constraints-test.txt
+      - run: python -m ruff check --select F821,F822,F823 app.py main.py config.py routes src altdb examples tests
+      - run: python -m pytest -q
+      - run: python -m pip wheel --no-deps . --wheel-dir dist
+      - name: Install built wheel
+        run: python -c "import glob,subprocess,sys; subprocess.check_call([sys.executable,'-m','pip','install','--no-deps','--force-reinstall',*glob.glob('dist/*.whl')])"
+      - name: Check installed CLI and web assets outside checkout
+        run: python -c "import os,tempfile,subprocess,sys; os.chdir(tempfile.mkdtemp()); os.environ['AL_TDB_DATA_DIR']=os.path.abspath('data'); import config; assert config.STATIC_DIR.name=='web_assets'; from app import app; from fastapi.testclient import TestClient; client=TestClient(app); assert client.get('/health').status_code==200; assert client.get('/phase-diagram').status_code==200; assert client.get('/static/phase-diagram.js').status_code==200; subprocess.check_call([sys.executable,'-m','altdb','--help'])"

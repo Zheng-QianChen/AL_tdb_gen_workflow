@@ -1,49 +1,42 @@
-import webview
+"""Browser launcher; pass --desktop for the optional pywebview window."""
+import argparse
 import threading
+import time
 import uvicorn
-import sys
-import os
+from app import app, serve
+from config import HOST, PORT
 
-# 1. 导入你的 FastAPI 实例
-# 确保是从你原来的主逻辑文件导入，或者直接在这里定义
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from config import logger, ALLOWED_BASE_DIR, UPLOAD_DIR, STATIC_DIR, WORKING_DIR
-from routes.main_routes import main_router
-from routes.al_routes import al_router
-from routes.file_routes import file_router
-from routes.tdb_routes import tdb_router
 
-# --- 这里放置你原来的路由和挂载代码 ---
-app = FastAPI()
-app.include_router(main_router)
-app.include_router(al_router)
-app.include_router(file_router)
-app.include_router(tdb_router)
-@app.get("/")
-async def get_home():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--desktop", action="store_true", help="Open an optional pywebview window")
+    options = parser.parse_args()
+    if not options.desktop:
+        serve()
+        return
+    try:
+        import webview
+    except ImportError as exc:
+        raise SystemExit("Desktop mode needs pywebview: pip install pywebview") from exc
+    server = uvicorn.Server(uvicorn.Config(app, host=HOST, port=PORT))
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    url = f"http://127.0.0.1:{PORT}"
+    try:
+        for _ in range(100):
+            if server.started:
+                break
+            if not thread.is_alive():
+                raise RuntimeError("Backend failed to start")
+            time.sleep(.1)
+        else:
+            raise RuntimeError("Backend did not become ready")
+        webview.create_window("AL TDB Generator", url)
+        webview.start()
+    finally:
+        server.should_exit = True
+        thread.join()
 
-# 3. 挂载静态资源
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
-def start_fastapi():
-    port = 8082
-    # 注意：这里直接传入 app 对象，而不是字符串 "app"
-    # 也不要和 import 的模块名搞混
-    uvicorn.run(app, host="127.0.0.1", port=port, log_level="info")
 
 if __name__ == "__main__":
-    # 1. 启动后端线程
-    # 使用 daemon=True 确保主窗口关闭时，后端线程也会自动退出
-    t = threading.Thread(target=start_fastapi, daemon=True)
-    t.start()
-
-    # 2. 启动前端窗口
-    # 建议先等待一秒确保后端服务已启动，或者使用 webview 的检查机制
-    try:
-        webview.create_window('AL TDB Gen UI', 'http://127.0.0.1:8082')
-        webview.start()
-    except Exception as e:
-        print(f"窗口启动失败: {e}")
+    main()

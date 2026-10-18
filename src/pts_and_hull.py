@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-from scipy.spatial import ConvexHull
 
 def is_inside_convex_hull(points: np.ndarray, hull_equations: np.ndarray, tol: float = 1e-8, test_flag : bool = False) -> np.ndarray:
     """
@@ -46,33 +44,32 @@ def batch_distance_to_convex_hull(points: np.ndarray, equations: np.ndarray) -> 
     """
     num_points = points.shape[0]
     min_differences = np.full(num_points, np.inf)
-    
+
     for equation in equations:
         a = equation[:-1]
         b = equation[-1]
         if a[-1] == 0:
             print(equation)
             continue
-        
+
         # 计算投影点的第n维坐标
         x_n = -(a[:-1] @ points[:, :-1].T + b) / a[-1]
         projections = np.hstack([points[:, :-1], x_n.T.reshape(-1, 1)])
-        
+
         # 检查投影点是否在凸包内部
         # 这是因为凸包超平面方程以单纯形方式去考虑就太复杂了，采用投影方式
         # 如果投影点在凸包上,说明点沿着能量轴的投影就在该面上
         inside = is_inside_convex_hull(projections, equations, test_flag=1)
-        
+
         # 计算差值
         differences = points[:, -1] - projections[:, -1]
         differences[~inside] = np.inf  # 不在凸包内的点的差值设为无穷大
-        
+
         # 更新最小差值,比较差值的绝对值
         # 虽然按照我的脑测，因为在最初的数据集中去除了生成焓大于0的部分，所以应该都是负号
         # 为了计算的稳定性，在此处仍然选择绝对值比较处理
         abs_differences = np.abs(differences)
         abs_min_differences = np.abs(min_differences)
         min_differences = np.where(abs_differences < abs_min_differences, differences, min_differences)
-    
-    return min_differences
 
+    return min_differences

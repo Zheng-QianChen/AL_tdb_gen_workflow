@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多相平衡与相图 · AL-TDB</title><link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<style>
+body{background:#f3f6fa;color:#172a3a}main{max-width:1280px;margin:auto;padding:28px 24px 60px}.card{border:1px solid #dce4ed;border-radius:12px;margin:20px 0}.card-body{padding:24px}h1{font-size:28px}h2{font-size:20px}label{margin:8px 0 5px;font-weight:550}.hint{color:#566b7a;font-size:14px}#phase-choices label{font-weight:400;margin-right:20px}#plot{width:100%;background:white}#notice{white-space:pre-wrap}.links a{display:inline-block;margin:6px 18px 6px 0}[hidden]{display:none!important}pre{white-space:pre-wrap;max-height:400px;overflow:auto}fieldset{margin:8px 0;padding:12px;border:1px solid #dce4ed;border-radius:6px}.table-responsive{max-height:380px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}@media(max-width:700px){.grid{grid-template-columns:1fr}}.form-control,.form-select{min-height:42px}nav a{color:white}
+</style></head><body>
+<nav class="navbar navbar-dark bg-primary px-4"><a class="navbar-brand" href="/">AL-TDB</a><a href="/gibbs">Gibbs 曲线</a></nav>
+<main><h1>多相平衡与相图</h1><p class="hint">让候选相共同竞争，求解相组成、相分数与内部占位。支持同相分相、共存连线和相界追踪。</p>
+<section class="card"><div class="card-body"><h2>1 · 数据库与候选相</h2>
+<div class="grid"><div><label for="databases">TDB 文件路径 · 每行一个</label><textarea id="databases" class="form-control" rows="3" placeholder="uploads/system.tdb"></textarea><p class="hint">路径相对于 data/。组合数据库必须使用相容参考态，并包含需要竞争的全部相。</p></div>
+<div><label for="tdb-upload">上传 TDB 文件</label><input id="tdb-upload" type="file" multiple accept=".tdb,.TDB" class="form-control"><label for="config">加入已训练的工作流相 · 可选</label><input id="config" class="form-control" placeholder="run/input.json"></div></div>
+<button id="load" class="btn btn-outline-primary mt-2">读取组元与相</button>
+<div id="model-options" hidden><label for="components">计算组元 · 逗号分隔，不填写 VA</label><input id="components" class="form-control" placeholder="AL, NI"><p id="available-components" class="hint mt-1"></p>
+<fieldset><legend class="fs-6">候选相 · 默认全部选中</legend><div id="phase-choices"></div></fieldset><p class="hint">有序相包含对应无序状态时，无序参考相会自动由有序模型代表。取消竞争相得到的是受限相图；结果会列出排除原因。</p></div>
+</div></section>
+<section class="card"><div class="card-body"><h2>2 · 计算条件</h2><div class="grid">
+<div><label for="mode">计算类型</label><select id="mode" class="form-select"><option value="binary">二元温度–成分相图</option><option value="ternary">三元等温截面</option><option value="isopleth">多元成分路径截面</option><option value="property">固定成分的相分数–温度</option><option value="point">多相平衡单点</option></select></div>
+<div><label for="pressure">压力 / Pa</label><input id="pressure" class="form-control" type="number" min="1" value="101325"></div>
+<div><label for="temperature-min">温度起点 / K</label><input id="temperature-min" class="form-control" type="number" min="1" value="300"></div>
+<div class="temperature-sweep"><label for="temperature-max">温度终点 / K</label><input id="temperature-max" class="form-control" type="number" min="1" value="1400"></div>
+<div class="temperature-sweep"><label for="temperature-count">温度点数</label><input id="temperature-count" class="form-control" type="number" min="2" max="301" value="41"></div>
+<div class="composition-grid"><label for="points">成分网格点数 / 每条边</label><input id="points" class="form-control" type="number" min="2" max="301" value="31"></div>
+<div class="binary-only"><label for="x-component">成分横轴组元</label><input id="x-component" class="form-control" placeholder="默认最后一个组元"></div>
+<div class="binary-only"><label for="x-range">横轴范围</label><input id="x-range" class="form-control" value="0, 1"></div>
+<div class="path-only" hidden><label for="composition-start">路径起点 · 原子分数</label><input id="composition-start" class="form-control" placeholder="AL=0.9, NI=0.05, FE=0.05"></div>
+<div class="path-only" hidden><label for="composition-end">路径终点 · 原子分数</label><input id="composition-end" class="form-control" placeholder="AL=0.1, NI=0.85, FE=0.05"></div>
+<div class="fixed-only" hidden><label for="composition">总成分 · 原子分数</label><input id="composition" class="form-control" placeholder="AL=0.5, NI=0.5"></div>
+</div><details class="mt-3"><summary>求解与检查设置</summary><div class="grid">
+<div><label for="density">自由能曲面采样密度</label><input id="density" class="form-control" type="number" min="20" max="2000" value="200"></div>
+<div><label for="mapping-steps">相界追踪步数上限</label><input id="mapping-steps" class="form-control" type="number" min="10" max="20000" value="5000"></div></div>
+<label class="d-block"><input id="verify" type="checkbox" checked> 使用双倍密度复查每个平衡点</label>
+<label class="d-block"><input id="mapping" type="checkbox" checked> 二元 / 三元相界追踪</label>
+<label class="d-block"><input id="missing-ordered" type="checkbox"> 允许有序修正模型省略零值端元参数（仅适用于明确采用该约定的数据库）</label></details>
+<p id="estimate" class="hint mt-3"></p><button id="calculate" class="btn btn-primary" disabled>计算相图</button>
+<button id="save-request" class="btn btn-outline-primary ms-2" disabled>保存参数供 CLI / TUI 使用</button>
+<label for="request-upload" class="d-block mt-3">导入已保存的计算参数 JSON</label><input id="request-upload" class="form-control" type="file" accept=".json">
+</div></section>
+<div id="notice" class="alert alert-secondary" role="status" aria-live="polite">先读取数据库，再选择计算范围。</div>
+<section id="results" class="card" hidden><div class="card-body"><h2 id="result-title">计算结果</h2><p id="summary"></p><img id="plot" alt="多相平衡相图"><div id="downloads" class="links"></div>
+<p class="hint">颜色表示网格点的平衡相组合，线表示共存连线或追踪相界。相分数按原子摩尔数计。失败点和未完成的相界不会被当作成功结果；数值搜索不构成全局最优或相区完整性证明。</p>
+<label for="point">查看平衡点</label><select id="point" class="form-select"></select><p id="point-summary" class="mt-3"></p>
+<div class="table-responsive"><table class="table table-sm"><thead><tr><th>组成集</th><th>相分数</th><th>相成分</th><th>G / J·mol-atoms⁻¹</th><th>亚点阵占位</th></tr></thead><tbody id="point-phases"></tbody></table></div>
+<details><summary>数值检查、模型来源与排除相</summary><pre id="diagnostics"></pre></details>
+</div></section></main><script src="/static/phase-diagram.js"></script></body></html>

@@ -1,204 +1,139 @@
-from fastapi import APIRouter,Request, HTTPException
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-import asyncio,fastapi
-from config import logger, executor, RUN_DIR, BASE_DATA_DIR
+"""TDB export and task-scoped sublattice analysis."""
+import asyncio
+from functools import partial
+from pathlib import Path
+import re
+
+from fastapi import APIRouter, Body, HTTPException, Request
+from pydantic import BaseModel, Field
+
+from config import BASE_DATA_DIR, RUN_DIR, resolve_data_path, safe_name
 from src.main_process.al_worker import ALRunner
 from src.main_process.subl_model_assess import subl_assess
+from src.gibbs_settings import GibbsRequest, GibbsSource
+from src.gibbs_compare import GibbsComparisonRequest
 import src.generate as generate
-from pathlib import Path
 
 tdb_router = APIRouter()
-subl_assess_runner:subl_assess = None
 
-# Define request model
+
+@tdb_router.post("/gibbs/reference-template")
+async def gibbs_reference_template(request: Request, result: str = Body(embed=True)):
+    from src.gibbs_compare import prepare_reference
+    report = await compute(request, prepare_reference, result)
+    report["urls"] = {key: "/get_data_file/" + Path(value).resolve().relative_to(BASE_DATA_DIR).as_posix()
+                      for key, value in report["files"].items()}
+    return report
+
+
+@tdb_router.post("/gibbs/compare")
+async def gibbs_compare(request: Request, data: GibbsComparisonRequest):
+    from src.gibbs_compare import run_comparison
+    report = await compute(request, run_comparison, data)
+    report["urls"] = {key: "/get_data_file/" + Path(value).resolve().relative_to(BASE_DATA_DIR).as_posix()
+                      for key, value in report["files"].items()}
+    return report
+
+
+@tdb_router.post("/gibbs/options")
+async def gibbs_options(request: Request, data: GibbsSource):
+    from src.gibbs import source_options
+    return await compute(request, source_options, data)
+
+
+@tdb_router.post("/gibbs/calculate")
+async def gibbs_calculate(request: Request, data: GibbsRequest):
+    from src.gibbs import run_curve
+    result = await compute(request, run_curve, data)
+    result["urls"] = {key: "/get_data_file/" + Path(value).resolve().relative_to(BASE_DATA_DIR).as_posix()
+                      for key, value in result["files"].items()}
+    return result
+
+
+def assessment(request, task_id):
+    assessments = request.app.state.manager.assessments
+    if task_id is None and len(assessments) == 1:
+        return next(iter(assessments.values()))
+    if task_id not in assessments:
+        raise HTTPException(409, "Generate a TDB first and specify its task_id")
+    return assessments[task_id]
+
+
+async def compute(request, function, *args, **kwargs):
+    try:
+        return await asyncio.get_running_loop().run_in_executor(
+            request.app.state.manager.executor, partial(function, *args, **kwargs))
+    except (ValueError, OSError, KeyError, ImportError) as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
+def model_from_filename(value):
+    if not re.fullmatch(r"[1-9][0-9]*(?:_[A-Z]+)+\.csv", value):
+        raise HTTPException(422, "Expected a model filename such as 2_A_B_A.csv")
+    count, *sites = Path(value).stem.split("_")
+    labels = list(dict.fromkeys(sites))
+    if len(labels) != int(count) or labels != [chr(65 + i) for i in range(int(count))]:
+        raise HTTPException(422, "Model labels must introduce A, B, C in order")
+    return [int(count), ":".join(sites)]
+
+
 class TdbGenerationRequest(BaseModel):
-    user: str
-    mask: int
-    input_file_path: str
+    user: str = "guest"
+    mask: float = Field(default=5, ge=0, allow_inf_nan=False)
+    input_file_path: str = "input"
+
 
 @tdb_router.post("/generate_tdb")
-async def generate_tdb(
-    request: Request,
-    data: TdbGenerationRequest
-):
-    manager = request.app.state.manager
-    global subl_assess_runner
-    """Generate TDB file"""
+async def generate_tdb(request: Request, data: TdbGenerationRequest):
     try:
-        # Construct or retrieve task ID
-        user_id = data.user if data.user else "guest"
-        configname = data.input_file_path if data.input_file_path else "input"
-        # config_dir = data.get("config", {})
-        task_id = f"{user_id}_{configname}"
-        data.input_file_path = f"{RUN_DIR}/{configname}.json"
+        user = safe_name(data.user or "guest")
+        config_name = safe_name(data.input_file_path or "input")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    task_id = f"{user}_{config_name}"
+    config_path = RUN_DIR / f"{config_name}.json"
+    reader = ALRunner(task_id, config_path)
+    result = await compute(request, reader.output_tdb_file, user, data.mask)
+    analyzer = await compute(request, subl_assess,
+        input_data_file=result["input_data"],
+        vasp_ml_data_path=result["file_path"] / result["file_name_csv"],
+        record_path=result["file_path"])
+    request.app.state.manager.assessments[task_id] = analyzer
+    return {"success": True, "task_id": task_id,
+            "file_path": str(result["file_path"] / result["file_name_tdb"]),
+            "sublatticeNumber": len(analyzer.site_weight)}
 
-        logger.info(f"Received TDB file generation data: user={data.user}, mask={data.mask}, input.json = {data.input_file_path}")
-        
-        await manager.create_and_start_task(task_id, f"{RUN_DIR}/{configname}.json")
-        loop_runner = manager.tasks.get(task_id)
-        loop_runner = manager.tasks.get(task_id)
-
-        # Check if the runner instance is valid
-        if not loop_runner:
-            logger.error("ALRunner instance not initialized")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "Internal server error: uninitialized ALRunner instance   "}
-            )
-        
-        loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(
-            executor,
-            loop_runner.output_tdb_file,
-            data.user,
-            data.mask,
-            data.input_file_path
-        )
-        print(result)
-        
-        if result:
-            print(result)
-            logger.info(f"TDB file generated successfully: {result['file_path'],result['file_name_tdb']}")
-            subl_assess_runner = subl_assess(input_data_file=result['input_data'],
-                                             vasp_ml_data_path=result['file_path'] / result['file_name_csv'],
-                                             record_path=result['file_path'])
-            print(len(subl_assess_runner.site_weight))
-            print(78)
-            return {
-                "success": True, 
-                "message": "TDB file generated successfully",
-                "file_path": result['file_path'] / result['file_name_tdb'],
-                "sublatticeNumber":len(subl_assess_runner.site_weight)
-            }
-        else:
-            logger.error("TDB file generation failed")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "TDB file generation failed"}
-            )
-            
-    except Exception as e:
-        logger.error(f"Error occurred while generating TDB file: {str(e)}", exc_info=True)
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": f"Error occurred while generating TDB file: {str(e)}"}
-        )
-    
 
 @tdb_router.post("/analyze_models")
-async def analyze_models(choosen:list[int] = fastapi.Body(...)):
-    """Perform model analysis"""
-    try:
-        logger.info(f"Received sublattice model analysis request: {len(choosen)}")
-        
-        # Check if the runner instance is valid
-        if not subl_assess_runner:
-            logger.error(" subl_assess_runner instance is not initialized")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
-            )
-        
-        result = subl_assess_runner.get_model_result_raw(choosen)
-        
-        if result:
-            print(result)
-            logger.info(f"Model analysis completed")
-            return {
-                "success": True, 
-                "message": "Model analysis completed"
-            }
-        else:
-            logger.error("Model analysis failed")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "Model analysis failed"}
-            )
-            
-    except Exception as e:
-        logger.error(f"Model analysis failed: {str(e)}", exc_info=True)
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": f"Model analysis failed: {str(e)}"}
-        )
-    
+async def analyze_models(request: Request, choosen: list[int] = Body(...), task_id: str | None = None):
+    analyzer = assessment(request, task_id)
+    if not choosen or any(value < 1 or value > len(analyzer.site_weight) for value in choosen):
+        raise HTTPException(422, "Choose valid sublattice counts")
+    await compute(request, analyzer.get_model_result_raw, choosen)
+    return {"success": True, "message": "Model analysis completed"}
+
 
 @tdb_router.post("/plot_base_analyze_models")
-async def plot_base_analyze_models():
-    """Perform plotting / generating figures"""
-    try:
-        
-        # Check if the runner instance is valid
-        if not subl_assess_runner:
-            logger.error(" subl_assess_runner instance not initialized")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
-            )
-        
-        # utilize the existing subl_assess_runner to plot
-        result = subl_assess_runner.plot_model_result_raw()
-        
-        if result['state']:
-            result['plot_file'] = Path(result['plot_file'])
-            print(result['plot_file'])
-            logger.info(f"Model analysis plot completed, stored at：{result['plot_file']}")
-            fig_name = result['plot_file'].relative_to(BASE_DATA_DIR)
-            csv_name = result['score_file'].relative_to(BASE_DATA_DIR)
-            return {
-                "plot_file": f'/get_data_file/{fig_name}',
-                "score_file": f'/get_data_file/{csv_name}',
-                "success": True, 
-                "message": "Model analysis plot completed"
-            }
-        else:
-            logger.error("Model analysis plotting failed")
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": "Model analysis plotting failed"}
-            )
-            
-    except Exception as e:
-        logger.error(f"Failed in plotting: {str(e)}", exc_info=True)
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": f"Failed in plotting: {str(e)}"}
-        )
-    
+async def plot_base_analyze_models(request: Request, task_id: str | None = None):
+    result = await compute(request, assessment(request, task_id).plot_model_result_raw)
+    return {"success": True, **{
+        key: "/get_data_file/" + Path(result[key]).resolve().relative_to(BASE_DATA_DIR).as_posix()
+        for key in ("plot_file", "score_file")}}
+
 
 class ElementGroupsRequest(BaseModel):
-    selected_model: str = ""
+    selected_model: str
 
-# Response body: return a 2D list of elements
-class ElementGroupsResponse(BaseModel):
-    success: bool = True
-    element_groups: list[list[str]]
-    message: str = ""
 
-@tdb_router.post("/get_element_groups", response_model=ElementGroupsResponse)
-async def get_element_groups(req: ElementGroupsRequest):
-    # Mock a 2D list returned from the backend
-    print(req.selected_model)
-    model_summary = req.selected_model.split('.')[0]
-    model_summary = model_summary.split('_')
-    model = []
-    model.append(model_summary[0])
-    model.append(':'.join(model_summary[1:]))
-    mock_element_groups = generate.get_model_site_elements(model=model, elements=subl_assess_runner.site_elements)
-    # mock_element_groups = [
-    #     ['H','He','Li','Be','B'],
-    #     ['Li','Be','C'],
-    #     ['Li','Be'],
-    #     ['Li','Be','O'],
-    #     ['Li','Be','N'],
-    #     ['Li','Be','B']
-    # ]
-    return {
-        "success": True,
-        "element_groups": mock_element_groups,
-        "message": f"elements groups responce for {req.selected_model}"
-    }
+@tdb_router.post("/get_element_groups")
+async def get_element_groups(request: Request, data: ElementGroupsRequest, task_id: str | None = None):
+    analyzer = assessment(request, task_id)
+    model = model_from_filename(data.selected_model)
+    if len(model[1].split(":")) != len(analyzer.site_weight):
+        raise HTTPException(422, "Model does not match this task's sublattices")
+    groups = generate.get_model_site_elements(model=model, elements=analyzer.site_elements)
+    return {"success": True, "element_groups": groups}
+
 
 class FilterSubmitRequest(BaseModel):
     selected_model: str
@@ -206,67 +141,51 @@ class FilterSubmitRequest(BaseModel):
     need_del: list[list[str]]
     fix: list[list[str]]
 
-class FilterSubmitResponse(BaseModel):
-    success: bool = True
-    message: str = ""
 
-@tdb_router.post("/submit_filtered_elements", response_model=FilterSubmitResponse)
-async def submit_filtered_elements(req: FilterSubmitRequest):
-    print("im in /submit_filtered_elements")
-    # Actually needs to be read from a database or config file
-    print(f"model {req.selected_model}: delete elements {req.need_del}, fixed (retained) elements {req.fix}, waiting to analysis {req.analys}")
-
-    
-    return {
-        "success": True,
-        "message": "Element filtering has taken effect"
-    }
+@tdb_router.post("/submit_filtered_elements")
+async def submit_filtered_elements(request: Request, data: FilterSubmitRequest, task_id: str | None = None):
+    analyzer = assessment(request, task_id)
+    model = model_from_filename(data.selected_model)
+    allowed = generate.get_model_site_elements(model=model, elements=analyzer.site_elements)
+    if any(len(groups) != len(allowed) for groups in (data.analys, data.need_del, data.fix)):
+        raise HTTPException(422, "Element groups do not match the selected model")
+    for allowed_site, a, d, f in zip(allowed, data.analys, data.need_del, data.fix):
+        groups = [set(a), set(d), set(f)]
+        if (set.union(*groups) != set(allowed_site)
+                or groups[0] & groups[1] or groups[0] & groups[2] or groups[1] & groups[2]
+                or not (groups[0] | groups[2])):
+            raise HTTPException(422, "Assign each allowed element to exactly one group; retain a constituent per site")
+    analyzer.element_filter = data.model_dump()
+    return {"success": True, "message": "Element choices saved for this task; use Export to write the database"}
 
 
 class AmodelTdbGenerateRequest(BaseModel):
     output_path: str
     selected_model: dict
     element_groups: list[list[str]]
-    include_metrics: bool
-    file_format: str
+    include_metrics: bool = True
+    file_format: str = "tdb"
 
-class AmodelTdbGenerateResponse(BaseModel):
-    success: bool = True
-    message: str = ""
 
-@tdb_router.post("/tdb_generate_model_assessed", response_model=AmodelTdbGenerateResponse)
-async def tdb_generate_model_assessed(req: AmodelTdbGenerateRequest):
-    print("im in /tdb_generate_model_assessed")
-    # Actual logic: update the model's element configuration
-    print(f"model {req.selected_model['model_name']} files will be save in {req.output_path}, elements: {req.element_groups},{req.file_format},waiting to analysis{req.file_format}")
-    temp_summary = req.selected_model['model_name']
-    temp_summary = temp_summary.split(".")
-    if len(temp_summary) != 2:
-        return{
-            "success": False,
-            "message": f"file name has something wrong \"4_A_B_C_D_A.csv\",\n now is {req.selected_model['model_name']}\n please check it"
-        }
-    temp_summary = temp_summary[0].split("_")
-    model = []
-    model.append(temp_summary[0])
-    model.append(":".join(temp_summary[1:]))
-    model[0] = int(model[0])
-    target_path = Path(req.output_path)
-    site_element_new = req.element_groups
-    print(site_element_new)
-        
-    # Check if the runner instance is valid
-    if not subl_assess_runner:
-        logger.error(" subl_assess_runner instance not initialized")
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": "Error: subl_assess_runner is not initialized"}
-        )
-    
-    subl_assess_runner.output_all_tdb_file_assessed(candidate_model=[model],
-                                    site_elements=site_element_new, tor=5, save_path=target_path)
-    
-    return {
-        "success": True,
-        "message": "output TDB file with assessed model completed"
-    }
+@tdb_router.post("/tdb_generate_model_assessed")
+async def tdb_generate_model_assessed(request: Request, data: AmodelTdbGenerateRequest, task_id: str | None = None):
+    analyzer = assessment(request, task_id)
+    model = model_from_filename(str(data.selected_model.get("model_name", "")))
+    if len(model[1].split(":")) != len(analyzer.site_weight):
+        raise HTTPException(422, "Model does not match this task")
+    allowed = generate.get_model_site_elements(model=model, elements=analyzer.site_elements)
+    if len(data.element_groups) != len(allowed) or any(
+            not group or not set(group) <= set(site) or len(set(group)) != len(group)
+            for group, site in zip(data.element_groups, allowed)):
+        raise HTTPException(422, "Invalid export constituents")
+    if data.file_format.lower().lstrip(".") != "tdb":
+        raise HTTPException(422, "Only TDB export is supported")
+    try:
+        destination = resolve_data_path(data.output_path)
+    except ValueError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    exported = await compute(request, analyzer.output_all_tdb_file_assessed,
+                  candidate_model=[model], site_elements=data.element_groups, tor=5,
+                  save_path=destination)
+    return {"success": True, "message": "Assessed TDB exported", "output_path": str(destination),
+            "tdb_files": [str(path) for path in exported], "phase": analyzer.input_data["phase_name"]}

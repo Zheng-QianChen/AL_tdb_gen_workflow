@@ -1,0 +1,5 @@
+-r requirements.txt
+pycalphad==0.11.1
+sympy>=1.13,<2
+symengine>=0.13,<0.14
+tinydb>=4.5,<5

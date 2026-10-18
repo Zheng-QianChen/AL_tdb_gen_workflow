@@ -1,0 +1,18 @@
+# Keep maintained source portable without rewriting vendored browser libraries.
+/*.py text eol=lf
+/*.txt text eol=lf
+/*.toml text eol=lf
+/*.yml text eol=lf
+/*.md text eol=lf
+/altdb/** text eol=lf
+/src/** text eol=lf
+/routes/** text eol=lf
+/examples/** text eol=lf
+/tests/** text eol=lf
+/.github/** text eol=lf
+/docs/*.md text eol=lf
+/docs/validation/*.json text eol=lf
+/docs/validation/*.csv text eol=lf
+/static/*.js text eol=lf
+/static/*.html text eol=lf
+/static/*.json text eol=lf

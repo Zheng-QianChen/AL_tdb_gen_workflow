@@ -1,0 +1,8 @@
+-r requirements.txt
+-r requirements-terminal.txt
+-r requirements-fp.txt
+-r requirements-thermo.txt
+pytest>=8,<9
+httpx>=0.27,<1
+pycalphad==0.11.1
+ruff>=0.11,<1

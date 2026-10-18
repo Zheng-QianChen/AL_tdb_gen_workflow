@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-18",
+  "downloads": [
+    {
+      "file": "<workspace>\\review\\software-installers\\silent.js",
+      "url": "https://download.matcalc.at/silent.js",
+      "bytes": 1399,
+      "sha256": "9ac8846fcb18b11920f38e7bfd7be1120f92492375936c6fded62b26beb43862"
+    },
+    {
+      "file": "<workspace>\\review\\software-installers\\thermocalc-education-installation.pdf",
+      "url": "https://thermocalc.com/wp-content/uploads/Documentation/Current_Static/installation-guide-thermo-calc-educational-package.pdf",
+      "bytes": 494147,
+      "sha256": "e055ba1a3a8c7c14b5ada419738d501dc5a238feba5592ce9c8ee280eb8423ba"
+    },
+    {
+      "file": "<workspace>\\review\\software-installers\\OC_Setup.exe",
+      "url": "https://www.opencalphad.com/downloads/OC_Setup.exe",
+      "bytes": 5155868,
+      "sha256": "39257f903ea12fef7754e432fe6f448b3a0a36828cbba37ad3c941c7b1378beb"
+    },
+    {
+      "file": "<workspace>\\review\\software-installers\\matcalc-6.10.1.002.exe",
+      "url": "https://download.matcalc.at/installer/matcalc/6.10.1.002/matcalc-6.10.1.002-2025-09-29-windows_x86_64.exe",
+      "bytes": 167560056,
+      "sha256": "1a1456adfa6fd4e8d8452ecdd358496509faae5982cc53f4c32fe11e9b95a732"
+    },
+    {
+      "file": "<workspace>\\review\\software-installers\\Thermo-Calc-educational-2026b.exe",
+      "url": "https://download.thermocalc.com/downloads/educational/2026b/Thermo-Calc-educational-windows-x64-2026.2.201356-1197.exe",
+      "bytes": 1248379856,
+      "sha256": "59fd35f6d4c1b1771e3c5456d72664bcaa3a5b53961acc058dbbd2a2ad1246dc",
+      "elapsed_seconds": 276.1
+    },
+    {
+      "file": "<workspace>\\review\\software-installers\\thermocalc-2026b-student.zip",
+      "url": "https://download.thermocalc.com/downloads/educational/2026b/student/student.zip",
+      "bytes": 2581143,
+      "sha256": "d6933397cefc753e393409dac8ebcbcf01495505b7ea2ca914d7b4719c658aeb",
+      "elapsed_seconds": 9.9
+    }
+  ],
+  "engines": [
+    {
+      "name": "pycalphad",
+      "version": "0.11.2",
+      "status": "installed_and_370_native_solver_runs",
+      "executable": "<workspace>\\review\\thermo-engines\\pycalphad-venv\\Scripts\\python.exe",
+      "source": "https://pypi.org/project/pycalphad/0.11.2/",
+      "freeze": "colorama==0.4.6\ncontourpy==1.4.0\ncoverage==7.16.2\ncycler==0.12.1\nflexcache==0.3\nflexparser==0.4\nfonttools==4.67.0\niniconfig==2.3.1\nkiwisolver==1.5.1\nmatplotlib==3.11.2\nnumpy==2.5.4\npackaging==26.3\npandas==3.0.6\npillow==13.0.0\nPint==0.26.1\nplatformdirs==4.13.4\npluggy==1.7.0\npycalphad==0.11.2\nPygments==2.21.0\npyparsing==3.3.3\npytest==9.1.1\npytest-cov==7.1.0\npython-dateutil==2.9.0.post0\nruntype==0.5.3\nscipy==1.18.1\nsetuptools==84.0.0\nsetuptools-scm==10.3.4\nsix==1.17.0\nsymengine==0.13.0\ntinydb==4.9.0\ntyping_extensions==4.16.0\ntzdata==2026.5\nvcs-versioning==2.6.0\nxarray==2026.9.0\n",
+      "production_requirement_unchanged": "pycalphad==0.11.1"
+    },
+    {
+      "name": "OpenCalphad",
+      "version": "6.056 linked 2022-07-16",
+      "status": "installed_and_185_homogeneous_runs",
+      "executable": "<OPENCALPHAD_HOME>/oc6P.exe",
+      "sha256": "b5209a7123a712a781f947183bffc1f620e46aef0ce99fbe8a7a8e3dae2816d7",
+      "official_source": "https://www.opencalphad.com/downloads.php",
+      "smoke": "official Ag-Cu T=1000 K, xCu=0.2; two FCC composition sets, GM=-54659.668 J/mol"
+    },
+    {
+      "name": "MatCalc",
+      "version": "6.10.1.002",
+      "status": "installed_official_ternary_smoke_passed_literature_import_not_equivalent",
+      "directory": "<MATCALC_HOME>",
+      "api": "public mc_core.dll C API",
+      "official_source": "https://download.matcalc.at/",
+      "free_mode": "up to three elements, no license",
+      "installer_result": 0,
+      "installer_notes": "Legacy silent.js failed; official built-in --accept-licenses --default-answer --confirm-command install succeeded. Original failed process cleaned up."
+    },
+    {
+      "name": "Thermo-Calc Education",
+      "status": "installed_and_185_homogeneous_runs",
+      "official_source": "https://thermocalc.com/academia/free-educational-package/",
+      "component_limit": 3,
+      "license_duration": "Bundled Education license; runtime validity is reported above, not inferred from install date.",
+      "version": "2026b (2026.2.201356-1197)",
+      "directory": "<TC26B_HOME>",
+      "installer_result": 0,
+      "authenticode_status": "Valid",
+      "authenticode_signer": "Thermo-Calc Software",
+      "license_runtime_message": "256 day(s) more to enjoy this software on 2026-10-18",
+      "api": "Official Education Java console macro invocation, including demo argument",
+      "tc_python_package_present": true,
+      "tc_python_api_validated": false,
+      "startup_notes": "Generic .bat lacks Education demo argument; explicit local license configuration and official launcher arguments used.",
+      "validation": {
+        "points": 5,
+        "starts": 185,
+        "accepted": 185,
+        "max_abs_difference_J_per_mol_atoms": 0.004428304066095734,
+        "GES5_metadata_fallback": [
+          "AlFe_gt_2"
+        ],
+        "normal_macro_completion_then_process_stopped": [
+          "AlNi_gx",
+          "AlFe_gt_2"
+        ]
+      }
+    },
+    {
+      "name": "FactSage Education",
+      "status": "not_installed_unsuitable_for_original_TDB_comparison",
+      "official_source": "https://factsage.com/factsage-edu/",
+      "limitations": [
+        "TDB import disabled",
+        "macro processing disabled",
+        "ChemApp for Python disabled"
+      ]
+    }
+  ],
+  "notes": [
+    "No user databases, source parameters, production solver or original 120-point results changed.",
+    "Free versions and public installers only; no license bypass.",
+    "Original TDB reader warnings and failed starts remain in raw logs."
+  ]
+}

@@ -500,7 +500,7 @@ function updateHyperParametersJson() {
     document.querySelectorAll('.hyper-param').forEach(input => {
         const paramName = input.dataset.name;
         let value;
-        
+
         // 根据控件类型获取不同的取值
         switch (input.type) {
             case 'checkbox':
@@ -516,10 +516,10 @@ function updateHyperParametersJson() {
             default:
                 value = input.value;
         }
-        
+
         params[paramName] = value;
     });
-    
+
     // 将参数对象转换为JSON字符串并存储
     document.getElementById('ml-hyper-parameters-json').value = JSON.stringify(params);
 }
@@ -528,31 +528,31 @@ function updateHyperParametersJson() {
 function generateHyperParameters(modelName) {
     const container = document.getElementById('hyper-params-container');
     container.innerHTML = '';  // 清空容器
-    
+
     // 获取选中模型的超参数配置
     const params = modelHyperParameters[modelName] || {};
-    
+
     // 如果没有超参数配置，显示提示信息
     if (Object.keys(params).length === 0) {
         container.innerHTML = '<div class="text-muted">该模型没有可配置的超参数</div>';
         updateHyperParametersJson();
         return;
     }
-    
+
     // 为每个超参数生成对应的表单控件
     Object.keys(params).forEach(paramName => {
         const paramConfig = params[paramName];
         const paramItem = document.createElement('div');
         paramItem.className = 'hyper-param-item';
         paramItem.dataset.param = paramName;
-        
+
         let inputHtml = '';
-        
+
         // 根据参数类型生成不同的输入控件
         switch (paramConfig.type) {
             case 'number':
                 inputHtml = `
-                    <input type="number" class="form-control hyper-param" 
+                    <input type="number" class="form-control hyper-param"
                         data-name="${paramName}"
                         value="${paramConfig.value !== null ? paramConfig.value : ''}"
                         ${paramConfig.min !== undefined ? `min="${paramConfig.min}"` : ''}
@@ -560,25 +560,25 @@ function generateHyperParameters(modelName) {
                         ${paramConfig.step !== undefined ? `step="${paramConfig.step}"` : ''}>
                 `;
                 break;
-                
+
             case 'text':
                 inputHtml = `
-                    <input type="text" class="form-control hyper-param" 
+                    <input type="text" class="form-control hyper-param"
                         data-name="${paramName}"
                         value="${paramConfig.value}">
                 `;
                 break;
-                
+
             case 'checkbox':
                 inputHtml = `
                     <div class="form-check form-switch">
-                        <input class="form-check-input hyper-param" type="checkbox" 
+                        <input class="form-check-input hyper-param" type="checkbox"
                             data-name="${paramName}"
                             ${paramConfig.value ? 'checked' : ''}>
                     </div>
                 `;
                 break;
-                
+
             case 'select':
                 inputHtml = `<select class="form-select hyper-param" data-name="${paramName}">`;
                 paramConfig.options.forEach(option => {
@@ -591,20 +591,20 @@ function generateHyperParameters(modelName) {
                 inputHtml += `</select>`;
                 break;
         }
-        
+
         // 组装完整的参数项HTML
         paramItem.innerHTML = `
             <label class="form-label">${paramConfig.label} (${paramName})</label>
             ${inputHtml}
             <div class="form-text">${paramConfig.help}</div>
         `;
-        
+
         container.appendChild(paramItem);
-        
+
         // 添加事件监听，参数变化时更新JSON
         paramItem.querySelector('.hyper-param').addEventListener('change', updateHyperParametersJson);
     });
-    
+
     // 初始化JSON字符串
     updateHyperParametersJson();
 }
@@ -614,37 +614,37 @@ function validatePath(path, isFile = false) {
     // 基本路径验证正则表达式
     // 允许字母、数字、斜杠、点、下划线和连字符
     const pathRegex = /^[a-zA-Z0-9_\/\-.]+$/;
-    
+
     // 检查是否为空
     if (!path.trim()) return false;
-    
+
     // 检查是否包含无效字符
     if (!pathRegex.test(path)) return false;
-    
+
     // 检查文件路径是否有扩展名（如果是文件）
     if (isFile) {
         const hasExtension = /\.[a-zA-Z0-9]+$/.test(path);
         if (!hasExtension) return false;
     }
-    
+
     // 检查是否有连续的斜杠
     if (path.includes('//')) return false;
-    
+
     return true;
 }
 
 // 路径输入验证处理
 function setupPathValidation() {
     const pathInputs = document.querySelectorAll('.path-input');
-    
+
     pathInputs.forEach(input => {
         // 确定是否为文件路径（有ID包含"file"）
         const isFilePath = input.id.includes('file');
-        
+
         // 实时验证
         input.addEventListener('input', function() {
             const isValid = validatePath(this.value, isFilePath);
-            
+
             if (isValid) {
                 this.classList.remove('is-invalid');
                 this.classList.add('is-valid');
@@ -653,11 +653,11 @@ function setupPathValidation() {
                 this.classList.add('is-invalid');
             }
         });
-        
+
         // 失去焦点时验证
         input.addEventListener('blur', function() {
             const isValid = validatePath(this.value, isFilePath);
-            
+
             if (!isValid) {
                 this.classList.add('is-invalid');
             }
@@ -669,11 +669,11 @@ function setupPathValidation() {
 function getAlphabetSequence(length) {
     const result = [];
     let current = 65; // ASCII for 'A'
-    
+
     for (let i = 0; i < length; i++) {
         result.push(String.fromCharCode(current + i));
     }
-    
+
     return result;
 }
 
@@ -681,17 +681,17 @@ function getAlphabetSequence(length) {
 function generateSublattices(count) {
     const container = document.getElementById('sublattices-container');
     container.innerHTML = '';
-    
+
     const siteHolders = getAlphabetSequence(count);
-    
+
     for (let i = 0; i < count; i++) {
         const sublattice = document.createElement('div');
         sublattice.className = 'sublattice-item';
         sublattice.dataset.index = i;
-        
+
         // 默认元素列表
         const defaultElements = "CO, CU, FE, NI, TA, TI, W";
-        
+
         sublattice.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6>
@@ -718,7 +718,7 @@ function generateSublattices(count) {
                 <input type="text" class="form-control allowed-elements" value="${defaultElements}">
             </div>
         `;
-        
+
         container.appendChild(sublattice);
     }
 }
@@ -744,27 +744,27 @@ async function uploadFileToServer(file) {
     try {
         const formData = new FormData();
         formData.append('file', file);
-        
+
         const response = await fetch('/upload_file', {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
         if (!response.ok || !result.success) {
             // 获取翻译：优先找 prep.upload_fail，找不到用 '文件上传失败'
             const failMsg = getI18nText('prep.upload_fail', 'upload failed');
             throw new Error(result.message || failMsg);
         }
-        
+
         return result;
     } catch (error) {
         console.error('Upload error:', error);
-        
+
         // 获取翻译：优先找 prep.upload_fail_prefix，找不到用 '文件上传失败: '
         const errorPrefix = getI18nText('prep.upload_fail_prefix', 'upload failed: ');
-        
+
         showAlert(`${errorPrefix}${error.message}`, 'danger');
         throw error;
     }
@@ -789,15 +789,15 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
     const container = document.getElementById('descriptors-container');
     const itemCount = container.children.length;
     const itemId = `descriptor-${itemCount}`;
-    
+
     // 创建描述符项
     const descriptorItem = document.createElement('div');
     descriptorItem.className = 'descriptor-item';
     descriptorItem.id = itemId;
-    
+
     // 初始列名HTML（使用示例列名）
     let columnsHtml = generateColumnsHtml(sampleColumns, indexName, columns);
-    
+
     descriptorItem.innerHTML = `
         <button type="button" class="remove-item" data-id="${itemId}">
             <i class="fas fa-times"></i>
@@ -830,7 +830,7 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
             </div>
         </div>
     `;
-    
+
     container.appendChild(descriptorItem);
 
     safeApplyTranslation();
@@ -840,7 +840,7 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         document.getElementById(this.dataset.id).remove();
         renumberDescriptors();
     });
-    
+
     // 添加文件选择按钮事件
     descriptorItem.querySelector('.select-file').addEventListener('click', async function() {
         const button = this;
@@ -849,12 +849,12 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         const descriptorItem = document.getElementById(targetId);
         const filePathInput = descriptorItem.querySelector('.descriptor-file');
         const indexInput = descriptorItem.querySelector('.descriptor-index');
-        
+
         // 创建一个隐藏的文件选择输入
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = '.csv'; // 只接受CSV文件
-        
+
         // 当用户选择文件后
         fileInput.addEventListener('change', async function(e) {
             if (e.target.files.length > 0) {
@@ -862,38 +862,38 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
                     // 显示上传中状态
                     button.disabled = true;
                     button.innerHTML = '<span class="uploading-spinner"></span> uploading...';
-                    
+
                     const file = e.target.files[0];
                     showAlert(`uploading: ${file.name}`, 'info');
-                    
+
                     // 上传文件到服务器
                     const uploadResult = await uploadFileToServer(file);
-                    
+
                     // 更新文件路径为服务器上的路径
                     filePathInput.value = uploadResult.relative_path;
-                    
+
                     // 读取文件内容以获取列名
-                    const response = await fetch(`/${uploadResult.relative_path}`);
+                    const response = await fetch(uploadResult.url);
                     const content = await response.text();
-                    
+
                     // 解析CSV内容获取列名（使用更健壮的解析方法）
                     const columns = parseCsvHeaders(content);
-                    
+
                     if (columns.length > 0) {
                         // 更新列选择器
                         updateColumnSelector(descriptorItem, columns);
-                        
+
                         // 如果索引名称不在列名中，自动选择第一列作为索引
                         if (!columns.includes(indexInput.value)) {
                             indexInput.value = columns[0];
                         }
-                        
+
                         showAlert(`upload success: find ${columns.length} cols`, 'success');
                         console.log('please check cols:', columns);
                     } else {
                         showAlert('cannot find cols in this file', 'warning');
                     }
-                    
+
                 } catch (error) {
                     console.error('load file fails:', error);
                     showAlert(`load file fails: ${error.message}`, 'danger');
@@ -904,11 +904,11 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
                 }
             }
         });
-        
+
         // 触发文件选择对话框
         fileInput.click();
     });
-    
+
 
     try {
         if (typeof window.updatePageContent === 'function') {
@@ -925,13 +925,13 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
         let html = '';
         columns.forEach(column => {
             // 确定是否选中
-            const isSelected = selectedColumns.includes(column) || 
+            const isSelected = selectedColumns.includes(column) ||
                             column === indexName ||
                             (selectedColumns.length === 0 && ['symbol', 'atomic_number'].includes(column));
-            
+
             html += `
                 <div class="form-check">
-                    <input class="form-check-input column-checkbox" type="checkbox" value="${column}" 
+                    <input class="form-check-input column-checkbox" type="checkbox" value="${column}"
                         id="${generateId(column)}" ${isSelected ? 'checked' : ''}>
                     <label class="form-check-label" for="${generateId(column)}">
                         ${column}
@@ -946,14 +946,14 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
     function updateColumnSelector(descriptorItem, columns) {
         const columnSelector = descriptorItem.querySelector('.column-selector');
         if (!columnSelector) return;
-        
+
         // 获取当前索引名称
         const indexName = descriptorItem.querySelector('.descriptor-index').value;
-        
+
         // 获取当前已选中的列
         const currentlySelected = Array.from(descriptorItem.querySelectorAll('.column-checkbox:checked'))
             .map(checkbox => checkbox.value);
-        
+
         // 生成新的列HTML
         columnSelector.innerHTML = generateColumnsHtml(columns, indexName, currentlySelected);
     }
@@ -962,22 +962,22 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
     function parseCsvHeaders(csvContent) {
         // 处理空内容
         if (!csvContent.trim()) return [];
-        
+
         // 分割成行（处理可能的不同换行符）
         const lines = csvContent.split(/\r\n|\n|\r/).filter(line => line.trim() !== '');
-        
+
         // 取第一行作为表头
         const headerLine = lines[0].trim();
-        
+
         // 简单CSV解析器，处理带引号的字段
         const headers = [];
         let currentField = '';
         let inQuotes = false;
         let quoteChar = '"';
-        
+
         for (let i = 0; i < headerLine.length; i++) {
             const char = headerLine[i];
-            
+
             // 处理引号
             if (char === '"' || char === "'") {
                 // 如果是相同的引号且是结尾
@@ -996,23 +996,23 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
                     // 不同类型的引号，作为普通字符处理
                     currentField += char;
                 }
-            } 
+            }
             // 处理逗号分隔符（不在引号中时）
             else if (char === ',' && !inQuotes) {
                 headers.push(currentField.trim());
                 currentField = '';
-            } 
+            }
             // 普通字符
             else {
                 currentField += char;
             }
         }
-        
+
         // 添加最后一个字段
         if (currentField.trim() !== '') {
             headers.push(currentField.trim());
         }
-        
+
         return headers;
     }
 
@@ -1023,7 +1023,7 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
 
     // 示例列名 - 作为 fallback
     const sampleColumns = [
-        'symbol', 'atomic_number', 'atomic_weight', 'periodic', 
+        'symbol', 'atomic_number', 'atomic_weight', 'periodic',
         'family', 'Calculated_radius_pm', 'Electronegativity_Allen',
         'melting_point', 'boiling_point', 'density'
     ];
@@ -1032,32 +1032,32 @@ function addDescriptorItem(filePath = '', indexName = 'symbol', columns = []) {
     function updateColumnSelector(descriptorItem, columns) {
         const columnSelector = descriptorItem.querySelector('.column-selector');
         if (!columnSelector) return;
-        
+
         // 清空现有列
         columnSelector.innerHTML = '';
-        
+
         // 获取当前索引名称
         const indexName = descriptorItem.querySelector('.descriptor-index').value;
-        
+
         // 添加新列
         columns.forEach(column => {
             // 检查列名是否有效
             if (!column) return;
-            
+
             // 默认选中索引列和几个常用列
-            const isSelected = column === indexName || 
+            const isSelected = column === indexName ||
                             ['atomic_number', 'atomic_weight', 'symbol'].includes(column);
-            
+
             const columnHtml = `
                 <div class="form-check">
-                    <input class="form-check-input column-checkbox" type="checkbox" value="${column}" 
+                    <input class="form-check-input column-checkbox" type="checkbox" value="${column}"
                         id="${descriptorItem.id}-col-${column}" ${isSelected ? 'checked' : ''}>
                     <label class="form-check-label" for="${descriptorItem.id}-col-${column}">
                         ${column}
                     </label>
                 </div>
             `;
-            
+
             columnSelector.innerHTML += columnHtml;
         });
     }
@@ -1077,7 +1077,7 @@ function showAlert(message, type = 'info') {
         console.warn('Alert container not found! Message:', message);
         return;
     }
-    
+
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} alert-dismissible fade show`;
     alert.role = 'alert';
@@ -1085,9 +1085,9 @@ function showAlert(message, type = 'info') {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    
+
     alertContainer.appendChild(alert);
-    
+
     // 3秒后自动关闭
     setTimeout(() => {
         const bsAlert = new bootstrap.Alert(alert);
@@ -1099,11 +1099,11 @@ function showAlert(message, type = 'info') {
 function validateAllPaths() {
     const pathInputs = document.querySelectorAll('.path-input');
     let allValid = true;
-    
+
     pathInputs.forEach(input => {
         const isFilePath = input.id.includes('file');
         const isValid = validatePath(input.value, isFilePath);
-        
+
         if (!isValid) {
             input.classList.add('is-invalid');
             allValid = false;
@@ -1112,7 +1112,7 @@ function validateAllPaths() {
             input.classList.add('is-valid');
         }
     });
-    
+
     return allValid;
 }
 
@@ -1123,7 +1123,7 @@ function collectFormData() {
         showAlert('请修正路径输入中的错误', 'warning');
         return null;
     }
-    
+
     // 基本设置
     const basicData = {
         phase_name: document.getElementById('phase-name').value,
@@ -1134,16 +1134,16 @@ function collectFormData() {
         cif_sublatt: document.getElementById('cif-sublatt').value,
         init_random_n: parseInt(document.getElementById('init-random-n').value)
     };
-    
+
     // TDB模型设置
     const sublatticeCount = parseInt(document.getElementById('sublattice-number').value);
     const sublattices = document.querySelectorAll('.sublattice-item');
-    
+
     const siteHolder = [];
     const site2sub = [];
     const occupAtomsInTdb = [];
     const comp = [];
-    
+
     sublattices.forEach(sublattice => {
         const index = parseInt(sublattice.dataset.index);
         siteHolder.push(getAlphabetSequence(sublatticeCount)[index]);
@@ -1151,7 +1151,7 @@ function collectFormData() {
         occupAtomsInTdb.push(parseInt(sublattice.querySelector('.occup-atoms').value));
         comp.push(sublattice.querySelector('.allowed-elements').value.split(', '));
     });
-    
+
     const tdbModel = {
         site_holder: siteHolder,
         site2sub: site2sub,
@@ -1164,7 +1164,7 @@ function collectFormData() {
             col_name: document.getElementById('atom-ref-col').value
         }
     };
-    
+
     // AL循环设置
     const questParams = {};
     document.querySelectorAll('.quest-param').forEach(param => {
@@ -1174,18 +1174,18 @@ function collectFormData() {
     // 获取选中的模型和超参数
     const mlModel = document.getElementById('ml-model').value;
     const mlHyperParameters = document.getElementById('ml-hyper-parameters-json').value;
-    
+
     // 描述符设置 - 强制col_name以列表格式存储
     const descriptors = {};
     document.querySelectorAll('.descriptor-item').forEach(item => {
         const filePath = item.querySelector('.descriptor-file').value;
         const indexName = item.querySelector('.descriptor-index').value;
-        
+
         const selectedColumns = [];
         item.querySelectorAll('.column-checkbox:checked').forEach(checkbox => {
             selectedColumns.push(checkbox.value);
         });
-        
+
         if (filePath) {
             descriptors[filePath] = {
                 index_name: indexName,
@@ -1194,7 +1194,7 @@ function collectFormData() {
             };
         }
     });
-    
+
     const alSet = {
         ML_model: document.getElementById('ml-model').value,
         ML_style: document.getElementById('ml-style').value,
@@ -1210,7 +1210,7 @@ function collectFormData() {
         pkl_phase_path: document.getElementById('pkl-phase-path').value,
         pkl_show_control: document.getElementById('pkl-show-control').value
     };
-    
+
     // 组合所有数据
     return {
         ...basicData,
@@ -1237,7 +1237,7 @@ function saveToServer() {
 
     // 获取当前语言，用于 fallback
     const currentLang = localStorage.getItem('preferredLang') || 'zh';
-    
+
     fetch('/save_input_json', {
         method: 'POST',
         headers: {
@@ -1276,7 +1276,7 @@ function saveToServer() {
         // 核心：无论如何都会执行到这里，恢复按钮
         saveBtn.disabled = false;
         saveBtn.innerHTML = originalHtml;
-        console.log("Button restored."); 
+        console.log("Button restored.");
     });
 }
 
@@ -1284,7 +1284,7 @@ function saveToServer() {
 function previewJson() {
     const data = collectFormData();
     if (!data) return; // 如果数据无效，不预览
-    
+
     const jsonString = JSON.stringify(data, null, 2);
     document.getElementById('json-output').textContent = jsonString;
     document.getElementById('json-preview').classList.remove('d-none');
@@ -1295,18 +1295,18 @@ async function handleFileSelect(button) {
     const targetId = button.dataset.target;
     const filePathInput = document.getElementById(targetId);
     const originalIcon = button.innerHTML;
-    
+
     // 创建文件选择输入
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    
+
     // 根据目标ID设置文件类型过滤
     if (targetId.includes('structure-file') || targetId.includes('structure-out-file')) {
         fileInput.accept = '.cif,.poscar,POSCAR'; // 结构文件
     } else if (targetId.includes('atom-ref-file')) {
         fileInput.accept = '.csv'; // 参考文件
     }
-    
+
     // 当用户选择文件后
     fileInput.addEventListener('change', async function(e) {
         if (e.target.files.length > 0) {
@@ -1319,21 +1319,21 @@ async function handleFileSelect(button) {
                 // 显示上传中状态
                 button.disabled = true;
                 button.innerHTML = '<span class="uploading-spinner"></span> ${uploadingText}';
-                
+
                 const file = e.target.files[0];
                 showAlert(`${uploadStartText}${file.name}`, 'info');
-                
+
                 // 上传文件到服务器
                 const uploadResult = await uploadFileToServer(file);
-                
+
                 // 更新文件路径为服务器上的路径
                 filePathInput.value = uploadResult.relative_path;
-                
+
                 // 如果是路径输入，触发验证
                 if (filePathInput.classList.contains('path-input')) {
                     filePathInput.dispatchEvent(new Event('input'));
                 }
-                
+
                 showAlert(`${uploadSuccessText}: ${uploadResult.file_path}`, 'success');
             } catch (error) {
                 console.error('${uploadFailPrefix}:', error);
@@ -1344,7 +1344,7 @@ async function handleFileSelect(button) {
             }
         }
     });
-    
+
     // 触发文件选择对话框
     fileInput.click();
 }
@@ -1353,47 +1353,47 @@ async function handleFileSelect(button) {
 document.addEventListener('DOMContentLoaded', function() {
     // 设置路径验证
     setupPathValidation();
-    
+
     // 初始化子晶格
     const initialSublatticeCount = parseInt(document.getElementById('sublattice-number').value);
     generateSublattices(initialSublatticeCount);
-    
+
     // 初始化描述符
     addDescriptorItem('eigenvalue/periodic_table.csv', 'symbol', [
-        'atomic_number', 'atomic_weight', 'periodic', 'family', 
+        'atomic_number', 'atomic_weight', 'periodic', 'family',
         'Calculated_radius_pm', 'Electronegativity_Allen'
     ]);
     addDescriptorItem('eigenvalue/base_energy.csv', 'symbol', ['E_atom_eV_2']);
-    
+
     // 更新子晶格按钮事件
     document.getElementById('update-sublattices').addEventListener('click', function() {
         const count = parseInt(document.getElementById('sublattice-number').value);
         if (count > 0) {
             generateSublattices(count);
             // 更新特征权重输入框的提示
-            document.querySelector('#eigen-weight + .form-text').textContent = 
+            document.querySelector('#eigen-weight + .form-text').textContent =
                 `以逗号分隔的权重值，与子晶格数量(${count})对应`;
         }
     });
-    
+
     // 添加描述符按钮事件
     document.getElementById('add-descriptor').addEventListener('click', function() {
         addDescriptorItem();
     });
-    
+
     // 保存到服务器按钮事件
     document.getElementById('save-json-btn').addEventListener('click', saveToServer);
-    
+
     // 预览JSON按钮事件
     document.getElementById('preview-json-btn').addEventListener('click', previewJson);
-    
+
     // 取消按钮事件
     document.getElementById('cancel-btn').addEventListener('click', function() {
         if (confirm('确定要取消并放弃所有更改吗？')) {
             document.getElementById('json-preview').classList.add('d-none');
         }
     });
-    
+
     // 为所有文件选择按钮添加事件
     document.querySelectorAll('.file-select-btn').forEach(button => {
         button.addEventListener('click', function() {

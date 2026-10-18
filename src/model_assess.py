@@ -1,17 +1,15 @@
 
-from ast import literal_eval
 import numpy as np
 import pandas as pd
 import src.generate as generate
-from scipy.spatial import ConvexHull
 import src.pts_and_hull as pts_and_hull
-from src.MODEL import *
+from src.MODEL import Sublattice_model
 from pathlib import Path
 
 
 
 # def modify_ml_data(
-#     calc_points: pd.DataFrame, 
+#     calc_points: pd.DataFrame,
 #     elements_list: list
 # ) -> pd.DataFrame:
 #     """
@@ -32,15 +30,20 @@ from pathlib import Path
 #     return calc_points
 
 def modify_ml_data_100(vasp_ml_data:pd.DataFrame, elements_list):
+    vasp_ml_data = vasp_ml_data.copy(deep=True)
+    fractions = vasp_ml_data[elements_list].to_numpy(dtype=float)
+    if (not np.isfinite(fractions).all() or np.any(fractions < -1e-8)
+            or np.any(fractions > 1 + 1e-8) or not np.allclose(fractions.sum(axis=1), 1)):
+        raise ValueError("Expected atomic fractions summing to one")
     # sourcery skip: replace-interpolation-with-fstring
     # vasp_ml_data = modify_ml_data(vasp_ml_data, elements_list)
     vasp_ml_data['index'] = vasp_ml_data.index
     col_get = ['index','endmember','from',] + elements_list + ['Energy']
-    raw_points = vasp_ml_data[col_get]
+    raw_points = vasp_ml_data[col_get].copy()
     for col in elements_list:
         raw_points[col] *= 100
     # 用于封顶盖的 identity_matrix
-    max_energy = (vasp_ml_data['Energy'].max() - vasp_ml_data['Energy'].min()) +1
+    max_energy = vasp_ml_data['Energy'].max() + max(1.0, vasp_ml_data['Energy'].max() - vasp_ml_data['Energy'].min())
     identity_matrix = np.eye(len(elements_list)+1)[:-1,1:]*100
     identity_matrix[:,-1] = max_energy
     print(identity_matrix)
@@ -95,10 +98,10 @@ def model_assess(
                 # # -------------------------------------------------------------------------
                 # # 对凸包外的数据点进行误差评估
                 # # 获得非端际组元点
-                print(f"true_ratio = {inside.mean()}",file=f2)
-                print(f"{item[0]},\"{item[1]}\",{inside.mean()},",file=f1)
+                print(f"true_ratio = {(inside.mean() if len(inside) else 1.0)}",file=f2)
+                print(f"{item[0]},\"{item[1]}\",{(inside.mean() if len(inside) else 1.0)},",file=f1)
                 M.points_outer.to_csv(Path("%s/%s_%s.csv"%(result_dir,item[0],item[1].replace(":","_"))))
-                
+
 
 
 def model_assess_with_elements(
@@ -149,8 +152,8 @@ def model_assess_with_elements(
                 for i in range(len(site_elements)):
                     sentence.append(','.join(site_elements[i]))
                 sentence = ':'.join(sentence)
-                print(f"true_ratio = {inside.mean()}",file=f2)
-                print(f"{model[0]},\"{model[1]}\",\"{sentence}\",{inside.mean()},",file=f1)
+                print(f"true_ratio = {(inside.mean() if len(inside) else 1.0)}",file=f2)
+                print(f"{model[0]},\"{model[1]}\",\"{sentence}\",{(inside.mean() if len(inside) else 1.0)},",file=f1)
                 if pt_outer_output:
                     M.points_outer.to_csv(Path("%s/%s_%s_%s.csv"%(result_dir,model[0],model[1].replace(":","_"),sentence)))
 
@@ -176,9 +179,6 @@ def model_get_hull(
     points = model_endmem_points[ elements_list[1:] + ['Energy'] ].values
     print(len(model_endmem_points),points.shape)
     # TODO:This wait matrix maybe 欠考虑了
-    if (len(model_endmem_points)==len(elements_list)):
-        wait_matrix = np.eye(len(elements_list)+1)[:-1,1:]*100
-        points = np.concatenate((wait_matrix,points),axis=0)
     points = np.concatenate((identity_matrix,points),axis=0)
     sub = Sublattice_model(model[1],model[0],elements_list,model_endmem_points,points)
     sub.update_convex_hull()
@@ -223,9 +223,6 @@ def model_get_hull_ele(
     points = model_endmem_points[ elements_list[1:] + ['Energy'] ].values
     print(len(model_endmem_points),points.shape)
     # TODO:This wait matrix maybe 欠考虑了
-    if (len(model_endmem_points)==len(elements_list)):
-        wait_matrix = np.eye(len(elements_list)+1)[:-1,1:]*100
-        points = np.concatenate((wait_matrix,points),axis=0)
     points = np.concatenate((identity_matrix,points),axis=0)
     sub = Sublattice_model(model[1],model[0],elements_list,model_endmem_points,points)
     sub.update_convex_hull()
@@ -256,9 +253,9 @@ def model_get_hull_ele_gene_tdb(
     site_elements: list,
     model: list,
 ) -> tuple[Sublattice_model, np.ndarray]:
-    elements_list = [string for sublist in site_elements for string in sublist]
-    elements_list = list(set(elements_list))
-    elements_list.sort()
+    # Keep the original composition basis when exporting fewer constituents.
+    elements_list = [column for column in raw_points.columns
+                     if column not in {"index", "endmember", "from", "Energy"}]
     print(elements_list)
     # 生成待选模型所包含的所有端机组元的名称
     model_endmembers = generate.replace_groups(model,site_elements)
@@ -270,9 +267,6 @@ def model_get_hull_ele_gene_tdb(
     points = model_endmem_points[ elements_list[1:] + ['Energy'] ].values
     print(len(model_endmem_points),points.shape)
     # TODO:This wait matrix maybe 欠考虑了
-    if (len(model_endmem_points)==len(elements_list)):
-        wait_matrix = np.eye(len(elements_list)+1)[:-1,1:]*100
-        points = np.concatenate((wait_matrix,points),axis=0)
     points = np.concatenate((identity_matrix,points),axis=0)
     sub = Sublattice_model(model[1],model[0],elements_list,model_endmem_points,points)
     sub.update_convex_hull()

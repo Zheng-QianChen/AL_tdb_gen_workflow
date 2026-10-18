@@ -1,0 +1,6392 @@
+{
+  "engine": "Thermo-Calc Education",
+  "version": "2026b (2026.2.201356-1197)",
+  "directory": "<TC26B_HOME>",
+  "energy_unit": "J/mol-atoms",
+  "cases": [
+    {
+      "case": "AlNi_gx",
+      "tdb_sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+      "returncode": 1,
+      "stopped_after_normal_macro_completion": true,
+      "G_local": -60351.51376706776,
+      "G_Pandat": -55689.9307,
+      "runs": [
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -55689.931,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.38,
+            "Y_0_NI": 0.62,
+            "Y_1_AL": 0.38,
+            "Y_1_NI": 0.62,
+            "Y_2_AL": 0.38,
+            "Y_2_NI": 0.62,
+            "Y_3_AL": 0.38,
+            "Y_3_NI": 0.62
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "uniform",
+          "equilibrium_file": "equilibrium_000.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_00",
+          "equilibrium_file": "equilibrium_001.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_01",
+          "equilibrium_file": "equilibrium_002.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_02",
+          "equilibrium_file": "equilibrium_003.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.52001858,
+            "Y_2_NI": 0.47998142,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_03",
+          "equilibrium_file": "equilibrium_004.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_04",
+          "equilibrium_file": "equilibrium_005.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_05",
+          "equilibrium_file": "equilibrium_006.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_06",
+          "equilibrium_file": "equilibrium_007.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_07",
+          "equilibrium_file": "equilibrium_008.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_08",
+          "equilibrium_file": "equilibrium_009.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_09",
+          "equilibrium_file": "equilibrium_010.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_10",
+          "equilibrium_file": "equilibrium_011.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.52001858,
+            "Y_2_NI": 0.47998142,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_11",
+          "equilibrium_file": "equilibrium_012.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -59899.37,
+          "active_phases": [
+            [
+              "FCC4_L10",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.76,
+            "Y_0_NI": 0.24,
+            "Y_1_AL": 0.76,
+            "Y_1_NI": 0.24,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 1.000088900582341e-12,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_12",
+          "equilibrium_file": "equilibrium_013.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_13",
+          "equilibrium_file": "equilibrium_014.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_14",
+          "equilibrium_file": "equilibrium_015.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_15",
+          "equilibrium_file": "equilibrium_016.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_16",
+          "equilibrium_file": "equilibrium_017.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_17",
+          "equilibrium_file": "equilibrium_018.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_18",
+          "equilibrium_file": "equilibrium_019.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_19",
+          "equilibrium_file": "equilibrium_020.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.52001858,
+            "Y_2_NI": 0.47998142,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_20",
+          "equilibrium_file": "equilibrium_021.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 0.52001858,
+            "Y_2_NI": 0.47998142,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_21",
+          "equilibrium_file": "equilibrium_022.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_22",
+          "equilibrium_file": "equilibrium_023.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_23",
+          "equilibrium_file": "equilibrium_024.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_24",
+          "equilibrium_file": "equilibrium_025.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_25",
+          "equilibrium_file": "equilibrium_026.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 0.99998142,
+            "Y_1_NI": 1.8584491e-05,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_26",
+          "equilibrium_file": "equilibrium_027.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_27",
+          "equilibrium_file": "equilibrium_028.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_28",
+          "equilibrium_file": "equilibrium_029.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_29",
+          "equilibrium_file": "equilibrium_030.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_30",
+          "equilibrium_file": "equilibrium_031.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.99998142,
+            "Y_2_NI": 1.8584491e-05,
+            "Y_3_AL": 0.52001858,
+            "Y_3_NI": 0.47998142
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_31",
+          "equilibrium_file": "equilibrium_032.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 0.52001858,
+            "Y_2_NI": 0.47998142,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_32",
+          "equilibrium_file": "equilibrium_033.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.99998142,
+            "Y_0_NI": 1.8584491e-05,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 1e-12,
+            "Y_3_NI": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_33",
+          "equilibrium_file": "equilibrium_034.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 1e-12,
+            "Y_0_NI": 1.0,
+            "Y_1_AL": 0.52001858,
+            "Y_1_NI": 0.47998142,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_34",
+          "equilibrium_file": "equilibrium_035.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -60351.514,
+          "active_phases": [
+            [
+              "FCC4_FP",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.38,
+            "NI": 0.62
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.52001858,
+            "Y_0_NI": 0.47998142,
+            "Y_1_AL": 1e-12,
+            "Y_1_NI": 1.0,
+            "Y_2_AL": 1e-12,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.99998142,
+            "Y_3_NI": 1.8584491e-05
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.491000016315638e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_35",
+          "equilibrium_file": "equilibrium_036.txt"
+        }
+      ],
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 290: Line contains non-ascii characters",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 294: Line contains non-ascii characters",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 296: Line contains tab characters",
+        "Reference REF0       missing close to line                    141",
+        "Reference REF0       missing close to line                    198",
+        "Reference REF0       missing close to line                    203",
+        "Reference REF0       missing close to line                    208",
+        "Reference REF0       missing close to line                    211",
+        "Reference REF0       missing close to line                    213",
+        "Reference REF0       missing close to line                    214",
+        "Reference REF0       missing close to line                    216",
+        "Reference REF0       missing close to line                    224",
+        "Reference REF0       missing close to line                    251",
+        "Reference REF0       missing close to line                    252",
+        "Reference REF0       missing close to line                    253",
+        "Reference REF0       missing close to line                    254",
+        "Reference REF0       missing close to line                    255",
+        "Reference REF0       missing close to line                    257",
+        "Reference REF0       missing close to line                    265",
+        "Reference REF0       missing close to line                    266",
+        "Reference REF0       missing close to line                    267",
+        "Reference REF0       missing close to line                    268",
+        "Reference REF0       missing close to line                    271"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -60351.514,
+        "active_phases": [
+          [
+            "FCC4_FP",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.38,
+          "NI": 0.62
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 1e-12,
+          "Y_0_NI": 1.0,
+          "Y_1_AL": 1e-12,
+          "Y_1_NI": 1.0,
+          "Y_2_AL": 0.99998142,
+          "Y_2_NI": 1.8584491e-05,
+          "Y_3_AL": 0.52001858,
+          "Y_3_NI": 0.47998142
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.491000016315638e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlNi_gt_2",
+      "tdb_sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -24151.75037056733,
+      "G_Pandat": -24101.59153,
+      "runs": [
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "uniform",
+          "equilibrium_file": "equilibrium_000.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.39875168,
+            "Y_2_NI": 0.60124832,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_00",
+          "equilibrium_file": "equilibrium_001.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_01",
+          "equilibrium_file": "equilibrium_002.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_02",
+          "equilibrium_file": "equilibrium_003.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_03",
+          "equilibrium_file": "equilibrium_004.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.39875168,
+            "Y_1_NI": 0.60124832,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_04",
+          "equilibrium_file": "equilibrium_005.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.39875168,
+            "Y_2_NI": 0.60124832,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_05",
+          "equilibrium_file": "equilibrium_006.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_06",
+          "equilibrium_file": "equilibrium_007.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_07",
+          "equilibrium_file": "equilibrium_008.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.39875168,
+            "Y_1_NI": 0.60124832,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_08",
+          "equilibrium_file": "equilibrium_009.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_09",
+          "equilibrium_file": "equilibrium_010.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.39875168,
+            "Y_2_NI": 0.60124832,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_10",
+          "equilibrium_file": "equilibrium_011.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_11",
+          "equilibrium_file": "equilibrium_012.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.26402561,
+            "Y_0_NI": 0.73597439,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_12",
+          "equilibrium_file": "equilibrium_013.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_13",
+          "equilibrium_file": "equilibrium_014.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.26402561,
+            "Y_3_NI": 0.73597439
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_14",
+          "equilibrium_file": "equilibrium_015.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.26402561,
+            "Y_1_NI": 0.73597439,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_15",
+          "equilibrium_file": "equilibrium_016.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.26402561,
+            "Y_1_NI": 0.73597439,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_16",
+          "equilibrium_file": "equilibrium_017.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.26402561,
+            "Y_3_NI": 0.73597439
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_17",
+          "equilibrium_file": "equilibrium_018.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_18",
+          "equilibrium_file": "equilibrium_019.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.39875168,
+            "Y_2_NI": 0.60124832,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_19",
+          "equilibrium_file": "equilibrium_020.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_20",
+          "equilibrium_file": "equilibrium_021.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_21",
+          "equilibrium_file": "equilibrium_022.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.26402561,
+            "Y_3_NI": 0.73597439
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_22",
+          "equilibrium_file": "equilibrium_023.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_23",
+          "equilibrium_file": "equilibrium_024.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.39875168,
+            "Y_2_NI": 0.60124832,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_24",
+          "equilibrium_file": "equilibrium_025.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.39875168,
+            "Y_0_NI": 0.60124832,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.00041610632,
+            "Y_3_NI": 0.99958389
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_25",
+          "equilibrium_file": "equilibrium_026.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.26402561,
+            "Y_1_NI": 0.73597439,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_26",
+          "equilibrium_file": "equilibrium_027.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_27",
+          "equilibrium_file": "equilibrium_028.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_28",
+          "equilibrium_file": "equilibrium_029.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_29",
+          "equilibrium_file": "equilibrium_030.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_30",
+          "equilibrium_file": "equilibrium_031.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.26402561,
+            "Y_3_NI": 0.73597439
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_31",
+          "equilibrium_file": "equilibrium_032.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.26402561,
+            "Y_0_NI": 0.73597439,
+            "Y_1_AL": 0.045324797,
+            "Y_1_NI": 0.9546752,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_32",
+          "equilibrium_file": "equilibrium_033.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24101.606,
+          "active_phases": [
+            [
+              "FCC4_A1",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.1,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.1,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.1,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.1,
+            "Y_3_NI": 0.9
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_33",
+          "equilibrium_file": "equilibrium_034.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24062.252,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.045324797,
+            "Y_0_NI": 0.9546752,
+            "Y_1_AL": 0.26402561,
+            "Y_1_NI": 0.73597439,
+            "Y_2_AL": 0.045324797,
+            "Y_2_NI": 0.9546752,
+            "Y_3_AL": 0.045324797,
+            "Y_3_NI": 0.9546752
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.000000026176508e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_34",
+          "equilibrium_file": "equilibrium_035.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -24151.751,
+          "active_phases": [
+            [
+              "FCC4_L12",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.1,
+            "NI": 0.9
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00041610632,
+            "Y_0_NI": 0.99958389,
+            "Y_1_AL": 0.00041610632,
+            "Y_1_NI": 0.99958389,
+            "Y_2_AL": 0.00041610632,
+            "Y_2_NI": 0.99958389,
+            "Y_3_AL": 0.39875168,
+            "Y_3_NI": 0.60124832
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 3.679999971417658e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_35",
+          "equilibrium_file": "equilibrium_036.txt"
+        }
+      ],
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 290: Line contains non-ascii characters",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 294: Line contains non-ascii characters",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 296: Line contains tab characters",
+        "Reference REF0       missing close to line                    141",
+        "Reference REF0       missing close to line                    198",
+        "Reference REF0       missing close to line                    203",
+        "Reference REF0       missing close to line                    208",
+        "Reference REF0       missing close to line                    211",
+        "Reference REF0       missing close to line                    213",
+        "Reference REF0       missing close to line                    214",
+        "Reference REF0       missing close to line                    216",
+        "Reference REF0       missing close to line                    224",
+        "Reference REF0       missing close to line                    251",
+        "Reference REF0       missing close to line                    252",
+        "Reference REF0       missing close to line                    253",
+        "Reference REF0       missing close to line                    254",
+        "Reference REF0       missing close to line                    255",
+        "Reference REF0       missing close to line                    257",
+        "Reference REF0       missing close to line                    265",
+        "Reference REF0       missing close to line                    266",
+        "Reference REF0       missing close to line                    267",
+        "Reference REF0       missing close to line                    268",
+        "Reference REF0       missing close to line                    271"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -24151.751,
+        "active_phases": [
+          [
+            "FCC4_L12",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.1,
+          "NI": 0.9
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.00041610632,
+          "Y_0_NI": 0.99958389,
+          "Y_1_AL": 0.00041610632,
+          "Y_1_NI": 0.99958389,
+          "Y_2_AL": 0.39875168,
+          "Y_2_NI": 0.60124832,
+          "Y_3_AL": 0.00041610632,
+          "Y_3_NI": 0.99958389
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 3.679999971417658e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "FeNi_gt_1",
+      "tdb_sha256": "c9697d880eeba14a801cdd4af6635de0165d8b56ded5976a95f48ac04bf35978",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -21808.050571695934,
+      "G_Pandat": -21713.24445,
+      "runs": [
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21711.073,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.5,
+            "Y_0_NI": 0.5,
+            "Y_1_FE": 0.5,
+            "Y_1_NI": 0.5,
+            "Y_2_FE": 0.5,
+            "Y_2_NI": 0.5,
+            "Y_3_FE": 0.5,
+            "Y_3_NI": 0.5,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "uniform",
+          "equilibrium_file": "equilibrium_000.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.37317031,
+            "Y_1_NI": 0.62682969,
+            "Y_2_FE": 0.62682969,
+            "Y_2_NI": 0.37317031,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_00",
+          "equilibrium_file": "equilibrium_001.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_01",
+          "equilibrium_file": "equilibrium_002.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_02",
+          "equilibrium_file": "equilibrium_003.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.37317031,
+            "Y_1_NI": 0.62682969,
+            "Y_2_FE": 0.62682969,
+            "Y_2_NI": 0.37317031,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_03",
+          "equilibrium_file": "equilibrium_004.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_04",
+          "equilibrium_file": "equilibrium_005.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.62682969,
+            "Y_2_NI": 0.37317031,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_05",
+          "equilibrium_file": "equilibrium_006.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_06",
+          "equilibrium_file": "equilibrium_007.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.37317031,
+            "Y_1_NI": 0.62682969,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_07",
+          "equilibrium_file": "equilibrium_008.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_08",
+          "equilibrium_file": "equilibrium_009.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_09",
+          "equilibrium_file": "equilibrium_010.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.62682969,
+            "Y_2_NI": 0.37317031,
+            "Y_3_FE": 0.37317031,
+            "Y_3_NI": 0.62682969,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_10",
+          "equilibrium_file": "equilibrium_011.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.37317031,
+            "Y_1_NI": 0.62682969,
+            "Y_2_FE": 0.62682969,
+            "Y_2_NI": 0.37317031,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_11",
+          "equilibrium_file": "equilibrium_012.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_12",
+          "equilibrium_file": "equilibrium_013.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.95335946,
+            "Y_2_NI": 0.046640544,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_13",
+          "equilibrium_file": "equilibrium_014.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.95335946,
+            "Y_0_NI": 0.046640544,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_14",
+          "equilibrium_file": "equilibrium_015.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_15",
+          "equilibrium_file": "equilibrium_016.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.37317031,
+            "Y_0_NI": 0.62682969,
+            "Y_1_FE": 0.62682969,
+            "Y_1_NI": 0.37317031,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_16",
+          "equilibrium_file": "equilibrium_017.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_17",
+          "equilibrium_file": "equilibrium_018.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_18",
+          "equilibrium_file": "equilibrium_019.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.95335946,
+            "Y_2_NI": 0.046640544,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_19",
+          "equilibrium_file": "equilibrium_020.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_20",
+          "equilibrium_file": "equilibrium_021.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_21",
+          "equilibrium_file": "equilibrium_022.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.95335946,
+            "Y_0_NI": 0.046640544,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_22",
+          "equilibrium_file": "equilibrium_023.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.95335946,
+            "Y_0_NI": 0.046640544,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_23",
+          "equilibrium_file": "equilibrium_024.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_24",
+          "equilibrium_file": "equilibrium_025.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.95335946,
+            "Y_0_NI": 0.046640544,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_25",
+          "equilibrium_file": "equilibrium_026.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.95335946,
+            "Y_0_NI": 0.046640544,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_26",
+          "equilibrium_file": "equilibrium_027.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.95335946,
+            "Y_2_NI": 0.046640544,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_27",
+          "equilibrium_file": "equilibrium_028.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_28",
+          "equilibrium_file": "equilibrium_029.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_29",
+          "equilibrium_file": "equilibrium_030.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21713.244,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.62682969,
+            "Y_0_NI": 0.37317031,
+            "Y_1_FE": 0.37317031,
+            "Y_1_NI": 0.62682969,
+            "Y_2_FE": 0.37317031,
+            "Y_2_NI": 0.62682969,
+            "Y_3_FE": 0.62682969,
+            "Y_3_NI": 0.37317031,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_30",
+          "equilibrium_file": "equilibrium_031.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.95335946,
+            "Y_2_NI": 0.046640544,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_31",
+          "equilibrium_file": "equilibrium_032.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.95335946,
+            "Y_2_NI": 0.046640544,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_32",
+          "equilibrium_file": "equilibrium_033.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.95335946,
+            "Y_1_NI": 0.046640544,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.34888018,
+            "Y_3_NI": 0.65111982,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_33",
+          "equilibrium_file": "equilibrium_034.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_34",
+          "equilibrium_file": "equilibrium_035.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -21808.055,
+          "active_phases": [
+            [
+              "FCC4",
+              1.0
+            ]
+          ],
+          "X": {
+            "FE": 0.5,
+            "NI": 0.5
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_FE": 0.34888018,
+            "Y_0_NI": 0.65111982,
+            "Y_1_FE": 0.34888018,
+            "Y_1_NI": 0.65111982,
+            "Y_2_FE": 0.34888018,
+            "Y_2_NI": 0.65111982,
+            "Y_3_FE": 0.95335946,
+            "Y_3_NI": 0.046640544,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_35",
+          "equilibrium_file": "equilibrium_036.txt"
+        }
+      ],
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 5: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 15: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 21: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 44: Line longer than 78 characters",
+        "17:59:12,970 [Thread-0] WARN  DatabaseUtils: Line 50: Line longer than 78 characters",
+        "17:59:12,970 [Thread-0] WARN  DatabaseUtils: Line 52: Line longer than 78 characters"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -21808.055,
+        "active_phases": [
+          [
+            "FCC4",
+            1.0
+          ]
+        ],
+        "X": {
+          "FE": 0.5,
+          "NI": 0.5
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_FE": 0.34888018,
+          "Y_0_NI": 0.65111982,
+          "Y_1_FE": 0.95335946,
+          "Y_1_NI": 0.046640544,
+          "Y_2_FE": 0.34888018,
+          "Y_2_NI": 0.65111982,
+          "Y_3_FE": 0.34888018,
+          "Y_3_NI": 0.65111982,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.000000108916879e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_12",
+        "equilibrium_file": "equilibrium_013.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlFe_gt_2",
+      "tdb_sha256": "e08f375f7573fdedd89cbefc6f7ba3a2c6dbec3c3063ce408531a09a083e4891",
+      "returncode": 1,
+      "stopped_after_normal_macro_completion": true,
+      "G_local": -41920.89374628067,
+      "G_Pandat": -41911.34403,
+      "runs": [
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41863.35,
+          "active_phases": [
+            [
+              "BCC_4SL_A2",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25,
+            "Y_0_FE": 0.75,
+            "Y_1_AL": 0.25,
+            "Y_1_FE": 0.75,
+            "Y_2_AL": 0.25,
+            "Y_2_FE": 0.75,
+            "Y_3_AL": 0.25,
+            "Y_3_FE": 0.75,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "uniform",
+          "equilibrium_file": "equilibrium_000.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_00",
+          "equilibrium_file": "equilibrium_001.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_01",
+          "equilibrium_file": "equilibrium_002.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_02",
+          "equilibrium_file": "equilibrium_003.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_03",
+          "equilibrium_file": "equilibrium_004.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25726483,
+            "Y_0_FE": 0.74273517,
+            "Y_1_AL": 0.64551714,
+            "Y_1_FE": 0.35448286,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_04",
+          "equilibrium_file": "equilibrium_005.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_05",
+          "equilibrium_file": "equilibrium_006.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_06",
+          "equilibrium_file": "equilibrium_007.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_07",
+          "equilibrium_file": "equilibrium_008.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25726483,
+            "Y_0_FE": 0.74273517,
+            "Y_1_AL": 0.64551714,
+            "Y_1_FE": 0.35448286,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_08",
+          "equilibrium_file": "equilibrium_009.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_09",
+          "equilibrium_file": "equilibrium_010.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_10",
+          "equilibrium_file": "equilibrium_011.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_11",
+          "equilibrium_file": "equilibrium_012.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_12",
+          "equilibrium_file": "equilibrium_013.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_13",
+          "equilibrium_file": "equilibrium_014.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_14",
+          "equilibrium_file": "equilibrium_015.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25726483,
+            "Y_0_FE": 0.74273517,
+            "Y_1_AL": 0.64551714,
+            "Y_1_FE": 0.35448286,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_15",
+          "equilibrium_file": "equilibrium_016.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25726483,
+            "Y_0_FE": 0.74273517,
+            "Y_1_AL": 0.64551714,
+            "Y_1_FE": 0.35448286,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_16",
+          "equilibrium_file": "equilibrium_017.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_17",
+          "equilibrium_file": "equilibrium_018.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_18",
+          "equilibrium_file": "equilibrium_019.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_19",
+          "equilibrium_file": "equilibrium_020.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_20",
+          "equilibrium_file": "equilibrium_021.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41911.344,
+          "active_phases": [
+            [
+              "BCC_4SL_B2",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.051721549,
+            "Y_0_FE": 0.94827845,
+            "Y_1_AL": 0.051721549,
+            "Y_1_FE": 0.94827845,
+            "Y_2_AL": 0.44827845,
+            "Y_2_FE": 0.55172155,
+            "Y_3_AL": 0.44827845,
+            "Y_3_FE": 0.55172155,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 9.999999717180685e-10,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_21",
+          "equilibrium_file": "equilibrium_022.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41911.344,
+          "active_phases": [
+            [
+              "BCC_4SL_B2",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.44827845,
+            "Y_0_FE": 0.55172155,
+            "Y_1_AL": 0.44827845,
+            "Y_1_FE": 0.55172155,
+            "Y_2_AL": 0.051721549,
+            "Y_2_FE": 0.94827845,
+            "Y_3_AL": 0.051721549,
+            "Y_3_FE": 0.94827845,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 9.999999717180685e-10,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_22",
+          "equilibrium_file": "equilibrium_023.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_23",
+          "equilibrium_file": "equilibrium_024.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_24",
+          "equilibrium_file": "equilibrium_025.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_25",
+          "equilibrium_file": "equilibrium_026.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.25726483,
+            "Y_0_FE": 0.74273517,
+            "Y_1_AL": 0.64551714,
+            "Y_1_FE": 0.35448286,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_26",
+          "equilibrium_file": "equilibrium_027.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.64551714,
+            "Y_2_FE": 0.35448286,
+            "Y_3_AL": 0.25726483,
+            "Y_3_FE": 0.74273517,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_27",
+          "equilibrium_file": "equilibrium_028.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_28",
+          "equilibrium_file": "equilibrium_029.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_29",
+          "equilibrium_file": "equilibrium_030.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_30",
+          "equilibrium_file": "equilibrium_031.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41911.344,
+          "active_phases": [
+            [
+              "BCC_4SL_B2",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.051721549,
+            "Y_0_FE": 0.94827845,
+            "Y_1_AL": 0.051721549,
+            "Y_1_FE": 0.94827845,
+            "Y_2_AL": 0.44827845,
+            "Y_2_FE": 0.55172155,
+            "Y_3_AL": 0.44827845,
+            "Y_3_FE": 0.55172155,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 9.999999717180685e-10,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_31",
+          "equilibrium_file": "equilibrium_032.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.64551714,
+            "Y_0_FE": 0.35448286,
+            "Y_1_AL": 0.25726483,
+            "Y_1_FE": 0.74273517,
+            "Y_2_AL": 0.048609014,
+            "Y_2_FE": 0.95139099,
+            "Y_3_AL": 0.048609014,
+            "Y_3_FE": 0.95139099,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_32",
+          "equilibrium_file": "equilibrium_033.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41911.344,
+          "active_phases": [
+            [
+              "BCC_4SL_B2",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.44827845,
+            "Y_0_FE": 0.55172155,
+            "Y_1_AL": 0.44827845,
+            "Y_1_FE": 0.55172155,
+            "Y_2_AL": 0.051721549,
+            "Y_2_FE": 0.94827845,
+            "Y_3_AL": 0.051721549,
+            "Y_3_FE": 0.94827845,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 9.999999717180685e-10,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_33",
+          "equilibrium_file": "equilibrium_034.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_34",
+          "equilibrium_file": "equilibrium_035.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -41920.897,
+          "active_phases": [
+            [
+              "BCC_4SL_D03",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.25,
+            "FE": 0.75
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.048609014,
+            "Y_0_FE": 0.95139099,
+            "Y_1_AL": 0.048609014,
+            "Y_1_FE": 0.95139099,
+            "Y_2_AL": 0.25726483,
+            "Y_2_FE": 0.74273517,
+            "Y_3_AL": 0.64551714,
+            "Y_3_FE": 0.35448286,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.000000108916879e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_35",
+          "equilibrium_file": "equilibrium_036.txt"
+        }
+      ],
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:24,033 [Thread-0] WARN  DatabaseUtils: Line 134: Line longer than 78 characters",
+        "17:59:24,033 [Thread-0] WARN  DatabaseUtils: Line 142: Line longer than 78 characters",
+        "17:59:24,034 [Thread-0] WARN  DatabaseUtils: Line 168: Line longer than 78 characters",
+        "17:59:24,075 [TDBFileParser-Deferred] ERROR DatabaseUtils: Line 171: Unknown phase name A2_B2 in assessed system: [Al, Fe]",
+        "17:59:24,167 [Thread-0] ERROR JavaWrapper: Checking support for database '<temporary-directory>\\tc_cross_l8u3_2rh\\model.tdb' in Gibbs Energy System v6: The database contains 1 errors",
+        "17:59:24,167 [Thread-0] ERROR JavaWrapper: Errors have been detected in this database. Databases with errors cannot be used with the latest version of the Gibbs Energy System, GES6. The application will therefore revert temporarily to the previous version of the Gibbs Energy System, GES5. However, it is strongly advised that the errors are corrected rather than continuing to use an erronous database. Please use the Database Checker, found under the application's Tools menu, or the TDB Editor (the VSCode text editor with the TDB Language Support plugin) to find and clear the database errors.",
+        "*** WARNING: This database cannot be used with GES6, temporarily reverting to G"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -41920.897,
+        "active_phases": [
+          [
+            "BCC_4SL_D03",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.25,
+          "FE": 0.75
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.048609014,
+          "Y_0_FE": 0.95139099,
+          "Y_1_AL": 0.048609014,
+          "Y_1_FE": 0.95139099,
+          "Y_2_AL": 0.64551714,
+          "Y_2_FE": 0.35448286,
+          "Y_3_AL": 0.25726483,
+          "Y_3_FE": 0.74273517,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.000000108916879e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "5 (automatic metadata fallback)",
+        "errors": [
+          "17:59:24,075 [TDBFileParser-Deferred] ERROR DatabaseUtils: Line 171: Unknown phase name A2_B2 in assessed system: [Al, Fe]",
+          "17:59:24,167 [Thread-0] ERROR JavaWrapper: Checking support for database '<temporary-directory>\\tc_cross_l8u3_2rh\\model.tdb' in Gibbs Energy System v6: The database contains 1 errors",
+          "17:59:24,167 [Thread-0] ERROR JavaWrapper: Errors have been detected in this database. Databases with errors cannot be used with the latest version of the Gibbs Energy System, GES6. The application will therefore revert temporarily to the previous version of the Gibbs Energy System, GES5. However, it is strongly advised that the errors are corrected rather than continuing to use an erronous database. Please use the Database Checker, found under the application's Tools menu, or the TDB Editor (the VSCode text editor with the TDB Language Support plugin) to find and clear the database errors."
+        ],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlFeNb_gx",
+      "tdb_sha256": "097b66eeac4803061c1da7529b7672495468d3d9c7e0108b9dffd1216c554cbc",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -35315.441676405004,
+      "G_Pandat": -31826.73573,
+      "runs": [
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -31826.735,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.45,
+            "Y_0_FE": 0.53,
+            "Y_0_NB": 0.02,
+            "Y_1_AL": 0.45,
+            "Y_1_FE": 0.53,
+            "Y_1_NB": 0.02,
+            "Y_2_AL": 0.45,
+            "Y_2_FE": 0.53,
+            "Y_2_NB": 0.02,
+            "Y_3_AL": 0.45,
+            "Y_3_FE": 0.53,
+            "Y_3_NB": 0.02,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 0.0,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "uniform",
+          "equilibrium_file": "equilibrium_000.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_00",
+          "equilibrium_file": "equilibrium_001.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_01",
+          "equilibrium_file": "equilibrium_002.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_02",
+          "equilibrium_file": "equilibrium_003.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_03",
+          "equilibrium_file": "equilibrium_004.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_04",
+          "equilibrium_file": "equilibrium_005.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_05",
+          "equilibrium_file": "equilibrium_006.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_06",
+          "equilibrium_file": "equilibrium_007.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_07",
+          "equilibrium_file": "equilibrium_008.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_08",
+          "equilibrium_file": "equilibrium_009.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_09",
+          "equilibrium_file": "equilibrium_010.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_10",
+          "equilibrium_file": "equilibrium_011.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_11",
+          "equilibrium_file": "equilibrium_012.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_12",
+          "equilibrium_file": "equilibrium_013.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_13",
+          "equilibrium_file": "equilibrium_014.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_14",
+          "equilibrium_file": "equilibrium_015.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_15",
+          "equilibrium_file": "equilibrium_016.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_16",
+          "equilibrium_file": "equilibrium_017.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_17",
+          "equilibrium_file": "equilibrium_018.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_18",
+          "equilibrium_file": "equilibrium_019.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_19",
+          "equilibrium_file": "equilibrium_020.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_20",
+          "equilibrium_file": "equilibrium_021.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_21",
+          "equilibrium_file": "equilibrium_022.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_22",
+          "equilibrium_file": "equilibrium_023.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_23",
+          "equilibrium_file": "equilibrium_024.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_24",
+          "equilibrium_file": "equilibrium_025.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_25",
+          "equilibrium_file": "equilibrium_026.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_26",
+          "equilibrium_file": "equilibrium_027.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.89963411,
+            "Y_0_FE": 0.075580353,
+            "Y_0_NB": 0.024785542,
+            "Y_1_AL": 0.00036589473,
+            "Y_1_FE": 0.98441965,
+            "Y_1_NB": 0.015214458,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_27",
+          "equilibrium_file": "equilibrium_028.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_28",
+          "equilibrium_file": "equilibrium_029.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.89963411,
+            "Y_2_FE": 0.075580353,
+            "Y_2_NB": 0.024785542,
+            "Y_3_AL": 0.00036589473,
+            "Y_3_FE": 0.98441965,
+            "Y_3_NB": 0.015214458,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_29",
+          "equilibrium_file": "equilibrium_030.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -32881.678,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.00036589473,
+            "Y_0_FE": 0.98441965,
+            "Y_0_NB": 0.015214458,
+            "Y_1_AL": 0.89963411,
+            "Y_1_FE": 0.075580353,
+            "Y_1_NB": 0.024785542,
+            "Y_2_AL": 0.00036589473,
+            "Y_2_FE": 0.98441965,
+            "Y_2_NB": 0.015214458,
+            "Y_3_AL": 0.89963411,
+            "Y_3_FE": 0.075580353,
+            "Y_3_NB": 0.024785542,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_30",
+          "equilibrium_file": "equilibrium_031.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_31",
+          "equilibrium_file": "equilibrium_032.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_32",
+          "equilibrium_file": "equilibrium_033.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_33",
+          "equilibrium_file": "equilibrium_034.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 0.9,
+            "Y_0_FE": 0.060328616,
+            "Y_0_NB": 0.039671389,
+            "Y_1_AL": 0.9,
+            "Y_1_FE": 0.060328616,
+            "Y_1_NB": 0.039671389,
+            "Y_2_AL": 4.9342669e-09,
+            "Y_2_FE": 0.99967138,
+            "Y_2_NB": 0.00032861131,
+            "Y_3_AL": 4.9342669e-09,
+            "Y_3_FE": 0.99967138,
+            "Y_3_NB": 0.00032861131,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_34",
+          "equilibrium_file": "equilibrium_035.txt"
+        },
+        {
+          "converged": true,
+          "comparable": true,
+          "G": -35315.442,
+          "active_phases": [
+            [
+              "B2_4SL",
+              1.0
+            ]
+          ],
+          "X": {
+            "AL": 0.45,
+            "FE": 0.53,
+            "NB": 0.02
+          },
+          "site_fractions_printed_precision": {
+            "Y_0_AL": 4.9342669e-09,
+            "Y_0_FE": 0.99967138,
+            "Y_0_NB": 0.00032861131,
+            "Y_1_AL": 4.9342669e-09,
+            "Y_1_FE": 0.99967138,
+            "Y_1_NB": 0.00032861131,
+            "Y_2_AL": 0.9,
+            "Y_2_FE": 0.060328616,
+            "Y_2_NB": 0.039671389,
+            "Y_3_AL": 0.9,
+            "Y_3_FE": 0.060328616,
+            "Y_3_NB": 0.039671389,
+            "Y_4_VA": 1.0
+          },
+          "max_composition_error": 0.0,
+          "max_printed_site_sum_error": 4.999999969612645e-09,
+          "input_site_fractions_verified": true,
+          "diagnostics": [],
+          "seed": "independent_35",
+          "equilibrium_file": "equilibrium_036.txt"
+        }
+      ],
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE",
+        "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -35315.442,
+        "active_phases": [
+          [
+            "B2_4SL",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.45,
+          "FE": 0.53,
+          "NB": 0.02
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.9,
+          "Y_0_FE": 0.060328616,
+          "Y_0_NB": 0.039671389,
+          "Y_1_AL": 0.9,
+          "Y_1_FE": 0.060328616,
+          "Y_1_NB": 0.039671389,
+          "Y_2_AL": 4.9342669e-09,
+          "Y_2_FE": 0.99967138,
+          "Y_2_NB": 0.00032861131,
+          "Y_3_AL": 4.9342669e-09,
+          "Y_3_FE": 0.99967138,
+          "Y_3_NB": 0.00032861131,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.999999969612645e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_02",
+        "equilibrium_file": "equilibrium_003.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [
+          "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE",
+          "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE"
+        ],
+        "reference_file_missing": true
+      }
+    }
+  ],
+  "protocol": "original TDB; fresh POLY per seed; target phase only; COMPUTE_EQUILIBRIUM -; independent common seeds",
+  "global_minimum_certified": false
+}

@@ -8,7 +8,6 @@
 @版本        :2.0
 '''
 
-import os
 import pandas as pd
 from pymatgen.core import Element, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -27,7 +26,7 @@ def replace_wyckoff(input_file:str,
                     output_file:str="substituted.vasp"):
     """
     基于Wyckoff等效位点的元素替换工具
-    
+
     功能说明:
     - 自动识别晶体结构的对称等效Wyckoff位点
     - 将每个等效位点组替换为指定序列中的元素符号
@@ -47,7 +46,7 @@ def replace_wyckoff(input_file:str,
     2. 对每个等效位点组按顺序分配替换序列中的元素符号,
         对于下载自Material Project上带symmetry的cif文件,其等效点位顺序即cif文件中的顺序。
     3. 元素分配逻辑：第n个等效位点组使用 replacement_sequence[n % 序列长度]
-    
+
     注意事项:
     ■ 替换序列长度不足时会循环使用元素符号
        (例如用默认26字母处理30个Wyckoff位点组时，第27组将使用A)
@@ -70,7 +69,7 @@ def replace_wyckoff(input_file:str,
     wyckoff_data = []
     seen_groups = set()
     replace_pattern = []
-    
+
     # 收集原始Wyckoff信息（替换前）
     for idx, group in enumerate(symmetrized_struc.equivalent_sites):
         # print(idx)
@@ -78,7 +77,7 @@ def replace_wyckoff(input_file:str,
         # 获取Wyckoff符号（需API版本>=2022.0.8）
         wyckoff_symbol = symmetrized_struc.wyckoff_symbols[idx]
         original_element = group[0].species.elements[0].symbol
-        
+
         # 生成唯一标识符避免重复统计
         group_signature = f"{wyckoff_symbol}-{original_element}"
         wyckoff_data.append({
@@ -92,33 +91,33 @@ def replace_wyckoff(input_file:str,
         seen_groups.add(group_signature)
     # print(idx)
     # print(replace_pattern)
-    
+
     # 创建统计表格
     wyckoff_df = pd.DataFrame(wyckoff_data).sort_values(
         by=["Wyckoff Symbol", "Original Element"]
     )
     print(wyckoff_df)
     output_file = str(output_file)
-    os.makedirs("/".join("/".join(output_file.split("\\")).split("/")[:-1]), exist_ok=True)
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     wyckoff_df.to_csv(f'{output_file}_wyckoff_summary.csv')
-    
+
     # 创建新结构副本
     new_structure = structure.copy()
-    
+
     for idx, group in enumerate(symmetrized_struc.equivalent_sites):
         element = replacement_sequence[idx % len(replacement_sequence)]
-        
+
         # 替换当前组所有原子
         for site in group:
-            site_index = new_structure.index(site)
+            site_index = structure.index(site)
             new_structure[site_index] = element
-    os.makedirs("/".join("/".join(output_file.split("\\")).split("/")[:-1]), exist_ok=True)
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     new_structure.to(filename=f'{output_file}_sub.cif', fmt="cif")
-    
+
     # 保存替换后的结构
     if convert_to_primatice:
         new_structure = new_structure.get_primitive_structure()  # 直接获取原胞[6](@ref)
-    os.makedirs("/".join("/".join(output_file.split("\\")).split("/")[:-1]), exist_ok=True)
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     new_structure.to(filename=output_file, fmt="poscar")
     print(f"替换完成，结果已保存至 {output_file}")
     return new_structure,replace_pattern
@@ -128,27 +127,27 @@ def POSCAR_generate(in_poscar:Structure,
                     out_poscar_path:str="POSCAR_NEW"):
     """
     生成替换元素后的VASP格式POSCAR文件
-    
+
     功能说明:
     - 根据元素替换规则修改晶体结构
     - 自动合并同类元素并排序原子（按元素符号字母序）
     - 输出符合VASP格式要求的POSCAR文件
-    
+
     参数:
     :param in_poscar: pymatgen Structure对象，原始晶体结构
     :param replace_map: 元素替换映射字典，格式 {旧元素: 新元素}
                        示例: {"Li": "Na", "Fe": "Co"} 表示将Li替换为Na，Fe替换为Co
     :param out_poscar_path: 输出文件路径，默认生成POSCAR_NEW
-    
+
     返回:
     int: 固定返回0表示执行完成(不表示成功与否，需结合输出文件验证)
-    
+
     注意事项:
     1. 替换后会合并同类元素，如原始结构含2个Fe和3个Fe，替换后将合并为5个Fe
     2. 原子排序规则：先按元素符号字母序排列，同类元素按坐标位置排序
     3. 若替换元素在原始结构中不存在，该映射项将被忽略
     4. 输出文件元素行自动去除重复，如替换产生[Fe, Co, Fe]将被合并为[Fe, Co]
-    
+
     示例:
     >>> struct = Structure.from_file("POSCAR")
     >>> POSCAR_generate(struct, {"Li": "Na", "O": "S"}, "POSCAR_modified")
@@ -159,7 +158,7 @@ def POSCAR_generate(in_poscar:Structure,
     temp.replace_species(replace_map)
     temp.sort()
     # 保存新文件（符合 VASP 元素唯一性要求）
-    os.makedirs(os.path.dirname(out_poscar_path), exist_ok=True)
+    Path(out_poscar_path).parent.mkdir(parents=True, exist_ok=True)
     temp.to(filename=out_poscar_path, fmt="POSCAR")
     return temp
 

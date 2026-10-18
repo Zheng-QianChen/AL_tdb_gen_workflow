@@ -1,0 +1,43 @@
+{
+  "software_version": "2022a Education (2022.0.0.0)",
+  "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+  "databases": [
+    {
+      "path": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\Contour\\FeC.tdb",
+      "sha256": "d2e68c2afef6db757ca5c9637d341aae0fdbd2fe08bce02b99b9541077cfba81",
+      "kind": "unmodified_installed_material_example",
+      "cases": [
+        "FeC_BCC_interstitial_magnetic",
+        "FeC_FCC_interstitial_magnetic"
+      ]
+    },
+    {
+      "path": "<PANDAT_HOME>\\Pandat 2022 Example book\\FeCrNi.tdb",
+      "sha256": "5b5519853891b2768b46c22d9fb7072987ba487ec969ea77a8fb992abae36ddc",
+      "kind": "unmodified_installed_material_example",
+      "cases": [
+        "FeCrNi_SIGMA_3sl",
+        "FeCrNi_BCC_magnetic",
+        "FeCrNi_FCC_magnetic"
+      ]
+    },
+    {
+      "path": "<PANDAT_HOME>\\Pandat 2022 Example book\\AlNi_Prep.tdb",
+      "sha256": "226ff0e4876618d8b368f7008e36f47e340c6d12eb47905b6896141f837b2ae8",
+      "kind": "unmodified_installed_material_example",
+      "cases": [
+        "AlNi_AL3NI2_variable_vacancy",
+        "AlNi_L12_fixed_vacancy"
+      ]
+    },
+    {
+      "path": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\Contour\\AlFe.tdb",
+      "sha256": "034664cdb1d37edb1ddd24303b1e75e27eef4edf6297bfc1aba186132c8d2333",
+      "kind": "unmodified_installed_material_example",
+      "cases": [
+        "AlFe_AL13FE4_variable_vacancy",
+        "AlFe_B2_ordering_magnetic_reference"
+      ]
+    }
+  ]
+}
