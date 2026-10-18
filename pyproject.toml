@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "al-tdb-workflow"
+version = "0.2.0"
+description = "Active-learning thermodynamic databases, terminal workflows and phase diagrams"
+readme = "README.md"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+terminal = ["textual==8.2.8"]
+fp = ["dpdata==1.1.0", "dpdispatcher==1.1.0"]
+thermo = ["pycalphad==0.11.1", "sympy>=1.13,<2", "symengine>=0.13,<0.14", "tinydb>=4.5,<5"]
+
+[project.scripts]
+altdb = "altdb.cli:main"
+altdb-web = "app:serve"
+
+[project.urls]
+Repository = "https://github.com/Zheng-QianChen/AL_tdb_gen_workflow"
+
+[tool.setuptools]
+packages = ["altdb", "altdb.web_assets", "src", "src.main_process", "routes", "examples"]
+py-modules = ["config", "app", "main", "local_server"]
+include-package-data = false
+
+[tool.setuptools.package-dir]
+"altdb.web_assets" = "static"
+
+[tool.setuptools.package-data]
+"altdb.web_assets" = ["**/*"]
+examples = ["vasp_slurm/*.json", "vasp_slurm/*.md"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["*:Zone.Identifier", "**/*:Zone.Identifier", "run/*", "run/**/*", "*.pyc", "**/__pycache__/*"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}

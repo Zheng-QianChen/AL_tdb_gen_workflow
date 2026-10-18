@@ -1,10 +1,10 @@
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scienceplots
 from matplotlib.colors import LinearSegmentedColormap
 from pathlib import Path
-import matplotlib.patches as mpatches
 
 def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),save_fig_file:Path=Path("./subl_summary.png")):
     # 数据预处理
@@ -50,10 +50,10 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
             prefix = df['prefix'].iloc[idx]
             cmap = prefix_cmaps.get(prefix, plt.cm.viridis)
             colors_list.append(cmap(i / len(bins_cols)))
-        
+
         ax1.bar(
-            range(len(df)), 
-            df[bin_col], 
+            range(len(df)),
+            df[bin_col],
             bottom=bottom,
             color=colors_list,
             edgecolor='white',
@@ -63,10 +63,10 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
 
     # 添加RMSE折线图
     rmse_line = ax2.plot(
-        df.index, 
-        df['RMSE'], 
-        'ro--', 
-        markersize=6, 
+        df.index,
+        df['RMSE'],
+        'ro--',
+        markersize=6,
         linewidth=2,
         label='RMSE'
     )
@@ -89,6 +89,7 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
     for i, total in enumerate(bottom):
         ax1.text(i, total+50, f"{int(total)}", ha='center', va='bottom', fontsize=9)
 
+    selected_bins = []
     # 处理区间标签 - 提取最小、最大和中间的区间
     if bins_cols:
         # 对区间进行排序
@@ -97,11 +98,11 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
             start = float(bin_str.strip('()[]').split(',')[0])
             end = float(bin_str.strip('()[]').split(',')[1])
             return (start + end) / 2  # 返回区间中点
-        
+
         # 按区间中点排序
         sorted_bins = sorted(bins_cols, key=lambda x: parse_bin(x))
         bin_count = len(sorted_bins)
-        
+
         # 选择要显示的三个区间
         if bin_count >= 3:
             selected_bins = [
@@ -123,11 +124,11 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
         # 绘制颜色条带
         cbar = plt.colorbar(plt.cm.ScalarMappable(cmap=cmap), cax=cax, orientation='horizontal')
         cbar.set_ticks([0.0, 0.5, 1.0])  # 中间点
-        
+
         # 设置颜色条标签为选择的区间
         if selected_bins:
             cbar.set_ticklabels(selected_bins)
-        
+
         cax.yaxis.set_ticks_position('left')
         cax.yaxis.set_label_position('left')
         fig.text(
@@ -143,9 +144,10 @@ def subl_model_summary_plot(csv_file_path:Path=Path("CU4TI_model_score.csv"),sav
     ax1.grid(axis='y', linestyle='--', alpha=0.7)
     ax1.set_axisbelow(True)
     plt.tight_layout()
-    plt.savefig(save_fig_file, bbox_inches='tight', dpi=300, 
+    plt.savefig(save_fig_file, bbox_inches='tight', dpi=300,
             transparent=False, facecolor='white')
-    # plt.savefig(f'./static/fig/{save_fig_file.name}', bbox_inches='tight', dpi=300, 
+    plt.close(fig)
+    # plt.savefig(f'./static/fig/{save_fig_file.name}', bbox_inches='tight', dpi=300,
     #         transparent=False, facecolor='white')
     # plt.show()
 

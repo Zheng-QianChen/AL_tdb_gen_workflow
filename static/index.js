@@ -34,7 +34,7 @@ function updateUIWithConfig(data) {
         const value = item.path.split('.').reduce((obj, key) => {
             return obj && obj[key] !== undefined ? obj[key] : undefined;
         }, data);
-        
+
         const element = document.getElementById(item.id);
         if (element) {
             element.textContent = value !== undefined ? value : item.defaultValue;
@@ -45,7 +45,7 @@ function updateUIWithConfig(data) {
     if (data.record_path) {
         // Update global recordPath for use by readRecordFile
         recordPath = '/get_data_file/'+data.record_path + '/record.txt';
-        readRecordFile(); 
+        readRecordFile();
     } else {
         recordPath = null;
         document.getElementById('current-iteration').textContent = 'No Path';
@@ -56,7 +56,7 @@ function updateUIWithConfig(data) {
 // --- API Call: Get System Status ---
 async function fetchSystemStatus(filename = activeConfigName) {
     // Only show "Loading" during manual refresh or initial load
-    // resetLoadingState(); 
+    // resetLoadingState();
 
     if (fetchTimeout) clearTimeout(fetchTimeout);
     const abortController = new AbortController();
@@ -64,15 +64,15 @@ async function fetchSystemStatus(filename = activeConfigName) {
 
     try {
         // [Improvement]: Specify filename through query parameter, support concurrent monitoring of different configs
-        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`, { 
-            signal: abortController.signal 
+        const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`, {
+            signal: abortController.signal
         });
 
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-        
+
         const data = await response.json();
         updateUIWithConfig(data);
-        
+
     } catch (error) {
         console.error('Failed to fetch system status:', error);
         // If failed, update UI feedback
@@ -103,7 +103,7 @@ async function loadSpecificConfig() {
         // });
         const response = await fetch(`/get_config_status?filename=${encodeURIComponent(filename)}`);
 
-        
+
         if (response.ok) {
             // On success, refresh system status display (e.g., ML model name, current phase name, etc.)
             activeConfigName = filename; // Update currently monitored filename
@@ -125,6 +125,7 @@ async function loadSpecificConfig() {
                 showAlert(getI18nText('api.load_success', 'Configuration loaded successfully'), 'success');
             }
         } else {
+            const result = await response.json();
             alert("Loading failed: " + (result.detail || "File does not exist"));
         }
     } catch (error) {
@@ -140,27 +141,28 @@ async function loadSpecificConfig() {
 function initWebSocket(filename = activeConfigName) {
     if (ws) ws.close(); // Close old connection first
     if (reconnectInterval) clearInterval(reconnectInterval);
-    
+
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUri = `${wsProtocol}//${window.location.host}/ws?task=${encodeURIComponent(filename)}`;
-    
+    const taskId = "guest_" + filename.replace(/\.json$/, "");
+    const wsUri = `${wsProtocol}//${window.location.host}/ws/${encodeURIComponent(taskId)}`;
+
     addToLog(`Attempting to connect to WebSocket: ${wsUri}`, 'websocket');
-    
+
     ws = new WebSocket(wsUri);
-    
+
     ws.onopen = function() {
         addToLog('WebSocket connection established', 'websocket');
         statusDiv.textContent = 'Connected';
         statusDiv.style.backgroundColor = '#e8f5e9';
         statusDiv.style.color = '#198754';
     };
-    
+
     ws.onclose = function(event) {
         addToLog(`WebSocket connection closed (code: ${event.code}), reconnecting...`, 'websocket');
         statusDiv.textContent = 'Connection closed, reconnecting...';
         statusDiv.style.backgroundColor = '#fff3cd';
         statusDiv.style.color = '#fd7e14';
-        
+
         // Exponential backoff reconnection strategy
         let delay = 1000;
         reconnectInterval = setInterval(() => {
@@ -173,24 +175,25 @@ function initWebSocket(filename = activeConfigName) {
             }
         }, delay);
     };
-    
+
     ws.onerror = function(error) {
         addToLog(`WebSocket error: ${error}`, 'error');
         statusDiv.textContent = `Connection error`;
         statusDiv.style.backgroundColor = '#f8d7da';
         statusDiv.style.color = '#dc3545';
     };
-    
+
     // Handle received messages
     ws.onmessage = function(event) {
         try {
             const data = JSON.parse(event.data);
-            addToLog(data.content || data.message, data.type);
-            
+            addToLog(data.content || data.message || data.status || JSON.stringify(data), data.type);
+
             // Parse system status data in message and update
-            if (data.type === 'status_update') {
-                if (data.iteration) {
-                    document.getElementById('current-iteration').textContent = data.iteration;
+            if (['status_update', 'status', 'snapshot'].includes(data.type)) {
+                const iteration = data.iter ?? data.iteration;
+                if (iteration !== undefined) {
+                    document.getElementById('current-iteration').textContent = iteration;
                 }
             }
         } catch (e) {
@@ -209,21 +212,21 @@ function addToLog(message, type = 'info') {
             second: '2-digit',
             fractionalSecondDigits: 3
         });
-        
+
         const logEntry = document.createElement('div');
         logEntry.className = `log-entry ${type}`;
-        
+
         const timeSpan = document.createElement('span');
         timeSpan.className = 'timestamp';
         timeSpan.textContent = `[${timestamp}]`;
-        
+
         const messageSpan = document.createElement('span');
         messageSpan.textContent = message;
-        
+
         logEntry.appendChild(timeSpan);
         logEntry.appendChild(messageSpan);
         logDiv.appendChild(logEntry);
-        
+
         logDiv.scrollTop = logDiv.scrollHeight;
     } catch (e) {
         console.error('Failed to add log:', e);
@@ -235,11 +238,11 @@ function updateStatusDisplay(running, paused, statusTextContent) {
     const statusIndicator = document.getElementById('status-indicator');
     const statusText = document.getElementById('status-text');
     const runtime = document.getElementById('runtime');
-    
+
     if (statusText) statusText.textContent = statusTextContent;
     if (statusIndicator) {
         statusIndicator.className = 'status-indicator';
-        
+
         if (running) {
             if (paused) {
                 statusIndicator.classList.add('status-paused');
@@ -275,14 +278,14 @@ function updateStatusDisplay(running, paused, statusTextContent) {
 // Update runtime display
 function updateRuntime() {
     if (!startTime) return;
-    
+
     const now = new Date();
     const elapsedSeconds = Math.floor((now - startTime) / 1000);
-    
+
     const hours = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
     const minutes = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
     const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
-    
+
     const runtime = document.getElementById('runtime');
     if (runtime) runtime.textContent = `${hours}:${minutes}:${seconds}`;
 }
@@ -303,18 +306,18 @@ async function StatusUpdates() {
             throw new Error(`HTTP error: ${response.status}`);
         }
         const data = await response.json();
-        
+
         // Update main status indicator
         updateStatusDisplay(data.running, data.paused, data.status_text);
-        
+
         // Update console status
         statusDiv.textContent = data.status_text;
-        
+
         // Update button states
         btnStart.disabled = data.running;
         btnPause.disabled = !data.running;
         btnStop.disabled = !data.running;
-        
+
         // Update console status styles
         if (data.running) {
             if (data.paused) {
@@ -354,7 +357,7 @@ async function doStart() {
         if (response.ok && result.status === "success") {
             addToLog("Task started successfully", 'info');
         } else {
-            throw new Error(result.message || "Start failed");
+            throw new Error(result.message || result.detail || "Start failed");
         }
     } catch (e) {
         addToLog(`Start request failed: ${e}`, 'error');
@@ -410,17 +413,17 @@ async function doStop() {
 //         // Disable button and show loading state
 //         btnReloadInput.disabled = true;
 //         btnReloadInput.innerHTML = '<i class="fas fa-spinner fa-spin"></i> loading...';
-        
+
 //         addToLog('reloading config...', 'status-update');
 
 //         const response = await fetch('/reset', { method: 'POST' });
 //         if (!response.ok) {
 //             throw new Error(`request error: ${response.status}`);
 //         }
-        
+
 //         // Call existing system status fetch function, which will re-read input.json
 //         fetchSystemStatus();
-        
+
 //         addToLog('config reload success', 'status-update');
 //     } catch (e) {
 //         addToLog(`config reload fail: ${e}`, 'error');
@@ -449,18 +452,18 @@ function getOperationClass(operationCode) {
 // Reset loading state
 function resetLoadingState() {
     const loadingElements = [
-        'phase-name', 
-        'current-iteration', 
+        'phase-name',
+        'current-iteration',
         'current-operation-number'
     ];
-    
+
     loadingElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
             element.innerHTML = '<span class="loading-spinner"></span>Loading...';
         }
     });
-    
+
     const operationText = document.getElementById('current-operation-text');
     if (operationText) {
         operationText.className = 'operation-status operation-unknown';
@@ -477,14 +480,14 @@ async function readRecordFile() {
         document.getElementById('current-operation-number').textContent = 'Cannot Retrieve';
         return;
     }
-    
+
     try {
         // Set timeout
         const abortController = new AbortController();
         const timeoutId = setTimeout(() => abortController.abort(), 10000); // 10 second timeout
-        
+
         addToLog(`try to read local file: ${recordPath}`, 'info');
-        
+
         // Send file path to backend, have backend read file content
         const response = await fetch('/read-record', {
             method: 'POST',
@@ -494,9 +497,9 @@ async function readRecordFile() {
             body: JSON.stringify({ file_path: recordPath }),
             signal: abortController.signal
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
             if (response.status === 404) {
                 addToLog(`Record file does not exist: ${recordPath}`, 'warning');
@@ -509,44 +512,44 @@ async function readRecordFile() {
             }
             return;
         }
-        
+
         const result = await response.json();
-        
+
         if (!result.success) {
             addToLog(`Failed to read record file: ${result.error || 'Unknown error'}`, 'error');
             document.getElementById('current-iteration').textContent = 'Read Failed';
             document.getElementById('current-operation-number').textContent = 'Read Failed';
             return;
         }
-        
+
         // Split into lines and filter empty lines
         const lines = result.content.split('\n')
             .map(line => line.trim())
             .filter(line => line.length > 0);
-        
+
         if (lines.length === 0) {
             addToLog('Record file is empty', 'info');
             document.getElementById('current-iteration').textContent = 'No Data';
             document.getElementById('current-operation-number').textContent = 'No Data';
             return;
         }
-        
+
         // Get last line
         const lastLine = lines[lines.length - 1];
         // Split into two numbers
         const [iteration, operation] = lastLine.split(/\s+/).map(num => num.trim());
-        
+
         if (iteration && operation) {
             // Update UI display
             document.getElementById('current-iteration').textContent = iteration;
             document.getElementById('current-operation-number').textContent = operation;
-            
+
             const operationTextEl = document.getElementById('current-operation-text');
             operationTextEl.textContent = getOperationText(operation);
             // Remove old operation class and add new one
             operationTextEl.className = '';
             operationTextEl.classList.add('operation-status', getOperationClass(operation));
-            
+
             addToLog(`Updated iteration info: iteration ${iteration}, operation ${operation} (${getOperationText(operation)})`, 'status-update');
         } else {
             addToLog(`Last line of record file has incorrect format: "${lastLine}"`, 'error');
@@ -567,7 +570,7 @@ async function readRecordFile() {
 
 // function openVisualization() {
 //     // Get currently monitored config filename, e.g., "B.json"
-//     const taskName = activeConfigName; 
+//     const taskName = activeConfigName;
 //     // Open new window, URL carries task name
 //     window.open(`visualization.html?task=${encodeURIComponent(taskName)}`, '_blank');
 // }
@@ -610,7 +613,7 @@ window.onload = function() {
         const input = document.getElementById('target-config-file');
         if (input) input.value = taskFromUrl;
     }
-    
+
     startGlobalMonitoring();
 };
 

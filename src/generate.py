@@ -14,7 +14,7 @@ def partition_balls(m: int, n: int) -> list:
         list: 包含所有分组方式的列表。
     """
     result = []
-    
+
     def backtrack(index: int, current_groups: list) -> None:
         """
         回溯函数，用于生成所有可能的分组方式。
@@ -28,20 +28,20 @@ def partition_balls(m: int, n: int) -> list:
                 # 将当前分组加入结果，注意深拷贝避免引用问题
                 result.append([group.copy() for group in current_groups])
             return
-        
+
         # 将当前小球分配到已有的组中
         for i in range(len(current_groups)):
             current_groups[i].append(index + 1)  # 小球编号从1开始
             backtrack(index + 1, current_groups)
             current_groups[i].pop()
-        
+
         # 创建新的组，如果当前组数小于n
         if len(current_groups) < n:
             new_group = [index + 1]
             current_groups.append(new_group)
             backtrack(index + 1, current_groups)
             current_groups.pop()
-    
+
     backtrack(0, [])
     return result
 
@@ -83,13 +83,13 @@ def model_list_generator(m: int, name_list: list = None) -> list:
     Returns:
     返回:
         list: 包含模型信息的列表。
-        _list_: _[[1, 'A:A:A:A:A'], [2, 'A:A:A:A:B']], the number is the number of new model's sublattice, then it has A B C to generate FE:CO:FE:CO and so on 
-    """  
+        _list_: _[[1, 'A:A:A:A:A'], [2, 'A:A:A:A:B']], the number is the number of new model's sublattice, then it has A B C to generate FE:CO:FE:CO and so on
+    """
     if name_list is None:
         name_list = ['A', 'B', 'C', 'D', 'E', 'F']
     # 示例：将4个小球分成2组
     model_list = []
-    for i in range(2,m):
+    for i in range(1, m + 1):
         n = i
         print(f"{m}种{n}组，所有分法如下：")
         # group = partition_balls(m, n)
@@ -190,7 +190,7 @@ def replace_groups(model: list, site_elements: list) -> list:
 def merge_lists_optimized(del_elements, a):
     """
     优化版：高效处理长三维列表，与二维列表a按位置拼接
-    
+
     特点：
     1. 使用列表推导式提升性能（比显式for循环更快）
     2. 处理子列表长度与a不匹配的情况（避免索引越界）
@@ -222,31 +222,31 @@ def remove_elements(site_elements, delete_count):
         raise ValueError("原始二维列表中存在空子列表，无法保证删除后子列表非空")
     if delete_count < 0:
         raise ValueError("删除数量不能为负数")
-    
+
     total_elements = sum(len(row) for row in del_elements)
     min_remaining = len(del_elements)  # 每个子列表至少保留1个元素
     if total_elements - min_remaining < delete_count:
         raise ValueError("删除数量过多，无法保证每个子列表至少保留1个元素")
     if delete_count > total_elements:
         raise ValueError("删除数量超过了总元素数量")
-    
+
     # 为每个子列表计算可能的删除数量范围
     possible_deletions = []
     for sublist in del_elements:
         max_delete = len(sublist) - 1  # 最多删除 len-1 个，保留1个
         possible_deletions.append(range(0, max_delete + 1))
-    
+
     # 递归函数：寻找所有符合条件的删除组合
     def find_valid_deletions(index, remaining):
         if index == len(del_elements):
             return [[]] if remaining == 0 else []
-        
+
         results = []
         # 当前子列表可能的删除数量
         for del_count in possible_deletions[index]:
             if del_count > remaining:
                 continue  # 剩余删除数量不足，跳过
-            
+
             # 生成当前子列表删除del_count个元素后的所有可能结果
             current_sublist = del_elements[index]
             if del_count == 0:
@@ -262,17 +262,17 @@ def remove_elements(site_elements, delete_count):
                     for idx in sorted(indices_tuple, reverse=True):
                         del new_sublist[idx]
                     current_options.append(new_sublist)
-            
+
             # 递归处理剩余子列表
             for option in current_options:
                 for rest in find_valid_deletions(index + 1, remaining - del_count):
                     results.append([option] + rest)
-        
+
         return results
-    
+
     # 执行递归计算
     results = find_valid_deletions(0, delete_count)
-    
+
     # 去重
     unique_results = []
     seen = set()
@@ -281,11 +281,11 @@ def remove_elements(site_elements, delete_count):
         if tuple_result not in seen:
             seen.add(tuple_result)
             unique_results.append(result)
-    
+
     # 排序
     unique_results.sort(key=lambda x: [tuple(sublist) for sublist in x])
     unique_results = merge_lists_optimized(unique_results, site_elements['fix'])
-    
+
     return unique_results
 
 if __name__=='__main__':
@@ -303,12 +303,12 @@ if __name__=='__main__':
     # res = remove_elements([['H','He','O'],['C','N','B'],['Li','Be'],], 1)
     # res = remove_elements([['H','He','O'],['C','N','B'],['Li','Be'],], 5)
     # res = remove_elements([['TA', 'CO', 'FE', 'TI', 'NI', 'CU', 'W'],
-    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'], 
-    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'], 
+    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
+    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
     #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W']], 2)
     # res = remove_elements([['TA', 'CO', 'FE', 'TI', 'NI', 'CU', 'W'],
-    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'], 
-    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'], 
+    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
+    #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
     #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
     #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],
     #                        ['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W'],], 5)

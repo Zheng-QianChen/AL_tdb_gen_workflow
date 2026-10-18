@@ -1,0 +1,32 @@
+{
+  "command": "srun vasp_std",
+  "machine": {
+    "batch_type": "Slurm",
+    "context_type": "SSHContext",
+    "remote_root": "/scratch/YOUR_USER/altdb",
+    "remote_profile": {
+      "hostname": "YOUR_LOGIN_HOST",
+      "username": "YOUR_USER",
+      "port": 22
+    }
+  },
+  "resources": {
+    "number_node": 1,
+    "cpu_per_node": 32,
+    "gpu_per_node": 0,
+    "group_size": 1,
+    "queue_name": "YOUR_PARTITION",
+    "custom_flags": ["#SBATCH --time=02:00:00"],
+    "module_list": ["YOUR_VASP_MODULE"],
+    "envs": {"OMP_NUM_THREADS": "1"}
+  },
+  "input_files": {"INCAR": "INCAR"},
+  "potcars": {
+    "AL": "/path/to/licensed/PAW_PBE/Al/POTCAR",
+    "NI": "/path/to/licensed/PAW_PBE/Ni/POTCAR"
+  },
+  "backward_files": ["OUTCAR", "CONTCAR", "vasprun.xml", "stdout.log", "stderr.log"],
+  "result_format": "vasp/outcar",
+  "result_file": "OUTCAR",
+  "check_interval": 30
+}

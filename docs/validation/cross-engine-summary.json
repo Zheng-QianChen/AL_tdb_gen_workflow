@@ -1,0 +1,499 @@
+{
+  "date": "2026-10-18",
+  "energy_unit": "J/mol-atoms",
+  "rows": [
+    {
+      "case": "AlNi_gx",
+      "phase": "FCC4",
+      "T_K": 300.0,
+      "composition": "AL=0.38, NI=0.62",
+      "G_local": -60351.51376706776,
+      "G_Pandat": -55689.9307,
+      "G_OpenCalphad": -60351.514,
+      "OpenCalphad_minus_local": -0.00023293224512599409,
+      "G_pycalphad_native": -60351.5137669905,
+      "native_model_minus_local": 7.725611794739962e-08,
+      "G_project_model_native_solver": -60351.5137669905,
+      "same_model_native_solver_minus_local": 7.725611794739962e-08,
+      "pycalphad_native_model_warnings": "",
+      "OC_accepted_starts": 37,
+      "OC_attempts": 37,
+      "native_model_accepted_starts": 37,
+      "project_model_accepted_starts": 37,
+      "G_ThermoCalc": -60351.514,
+      "ThermoCalc_minus_local": -0.00023293224512599409,
+      "TC_accepted_starts": 37,
+      "TC_attempts": 37
+    },
+    {
+      "case": "AlNi_gt_2",
+      "phase": "FCC4",
+      "T_K": 300.0,
+      "composition": "AL=0.1, NI=0.9",
+      "G_local": -24151.75037056733,
+      "G_Pandat": -24101.59153,
+      "G_OpenCalphad": -24151.751,
+      "OpenCalphad_minus_local": -0.0006294326703937259,
+      "G_pycalphad_native": -24151.750370569913,
+      "native_model_minus_local": -2.582964953035116e-09,
+      "G_project_model_native_solver": -24151.75037056818,
+      "same_model_native_solver_minus_local": -8.512870408594608e-10,
+      "pycalphad_native_model_warnings": "",
+      "OC_accepted_starts": 37,
+      "OC_attempts": 37,
+      "native_model_accepted_starts": 37,
+      "project_model_accepted_starts": 37,
+      "G_ThermoCalc": -24151.751,
+      "ThermoCalc_minus_local": -0.0006294326703937259,
+      "TC_accepted_starts": 37,
+      "TC_attempts": 37
+    },
+    {
+      "case": "FeNi_gt_1",
+      "phase": "FCC4",
+      "T_K": 500.0,
+      "composition": "FE=0.5, NI=0.5",
+      "G_local": -21808.050571695934,
+      "G_Pandat": -21713.24445,
+      "G_OpenCalphad": -21808.055,
+      "OpenCalphad_minus_local": -0.004428304066095734,
+      "G_pycalphad_native": -21712.90823351237,
+      "native_model_minus_local": 95.14233818356297,
+      "G_project_model_native_solver": -21808.050571695952,
+      "same_model_native_solver_minus_local": -1.8189894035458565e-11,
+      "pycalphad_native_model_warnings": "The order-disorder model for \"FCC4\" has a contribution from the physical property model `magnetic_energy`. Partitioned physical properties are not correctly substituted into the disordered part of the energy. THE GIBBS ENERGY CALCULATED FOR THIS PHASE MAY BE INCORRECT. Please see the discussion in https://github.com/pycalphad/pycalphad/pull/311 for more details.",
+      "OC_accepted_starts": 37,
+      "OC_attempts": 37,
+      "native_model_accepted_starts": 37,
+      "project_model_accepted_starts": 37,
+      "G_ThermoCalc": -21808.055,
+      "ThermoCalc_minus_local": -0.004428304066095734,
+      "TC_accepted_starts": 37,
+      "TC_attempts": 37
+    },
+    {
+      "case": "AlFe_gt_2",
+      "phase": "BCC_4SL",
+      "T_K": 650.0,
+      "composition": "AL=0.25, FE=0.75",
+      "G_local": -41920.89374628067,
+      "G_Pandat": -41911.34403,
+      "G_OpenCalphad": -41920.897,
+      "OpenCalphad_minus_local": -0.003253719325584825,
+      "G_pycalphad_native": -42524.060234909135,
+      "native_model_minus_local": -603.1664886284634,
+      "G_project_model_native_solver": -41920.893746281195,
+      "same_model_native_solver_minus_local": -5.238689482212067e-10,
+      "pycalphad_native_model_warnings": "The order-disorder model for \"BCC_4SL\" has a contribution from the physical property model `magnetic_energy`. Partitioned physical properties are not correctly substituted into the disordered part of the energy. THE GIBBS ENERGY CALCULATED FOR THIS PHASE MAY BE INCORRECT. Please see the discussion in https://github.com/pycalphad/pycalphad/pull/311 for more details.",
+      "OC_accepted_starts": 37,
+      "OC_attempts": 37,
+      "native_model_accepted_starts": 37,
+      "project_model_accepted_starts": 37,
+      "G_ThermoCalc": -41920.897,
+      "ThermoCalc_minus_local": -0.003253719325584825,
+      "TC_accepted_starts": 37,
+      "TC_attempts": 37
+    },
+    {
+      "case": "AlFeNb_gx",
+      "phase": "B2_4SL",
+      "T_K": 300.0,
+      "composition": "AL=0.45, FE=0.53, NB=0.02",
+      "G_local": -35315.441676405004,
+      "G_Pandat": -31826.73573,
+      "G_OpenCalphad": -35315.442,
+      "OpenCalphad_minus_local": -0.0003235949989175424,
+      "G_pycalphad_native": -38059.08823248158,
+      "native_model_minus_local": -2743.646556076579,
+      "G_project_model_native_solver": -35315.44168015514,
+      "same_model_native_solver_minus_local": -3.7501376937143505e-06,
+      "pycalphad_native_model_warnings": "The order-disorder model for \"B2_4SL\" has a contribution from the physical property model `magnetic_energy`. Partitioned physical properties are not correctly substituted into the disordered part of the energy. THE GIBBS ENERGY CALCULATED FOR THIS PHASE MAY BE INCORRECT. Please see the discussion in https://github.com/pycalphad/pycalphad/pull/311 for more details.",
+      "OC_accepted_starts": 37,
+      "OC_attempts": 37,
+      "native_model_accepted_starts": 37,
+      "project_model_accepted_starts": 34,
+      "G_ThermoCalc": -35315.442,
+      "ThermoCalc_minus_local": -0.0003235949989175424,
+      "TC_accepted_starts": 37,
+      "TC_attempts": 37
+    }
+  ],
+  "max_abs_OpenCalphad_minus_local": 0.004428304066095734,
+  "OpenCalphad_version": "6.056 (2022-07-16 executable)",
+  "pycalphad_version": "0.11.2",
+  "MatCalc_version": "6.10.1.002",
+  "global_minimum_certified": false,
+  "baseline_120_point_statistics_changed": false,
+  "MatCalc_assessments": [
+    {
+      "case": "official_AlMgSi_smoke",
+      "assessment": "official_smoke_completed"
+    },
+    {
+      "case": "AlNi_gx",
+      "assessment": "incompatible_order_disorder_syntax"
+    },
+    {
+      "case": "AlNi_gt_2",
+      "assessment": "incompatible_order_disorder_syntax"
+    },
+    {
+      "case": "FeNi_gt_1",
+      "assessment": "incompatible_order_disorder_syntax"
+    },
+    {
+      "case": "AlFe_gt_2",
+      "assessment": "unsupported_database_keyword"
+    },
+    {
+      "case": "AlFeNb_gx",
+      "assessment": "incompatible_order_disorder_syntax"
+    }
+  ],
+  "raw_data": "<repository>\\data\\cross_engine_validation_20261018",
+  "ThermoCalc_version": "2026b (2026.2.201356-1197)",
+  "max_abs_ThermoCalc_minus_local": 0.004428304066095734,
+  "ThermoCalc_cases": [
+    {
+      "case": "AlNi_gx",
+      "tdb_sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+      "returncode": 1,
+      "stopped_after_normal_macro_completion": true,
+      "G_local": -60351.51376706776,
+      "G_Pandat": -55689.9307,
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 290: Line contains non-ascii characters",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 294: Line contains non-ascii characters",
+        "17:58:38,651 [Thread-0] WARN  DatabaseUtils: Line 296: Line contains tab characters",
+        "Reference REF0       missing close to line                    141",
+        "Reference REF0       missing close to line                    198",
+        "Reference REF0       missing close to line                    203",
+        "Reference REF0       missing close to line                    208",
+        "Reference REF0       missing close to line                    211",
+        "Reference REF0       missing close to line                    213",
+        "Reference REF0       missing close to line                    214",
+        "Reference REF0       missing close to line                    216",
+        "Reference REF0       missing close to line                    224",
+        "Reference REF0       missing close to line                    251",
+        "Reference REF0       missing close to line                    252",
+        "Reference REF0       missing close to line                    253",
+        "Reference REF0       missing close to line                    254",
+        "Reference REF0       missing close to line                    255",
+        "Reference REF0       missing close to line                    257",
+        "Reference REF0       missing close to line                    265",
+        "Reference REF0       missing close to line                    266",
+        "Reference REF0       missing close to line                    267",
+        "Reference REF0       missing close to line                    268",
+        "Reference REF0       missing close to line                    271"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -60351.514,
+        "active_phases": [
+          [
+            "FCC4_FP",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.38,
+          "NI": 0.62
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 1e-12,
+          "Y_0_NI": 1.0,
+          "Y_1_AL": 1e-12,
+          "Y_1_NI": 1.0,
+          "Y_2_AL": 0.99998142,
+          "Y_2_NI": 1.8584491e-05,
+          "Y_3_AL": 0.52001858,
+          "Y_3_NI": 0.47998142
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.491000016315638e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlNi_gt_2",
+      "tdb_sha256": "a6bfd5a7fec59da900ee7798bd3af7a869b88dc8d5b555fd47e019bf90478d7a",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -24151.75037056733,
+      "G_Pandat": -24101.59153,
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 290: Line contains non-ascii characters",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 294: Line contains non-ascii characters",
+        "17:59:02,179 [Thread-0] WARN  DatabaseUtils: Line 296: Line contains tab characters",
+        "Reference REF0       missing close to line                    141",
+        "Reference REF0       missing close to line                    198",
+        "Reference REF0       missing close to line                    203",
+        "Reference REF0       missing close to line                    208",
+        "Reference REF0       missing close to line                    211",
+        "Reference REF0       missing close to line                    213",
+        "Reference REF0       missing close to line                    214",
+        "Reference REF0       missing close to line                    216",
+        "Reference REF0       missing close to line                    224",
+        "Reference REF0       missing close to line                    251",
+        "Reference REF0       missing close to line                    252",
+        "Reference REF0       missing close to line                    253",
+        "Reference REF0       missing close to line                    254",
+        "Reference REF0       missing close to line                    255",
+        "Reference REF0       missing close to line                    257",
+        "Reference REF0       missing close to line                    265",
+        "Reference REF0       missing close to line                    266",
+        "Reference REF0       missing close to line                    267",
+        "Reference REF0       missing close to line                    268",
+        "Reference REF0       missing close to line                    271"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -24151.751,
+        "active_phases": [
+          [
+            "FCC4_L12",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.1,
+          "NI": 0.9
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.00041610632,
+          "Y_0_NI": 0.99958389,
+          "Y_1_AL": 0.00041610632,
+          "Y_1_NI": 0.99958389,
+          "Y_2_AL": 0.39875168,
+          "Y_2_NI": 0.60124832,
+          "Y_3_AL": 0.00041610632,
+          "Y_3_NI": 0.99958389
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 3.679999971417658e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "FeNi_gt_1",
+      "tdb_sha256": "c9697d880eeba14a801cdd4af6635de0165d8b56ded5976a95f48ac04bf35978",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -21808.050571695934,
+      "G_Pandat": -21713.24445,
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 5: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 15: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 21: Line longer than 78 characters",
+        "17:59:12,969 [Thread-0] WARN  DatabaseUtils: Line 44: Line longer than 78 characters",
+        "17:59:12,970 [Thread-0] WARN  DatabaseUtils: Line 50: Line longer than 78 characters",
+        "17:59:12,970 [Thread-0] WARN  DatabaseUtils: Line 52: Line longer than 78 characters"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -21808.055,
+        "active_phases": [
+          [
+            "FCC4",
+            1.0
+          ]
+        ],
+        "X": {
+          "FE": 0.5,
+          "NI": 0.5
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_FE": 0.34888018,
+          "Y_0_NI": 0.65111982,
+          "Y_1_FE": 0.95335946,
+          "Y_1_NI": 0.046640544,
+          "Y_2_FE": 0.34888018,
+          "Y_2_NI": 0.65111982,
+          "Y_3_FE": 0.34888018,
+          "Y_3_NI": 0.65111982,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.000000108916879e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_12",
+        "equilibrium_file": "equilibrium_013.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlFe_gt_2",
+      "tdb_sha256": "e08f375f7573fdedd89cbefc6f7ba3a2c6dbec3c3063ce408531a09a083e4891",
+      "returncode": 1,
+      "stopped_after_normal_macro_completion": true,
+      "G_local": -41920.89374628067,
+      "G_Pandat": -41911.34403,
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "17:59:24,033 [Thread-0] WARN  DatabaseUtils: Line 134: Line longer than 78 characters",
+        "17:59:24,033 [Thread-0] WARN  DatabaseUtils: Line 142: Line longer than 78 characters",
+        "17:59:24,034 [Thread-0] WARN  DatabaseUtils: Line 168: Line longer than 78 characters",
+        "17:59:24,075 [TDBFileParser-Deferred] ERROR DatabaseUtils: Line 171: Unknown phase name A2_B2 in assessed system: [Al, Fe]",
+        "17:59:24,167 [Thread-0] ERROR JavaWrapper: Checking support for database '<temporary-directory>\\tc_cross_l8u3_2rh\\model.tdb' in Gibbs Energy System v6: The database contains 1 errors",
+        "17:59:24,167 [Thread-0] ERROR JavaWrapper: Errors have been detected in this database. Databases with errors cannot be used with the latest version of the Gibbs Energy System, GES6. The application will therefore revert temporarily to the previous version of the Gibbs Energy System, GES5. However, it is strongly advised that the errors are corrected rather than continuing to use an erronous database. Please use the Database Checker, found under the application's Tools menu, or the TDB Editor (the VSCode text editor with the TDB Language Support plugin) to find and clear the database errors.",
+        "*** WARNING: This database cannot be used with GES6, temporarily reverting to G"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -41920.897,
+        "active_phases": [
+          [
+            "BCC_4SL_D03",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.25,
+          "FE": 0.75
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.048609014,
+          "Y_0_FE": 0.95139099,
+          "Y_1_AL": 0.048609014,
+          "Y_1_FE": 0.95139099,
+          "Y_2_AL": 0.64551714,
+          "Y_2_FE": 0.35448286,
+          "Y_3_AL": 0.25726483,
+          "Y_3_FE": 0.74273517,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.000000108916879e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_00",
+        "equilibrium_file": "equilibrium_001.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "5 (automatic metadata fallback)",
+        "errors": [
+          "17:59:24,075 [TDBFileParser-Deferred] ERROR DatabaseUtils: Line 171: Unknown phase name A2_B2 in assessed system: [Al, Fe]",
+          "17:59:24,167 [Thread-0] ERROR JavaWrapper: Checking support for database '<temporary-directory>\\tc_cross_l8u3_2rh\\model.tdb' in Gibbs Energy System v6: The database contains 1 errors",
+          "17:59:24,167 [Thread-0] ERROR JavaWrapper: Errors have been detected in this database. Databases with errors cannot be used with the latest version of the Gibbs Energy System, GES6. The application will therefore revert temporarily to the previous version of the Gibbs Energy System, GES5. However, it is strongly advised that the errors are corrected rather than continuing to use an erronous database. Please use the Database Checker, found under the application's Tools menu, or the TDB Editor (the VSCode text editor with the TDB Language Support plugin) to find and clear the database errors."
+        ],
+        "reference_file_missing": false
+      }
+    },
+    {
+      "case": "AlFeNb_gx",
+      "tdb_sha256": "097b66eeac4803061c1da7529b7672495468d3d9c7e0108b9dffd1216c554cbc",
+      "returncode": 0,
+      "stopped_after_normal_macro_completion": false,
+      "G_local": -35315.441676405004,
+      "G_Pandat": -31826.73573,
+      "import_diagnostics": [
+        "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/<TC26B_HOME>/xstream-1.4.21.jar)",
+        "WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+        "WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release",
+        "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE",
+        "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE"
+      ],
+      "attempts": 37,
+      "accepted": 37,
+      "best": {
+        "converged": true,
+        "comparable": true,
+        "G": -35315.442,
+        "active_phases": [
+          [
+            "B2_4SL",
+            1.0
+          ]
+        ],
+        "X": {
+          "AL": 0.45,
+          "FE": 0.53,
+          "NB": 0.02
+        },
+        "site_fractions_printed_precision": {
+          "Y_0_AL": 0.9,
+          "Y_0_FE": 0.060328616,
+          "Y_0_NB": 0.039671389,
+          "Y_1_AL": 0.9,
+          "Y_1_FE": 0.060328616,
+          "Y_1_NB": 0.039671389,
+          "Y_2_AL": 4.9342669e-09,
+          "Y_2_FE": 0.99967138,
+          "Y_2_NB": 0.00032861131,
+          "Y_3_AL": 4.9342669e-09,
+          "Y_3_FE": 0.99967138,
+          "Y_3_NB": 0.00032861131,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_printed_site_sum_error": 4.999999969612645e-09,
+        "input_site_fractions_verified": true,
+        "diagnostics": [],
+        "seed": "independent_02",
+        "equilibrium_file": "equilibrium_003.txt"
+      },
+      "import_audit": {
+        "accepted_for_comparison": true,
+        "GES": "6",
+        "errors": [
+          "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE",
+          "*** ERROR  1000 IN TDBGRT: NO REFERENCE FILE"
+        ],
+        "reference_file_missing": true
+      }
+    }
+  ]
+}

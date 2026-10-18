@@ -24,7 +24,7 @@ class Sublattice_model:
             lattice_number (int): 亚点阵数量 eg.3
             elements_list (list): 元素列表 eg.['CO', 'CU', 'FE', 'NI', 'TA', 'TI', 'W']
             endmembers_name (list): 亚点阵端际组元 eg.['CO:CU:CO:CU:FE',....]
-            model_points (np.ndarray): 模型点的 n 维数组，形状为 (n_points, n-elements + 1) 
+            model_points (np.ndarray): 模型点的 n 维数组，形状为 (n_points, n-elements + 1)
             convex_hull (ConvexHull, optional): 凸包对象
             uniq_equations (np.ndarray): 凸包的平面方程，去重
             points_outer (pd.Dataframe): 凸包外的点
@@ -35,7 +35,7 @@ class Sublattice_model:
         self.endmembers_name = endmembers_name
         self.model_points = model_points
         self.points_outer = points_outer
-        self.points_insider = None 
+        self.points_insider = None
         self.convex_hull = convex_hull if convex_hull is not None else ConvexHull(model_points)
         self.uniq_equations = None
 
@@ -51,13 +51,15 @@ class Sublattice_model:
 
     def update_outer_points(self):
         if len(self.points_outer) == 0:
-            return np.ndarray([])
+            self.points_outer = self.points_outer.copy()
+            self.points_outer["distance_between_pt_hull"] = pd.Series(dtype=float)
+            return np.array([], dtype=bool)
         outer_points_head = self.points_outer
         outer_points = outer_points_head[ self.elements_list[1:] + ['Energy'] ].values
         # 检查所有点是否在凸包内，在凸包内的则略过
         inside = pts_and_hull.is_inside_convex_hull(outer_points, self.uniq_equations)
         outside = ~inside
-        outer_points_head = outer_points_head[outside]
+        outer_points_head = outer_points_head[outside].copy()
         outer_points = outer_points[np.where(outside)[0]]
         # 对于不在凸包内的点，需要对它的值进行另外的处理
         # 计算距离
@@ -65,7 +67,7 @@ class Sublattice_model:
         outer_points_head["distance_between_pt_hull"] = min_differences
         self.points_outer = outer_points_head
         return inside
-    
+
     def pts_insert(self):
         if len(self.points_outer) == 0:
             record = pd.DataFrame([],columns = ["name","outer"])
@@ -105,11 +107,11 @@ class Sublattice_model:
         record.columns = ["name","outer"]
         print(record)
         return record
-    
+
     def get_inside_pts_distance(self, inside_bool:np.ndarray=None):
         if inside_bool is None:
             inside_bool = pts_and_hull.is_inside_convex_hull(self.model_points, self.uniq_equations)
-        insider_points = self.endmembers_name[inside_bool[len(self.elements_list):]]
+        insider_points = self.endmembers_name[inside_bool[-len(self.endmembers_name):]].copy()
         insider_temp = insider_points[ self.elements_list[1:] + ['Energy'] ].values
 
         w = self.uniq_equations[:,:-1]

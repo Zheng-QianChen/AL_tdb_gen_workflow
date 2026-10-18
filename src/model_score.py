@@ -24,9 +24,9 @@ def get_file_names(directory:str):  # sourcery skip: for-append-to-extend
     return file_names
 
 def get_model_score(
-    directory_path: str, 
-    col_name: list, 
-    log: str, 
+    directory_path: str,
+    col_name: list,
+    log: str,
 ) -> pd.DataFrame:
     """
     计算模型的分类成绩并输出到日志文件中,返回整体评价的dataframe。
@@ -61,28 +61,31 @@ def get_model_score(
             # 取得能量的正数
             candidate_model_Ediff['distance_between_pt_hull'] = -candidate_model_Ediff['distance_between_pt_hull']
             # 最小值
-            min_distance = candidate_model_Ediff['distance_between_pt_hull'].min()
+            min_distance = candidate_model_Ediff['distance_between_pt_hull'].min() if len(candidate_model_Ediff) else 0.0
             print("最小值:", min_distance, file=f1)
 
             # 最大值
-            max_distance = candidate_model_Ediff['distance_between_pt_hull'].max()
+            max_distance = candidate_model_Ediff['distance_between_pt_hull'].max() if len(candidate_model_Ediff) else 0.0
             print("最大值:", max_distance, file=f1)
 
             # RMSE
-            rmse = np.sqrt(((candidate_model_Ediff['distance_between_pt_hull'] - candidate_model_Ediff['distance_between_pt_hull'].mean()) ** 2).mean())
+            distances = candidate_model_Ediff['distance_between_pt_hull'].to_numpy(dtype=float)
+            if not np.isfinite(distances).all():
+                raise ValueError(f"Nonfinite model errors in {file}")
+            rmse = np.sqrt(np.mean(distances ** 2)) if len(distances) else 0.0
             print("RMSE:", rmse, file=f1)
 
             # 分段频数
-            bins = np.arange(0, max_distance + 2, 2)  # 以 10 为区间长度
-            candidate_model_Ediff['distance_segment'] = pd.cut(candidate_model_Ediff['distance_between_pt_hull'], bins=bins)
+            bins = np.arange(0, max(max_distance + 2, 4), 2)
+            candidate_model_Ediff['distance_segment'] = pd.cut(candidate_model_Ediff['distance_between_pt_hull'], bins=bins, include_lowest=True)
             segment_counts = candidate_model_Ediff['distance_segment'].value_counts()
             print("分段频数:", file=f1)
             print(segment_counts, file=f1)
-            
-            
+
+
             # 将分段频数转换为字典，方便填充到 DataFrame
             segment_dict = segment_counts.to_dict()
-            
+
             # 创建当前模型的信息
             current_model = {
                 "model": file,
@@ -91,12 +94,12 @@ def get_model_score(
                 "RMSE": rmse,
                 "segment_count": len(segment_dict),
             }
-            
+
             # 添加分段频数
             for segment, count in segment_dict.items():
                 segment_str = str(segment)
                 current_model[segment_str] = count
-            
+
             # 将当前模型的信息添加到 DataFrame
             model_score = pd.concat([model_score, pd.DataFrame([current_model])], ignore_index=True)
             print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",file=f1)

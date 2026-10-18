@@ -1,0 +1,16 @@
+# Static single-point EXAMPLE, not a converged production recipe.
+# Match cutoff, k-mesh, magnetism, smearing and POTCARs to your reference data.
+SYSTEM = AL-TDB static example
+ENCUT = 520
+PREC = Accurate
+EDIFF = 1E-7
+NELM = 120
+NSW = 0
+IBRION = -1
+ISMEAR = 0
+SIGMA = 0.05
+KSPACING = 0.20
+KGAMMA = .TRUE.
+LREAL = .FALSE.
+LWAVE = .FALSE.
+LCHARG = .FALSE.

@@ -1,11 +1,10 @@
 import src.model_assess as mAssess
 import src.model_score as mScore
-from src.MODEL import *
+from src.MODEL import Sublattice_model
 import src.generate as generate
 import src.tdb_generator as Tdbgene
 import src.model_post as mPost
 import pandas as pd
-import numpy as np
 import os, json
 from pathlib import Path
 
@@ -61,7 +60,8 @@ class subl_assess:
 
     def reset_vasp_ml_data(self):
         self.vasp_ml_data = pd.read_csv(self.vasp_ml_data_path, index_col=0)
-    
+        return self.vasp_ml_data
+
     def get_model_result_raw(self, choosen:list=None):
         if not choosen:
             # choosen = range(2,len(self.site_weight))
@@ -91,17 +91,17 @@ class subl_assess:
 
         # 2. 调整区间列顺序（使y轴标签连续）
         # 提取所有区间列的名称（排除非区间列）
-        interval_cols = [col for col in model_score_sort.columns if '(' in col and ')' in col]
+        interval_cols = [col for col in model_score_sort.columns if '(' in col and ']' in col]
         # 按区间上限排序（如(0.0,2.0] < (2.0,4.0]）
-        interval_cols_sorted = sorted(interval_cols, key=lambda x: float(x.strip('()').split(',')[0]))
+        interval_cols_sorted = sorted(interval_cols, key=lambda x: float(x.strip('()[]').split(',')[0]))
 
         # 重新排列DataFrame的列：非区间列在前，区间列按排序后的顺序在后
         non_interval_cols = [col for col in model_score_sort.columns if col not in interval_cols]
         model_score_sort = model_score_sort[non_interval_cols + interval_cols_sorted]
         model_score_sort.to_csv(model_score_file)
         return True
-    
-    
+
+
     def get_model_result_elements(self, candidate_model:list, site_elements:dict=None, delet_ele_num_list:int=[1]):
         '''
         candidate_model = [4,'A:B:C:D:A']
@@ -132,7 +132,7 @@ class subl_assess:
         # model_ele_score = mScore.get_model_score(self.directory_path, col_name, log)
         # model_score_sort.to_csv(model_score_file)
         return True
-    
+
     def plot_model_result_raw(self):
         print(self.working_path)
         model_score_file = Path(f"{self.working_path}/model_score.csv")
@@ -147,7 +147,7 @@ class subl_assess:
         # ==============================================================================
         # 选择较为满意的模型，进一步完善能量模型设置
         # TODO: 输入为模型的设置，基础输出：1-凸包端点 2-按照能量依次将端际组元置入凸包，考察凸包的变化，可以移动凸包的平面？可以将点置入凸包之中？ 3-如果置入后，模型的提升非常大，则调整模型端际组元的能量以包括该点。
-        # 如何调整端际组元？首先要找投影点所在的平面，然后通过平面找到构成端际组元，以每次移动一半能量差值的方式，调整至将该端际组元的能量差值在2以内。 
+        # 如何调整端际组元？首先要找投影点所在的平面，然后通过平面找到构成端际组元，以每次移动一半能量差值的方式，调整至将该端际组元的能量差值在2以内。
         if save_path == None:
             save_path = self.working_path
         else:
@@ -159,23 +159,20 @@ class subl_assess:
         self.reset_vasp_ml_data()
         vasp_ml_data, identity_matrix, raw_points = mAssess.modify_ml_data_100(self.vasp_ml_data, self.elements_list)
 
+        exported_files = []
         for item in candidate_model:
-            if site_elements == None:
-                site_elements = self.site_elements
-                site_elements = generate.get_model_site_elements(item, site_elements)
-                
+            current_elements = (generate.get_model_site_elements(item, self.site_elements)
+                                if site_elements is None else site_elements)
+
             # M, inside = mAssess.model_get_hull(raw_points,identity_matrix,self.site_elements,item)
             M, inside = mAssess.model_get_hull_ele_gene_tdb(raw_points,identity_matrix,
-                                                   site_elements=site_elements,
+                                                   site_elements=current_elements,
                                                    model=item)
-            ver = M.convex_hull.vertices
-            temp = identity_matrix.shape[0]
-            end = M.endmembers_name.iloc[ver-identity_matrix.shape[0],:]
-            print(M.convex_hull.vertices)
             new_table = self.output_all_tdbs(M, tor)
-            self.output_tdb_file(model=item, new_table=new_table,
-                                 site_elements=site_elements,
-                                 tdb_output_path=save_path)
+            exported_files.append(self.output_tdb_file(model=item, new_table=new_table,
+                                 site_elements=current_elements,
+                                 tdb_output_path=save_path))
+        return exported_files
 
     def delete_some_elements_in_sites(self, model, choosen:list, site_elements:list=None):
         '''
@@ -213,24 +210,25 @@ class subl_assess:
         # new_table.to_csv("end_prepare_for_generate.csv")
 
         end_indexes = M.points_insider['endmember']
-        new_table = vasp_ml_data[vasp_ml_data['endmember'].isin(end_indexes)]
-        new_table['distance_between_pt_hull'] = M.points_insider['distance_between_pt_hull']
-        new_table = new_table[new_table['distance_between_pt_hull'] <= tor]
-        
+        new_table = vasp_ml_data[vasp_ml_data['endmember'].isin(end_indexes)].copy()
+        distance = M.points_insider.set_index('endmember')['distance_between_pt_hull']
+        new_table['distance_between_pt_hull'] = new_table['endmember'].map(distance)
+        new_table['within_hull_tolerance'] = new_table['distance_between_pt_hull'] <= tor
+
         return new_table
 
     def extract_and_rejoin(self, s, indices):
         parts = s.split(":")
         selected = [parts[i] for i in indices if i < len(parts)]
         return ":".join(selected)
-    
+
     def create_index_dict(self, list1, list2):
         # 记录列表2中每个元素第一次出现的索引
         index_map = {}
         for idx, element in enumerate(list2):
             if element not in index_map:
                 index_map[element] = idx
-        
+
         # 根据列表1中的元素生成结果字典
         result_list = [index_map.get(key, -1) for key in list1]
         return result_list
@@ -238,19 +236,19 @@ class subl_assess:
     def sum_elements(self, model, reference_list):
         # 分割字符串
         keys = model[1].split(":")
-        values = list(map(int, model[2].split(":")))
-        
+        values = list(map(float, model[2].split(":")))
+
         # 创建一个字典来存储总和
         sum_dict = {key: 0 for key in reference_list}
-        
+
         # 遍历 keys 和 values
         for key, value in zip(keys, values):
             if key in sum_dict:
                 sum_dict[key] += value
-        
+
         # 根据 reference_list 的顺序生成结果列表
         result = [sum_dict[key] for key in reference_list]
-        
+
         return result
 
     def output_tdb_file(self, model:list, new_table:pd.DataFrame, site_elements:list[list[str]], tdb_output_path:Path):
@@ -258,7 +256,8 @@ class subl_assess:
         model = [4,"A:B:C:D:B","1:1:1:1:1"]
         '''
         temp = ':'.join(map(str, self.site_weight))
-        model.append(temp)
+        model = [*model[:2], temp]
+        new_table = new_table.copy()
         # model.append(self.site_weight)
         # 目标字符串用于检查
         print(model)
@@ -286,6 +285,7 @@ class subl_assess:
         temp2 = model[2].replace(':','_')
         tdb_output_path = tdb_output_path / Path(f"model_{model[0]}__{temp1}__{temp2}__{temp}.tdb")
         Tdbgene.tdb_gene(model, site_elements, result,tdb_output_path,new_table)
+        return tdb_output_path
 
     def output_tdb_file_entire(self, model:list=None, site_elements:list=None, tdb_output_path:Path='./'):
         '''
@@ -301,14 +301,15 @@ class subl_assess:
 
         # 生成 点 的列表
         end_indexes = generate.replace_groups(model=model, site_elements=site_elements)
-        
+
         # 根据这些 index 值筛选 vasp_ml_data
         new_table = vasp_ml_data_temp[vasp_ml_data_temp['index'].isin(end_indexes)]
         # new_table.to_csv("end_prepare_for_generate.csv")
 
         print(type(model))
         temp = ':'.join(map(str, self.site_weight))
-        model.append(temp)
+        model = [*model[:2], temp]
+        new_table = new_table.copy()
         print(model)
         # 目标字符串用于检查
         model_name_list = self.name_list[:model[0]]

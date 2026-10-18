@@ -1,0 +1,230 @@
+[
+  {
+    "method": "scipy differential_evolution",
+    "seed": 2026,
+    "popsize": 24,
+    "tol": 1e-10,
+    "polish": false,
+    "maxiter": 1000,
+    "coordinates": "u=Y_0_NI, v=Y_1_NI, Y_2_NI=1.5-u-v; Y_3_VA=1",
+    "bounds": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "constraint": "0.5 <= u+v <= 1.5",
+    "points": [
+      {
+        "T_K": 800.0,
+        "G_local": -13657.767146966376,
+        "G_Pandat": -13262.34887,
+        "G_independent_DE": -13657.767146933787,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1716,
+        "DE_site_fractions_NI": [
+          0.9908859223214285,
+          0.49999987665236956,
+          0.009114201026201973
+        ],
+        "Pandat_site_fractions_NI": [
+          0.7487306622,
+          0.7487306622,
+          0.002539127501
+        ],
+        "G_local_at_pandat_Y": -13262.342092464816,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -9887.776650430169,
+            1697288.6131043197
+          ],
+          "5e-05": [
+            -9377.626702189504,
+            1696439.409715822
+          ]
+        }
+      },
+      {
+        "T_K": 1000.0,
+        "G_local": -14857.923942821733,
+        "G_Pandat": -14692.64026,
+        "G_independent_DE": -14857.923942815047,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1463,
+        "DE_site_fractions_NI": [
+          0.9648088306725616,
+          0.03519159603312688,
+          0.49999957329431144
+        ],
+        "Pandat_site_fractions_NI": [
+          0.0172599389,
+          0.7413700327,
+          0.7413700311
+        ],
+        "G_local_at_pandat_Y": -14692.633943257477,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -10267.970477039118,
+            135804.6650540611
+          ],
+          "5e-05": [
+            -10267.972631590519,
+            135803.99036265546
+          ]
+        }
+      },
+      {
+        "T_K": 1200.0,
+        "G_local": -16904.992784996943,
+        "G_Pandat": -16882.17642,
+        "G_independent_DE": -16904.992784984555,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1720,
+        "DE_site_fractions_NI": [
+          0.8780865252242054,
+          0.12191050303146311,
+          0.5000029717443315
+        ],
+        "Pandat_site_fractions_NI": [
+          0.2938059707,
+          0.9123880191,
+          0.2938059691
+        ],
+        "G_local_at_pandat_Y": -16882.169829167495,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -2635.3373852900177,
+            21737.666700791284
+          ],
+          "5e-05": [
+            -2635.340772485731,
+            21737.657355061172
+          ]
+        }
+      }
+    ],
+    "case": "synthetic_4sl_coupled_fm",
+    "tdb_sha256": "9abb09cfe523bbf466060e5f8c7c22a140f3aa7fa636569c1ce49fa72d3fedc9"
+  },
+  {
+    "method": "scipy differential_evolution",
+    "seed": 2026,
+    "popsize": 24,
+    "tol": 1e-10,
+    "polish": false,
+    "maxiter": 1000,
+    "coordinates": "u=Y_0_NI, v=Y_1_NI, Y_2_NI=1.5-u-v; Y_3_VA=1",
+    "bounds": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "constraint": "0.5 <= u+v <= 1.5",
+    "points": [
+      {
+        "T_K": 800.0,
+        "G_local": -13657.767146966386,
+        "G_Pandat": -13262.34887,
+        "G_independent_DE": -13657.767146933787,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1716,
+        "DE_site_fractions_NI": [
+          0.9908859223214285,
+          0.49999987665236956,
+          0.009114201026201973
+        ],
+        "Pandat_site_fractions_NI": [
+          0.7487306622,
+          0.7487306622,
+          0.002539127501
+        ],
+        "G_local_at_pandat_Y": -13262.342092464816,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -9887.776741379581,
+            1697288.6128314713
+          ],
+          "5e-05": [
+            -9377.626520290563,
+            1696439.4088063273
+          ]
+        }
+      },
+      {
+        "T_K": 1000.0,
+        "G_local": -14857.923942821726,
+        "G_Pandat": -14692.64026,
+        "G_independent_DE": -14857.923942815047,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1463,
+        "DE_site_fractions_NI": [
+          0.9648088306725616,
+          0.03519159603312688,
+          0.49999957329431144
+        ],
+        "Pandat_site_fractions_NI": [
+          0.0172599389,
+          0.7413700327,
+          0.7413700311
+        ],
+        "G_local_at_pandat_Y": -14692.633943257477,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -10267.97065557844,
+            135804.66505070147
+          ],
+          "5e-05": [
+            -10267.972631590519,
+            135803.99036265546
+          ]
+        }
+      },
+      {
+        "T_K": 1200.0,
+        "G_local": -16904.99278499694,
+        "G_Pandat": -16882.17642,
+        "G_independent_DE": -16904.992784984555,
+        "DE_success": true,
+        "DE_message": "Optimization terminated successfully.",
+        "DE_nfev": 1720,
+        "DE_site_fractions_NI": [
+          0.8780865252242054,
+          0.12191050303146311,
+          0.5000029717443315
+        ],
+        "Pandat_site_fractions_NI": [
+          0.2938059707,
+          0.9123880191,
+          0.2938059691
+        ],
+        "G_local_at_pandat_Y": -16882.169829167495,
+        "Pandat_tangent_Hessian_eigenvalues_by_step": {
+          "0.0001": [
+            -2635.3373852900177,
+            21737.666700791284
+          ],
+          "5e-05": [
+            -2635.340772485731,
+            21737.657355061172
+          ]
+        }
+      }
+    ],
+    "case": "synthetic_4sl_coupled_afm",
+    "tdb_sha256": "ef750189fa718d299306ba00e788df0dfa7cdbb30291b83271469cf4dd7a7d83"
+  }
+]

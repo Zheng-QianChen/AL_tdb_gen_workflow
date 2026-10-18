@@ -16,7 +16,7 @@
     <link href="/static/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <script src="/static/css/papaparse.min.js"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -33,7 +33,7 @@
             }
         }
     </script>
-    
+
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
@@ -93,6 +93,7 @@
     </nav>
 
     <div class="container py-4">
+        <p class="text-end"><a id="gibbs-link" class="btn btn-outline-primary" href="/gibbs">Gibbs 自由能曲线</a></p>
         <!-- Workflow Navigation Chart -->
         <div class="flow-chart">
             <h3 class="flow-title" data-i18n="model_analysis.workflow_title">Model Analysis Workflow</h3>
@@ -122,31 +123,31 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Step 1: Parameter Input -->
         <div class="content-section active" id="section-1">
             <h2 class="section-title">
                 <i class="fas fa-sliders-h me-2"></i><span data-i18n="model_analysis.step_1_title">Parameter Input</span>
             </h2>
             <p class="text-muted mb-4" data-i18n="model_analysis.step_1_desc">Please enter the parameters required to generate TDB files. The system will call the output_tdb_file function with these parameters.</p>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="param-group">
                         <label class="param-label" for="user-input" data-i18n="model_analysis.param_user">User Identifier (user)</label>
                         <input type="text" id="user-input" class="form-control" placeholder="Enter user identifier string">
                     </div>
-                    
+
                     <div class="param-group">
                         <label class="param-label" for="mask-input" data-i18n="model_analysis.param_mask">Mask Value (mask)</label>
-                        <input type="number" id="mask-input" class="form-control" placeholder="Enter integer mask value">
+                        <input type="number" id="mask-input" class="form-control" min="0" step="any" placeholder="Hull tolerance (kJ/mol-atoms)">
                     </div>
-                    
+
                     <div class="param-group">
                         <label class="param-label" for="input-file-path" data-i18n="model_analysis.param_phase_file">Phase Model File (Optional)</label>
                         <input type="text" id="input-file-path" class="form-control" placeholder="Enter phase model file (default: static/run/input.json)">
                     </div>
-                    
+
                     <!-- New: CSV File Path Input -->
                     <!-- <div class="param-group">
                         <label class="param-label" for="csv-file-path" data-i18n="model_analysis.param_csv">CSV Data File Path</label>
@@ -154,7 +155,7 @@
                         <small class="text-muted" data-i18n="model_analysis.param_csv_tip">The system will automatically load the CSV file at this path for visualization</small>
                     </div> -->
                 </div>
-                
+
                 <div class="col-md-6">
                     <div class="card bg-light">
                         <div class="card-body">
@@ -177,13 +178,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Calculation Status Display -->
             <div class="calculation-status" id="step1-status">
                 <i class="fas fa-spinner fa-spin me-2"></i>
                 <span id="step1-status-text" data-i18n="model_analysis.calculating">Calculating...</span>
             </div>
-            
+
             <div class="btn-group-actions">
                 <div>
                     <!-- Step 1: Confirm Calculation Button -->
@@ -196,38 +197,38 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Step 2: Sublattice Model Selection -->
         <div class="content-section" id="section-2">
             <h2 class="section-title">
                 <i class="fas fa-check-square me-2"></i><span data-i18n="model_analysis.step_2_title">Sublattice Model Selection</span>
             </h2>
             <p class="text-muted mb-4" data-i18n="model_analysis.step_2_desc">Please select the number of sublattices for the models to be analyzed. The system will perform analysis based on the selected models.</p>
-            
+
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title" data-i18n="model_analysis.available_options">Available Options:</h5>
                         <span data-i18n="model_analysis.sublattice_range_prefix">Based on sublattice_number value (current value: </span>
                             <b id="sublattice-number-display">3</b>
                             <span data-i18n="model_analysis.sublattice_range_suffix">), available range is 2-</span>
-                            <b id="max-model-number">2</b>                    
+                            <b id="max-model-number">2</b>
                     <div class="checkbox-group" id="sublattice-checkboxes">
                         <!-- Checkboxes will be dynamically generated -->
                     </div>
                 </div>
             </div>
-            
+
             <div class="alert alert-info">
                 <i class="fas fa-lightbulb me-2"></i>
                 <strong data-i18n="model_analysis.tip">Tip:</strong> <span data-i18n="model_analysis.tip_content">You can select multiple models for comparative analysis. It's recommended to select at least 2 models for more comprehensive comparison results.</span>
             </div>
-            
+
             <!-- Calculation Status Display -->
             <div class="calculation-status" id="step2-status">
                 <i class="fas fa-spinner fa-spin me-2"></i>
                 <span id="step2-status-text" data-i18n="model_analysis.calculating">Calculating...</span>
             </div>
-            
+
             <div class="btn-group-actions">
                 <button class="btn btn-secondary btn-nav" id="step2-prev">
                     <i class="fas fa-arrow-left me-1"></i> <span data-i18n="model_analysis.btn_prev">Previous</span>
@@ -244,14 +245,14 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Step 3: Result Visualization - Replaced with Interactive Charts -->
         <div class="content-section" id="section-3">
             <h2 class="section-title">
                 <i class="fas fa-chart-bar me-2"></i><span data-i18n="model_analysis.step_3_title">Result Visualization</span>
             </h2>
             <p class="text-muted mb-4" data-i18n="model_analysis.step_3_desc">Below is an overview of CSV data visualization results generated based on the selected models. You can view performance comparisons across different models.<br>Additionally, you can interact with the data through the interface below.</p>
-            
+
             <!-- New: Model Analysis Plot Display Area -->
             <div class="plot-container" id="model-plot-container">
                 <div class="plot-loading" id="plot-loading">
@@ -263,7 +264,7 @@
                 <div class="plot-error" id="plot-error" style="display: none;"></div>
                 <img src="" alt="Model Analysis Plot" class="plot-image" id="model-plot-image" style="display: none;">
             </div>
-            
+
             <!-- Interactive Chart Area -->
             <div class="card mb-4">
                 <div class="card-header">
@@ -277,7 +278,7 @@
                             <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                                 <i class="fa fa-cogs text-primary mr-2"></i><span data-i18n="model_analysis.chart_control">Chart Settings</span>
                             </h3>
-                            
+
                             <!-- CSV File Info -->
                             <div class="mb-4 p-3 bg-white rounded border border-gray-200">
                                 <p class="text-sm text-gray-600">
@@ -285,14 +286,14 @@
                                     <span id="csvFileName">Loading...</span>
                                 </p>
                             </div>
-                            
+
                             <!-- Data Column Selection -->
                             <div id="columnSelectors" class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="model_analysis.x_axis">X-Axis Data</label>
                                     <select id="xAxis" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"></select>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="model_analysis.y_axis_config">Y-Axis Configuration (Hold Ctrl to select multiple columns for each Y-axis)</label>
                                     <div id="yAxisContainer">
@@ -323,12 +324,12 @@
                                         <i class="fa fa-plus"></i> <span data-i18n="model_analysis.add_y_axis">Add Y-Axis</span>
                                     </button>
                                 </div>
-                                
+
                                 <button id="plotButton" class="w-full bg-secondary text-white py-2 px-4 rounded-md hover:bg-secondary/90 transition-all-300 font-medium flex items-center justify-center">
                                     <i class="fa fa-line-chart mr-2"></i><span data-i18n="model_analysis.generate_chart">Generate Chart</span>
                                 </button>
                             </div>
-                            
+
                             <!-- Data Preview -->
                             <div id="dataPreview" class="mt-6">
                                 <h3 class="text-sm font-medium text-gray-700 mb-2" data-i18n="model_analysis.data_preview">Data Preview</h3>
@@ -339,7 +340,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Right Chart Area -->
                         <div class="lg:col-span-2">
                             <!-- Chart Container -->
@@ -351,7 +352,7 @@
                                     <p class="text-sm mt-2" data-i18n="model_analysis.chart_interaction">Supports zoom, pan and hover to view detailed data</p>
                                 </div>
                             </div>
-                            
+
                             <!-- Chart Interaction Controls -->
                             <div id="chartControls" class="mt-4 flex flex-wrap gap-2 justify-center">
                                 <button id="zoomIn" class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-all-300">
@@ -371,13 +372,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Calculation Status Display -->
             <div class="calculation-status" id="step3-status">
                 <i class="fas fa-spinner fa-spin me-2"></i>
                 <span id="step3-status-text" data-i18n="model_analysis.generating_viz">Generating visualization results...</span>
             </div>
-            
+
             <div class="btn-group-actions">
                 <button class="btn btn-secondary btn-nav" id="step3-prev">
                     <i class="fas fa-arrow-left me-1"></i> <span data-i18n="model_analysis.btn_prev">Previous</span>
@@ -396,7 +397,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Step 4: Model Fine-tuning (Modified) -->
         <div class="content-section" id="section-4">
             <h2 class="section-title">
@@ -434,12 +435,12 @@
                             <div id="model-confirm-tip" class="text-center text-muted py-3">
                                 <i class="fas fa-info-circle me-1"></i> <span data-i18n="model_analysis.model_confirm_tip">Please select a model on the left and click "Confirm Selected Model"</span>
                             </div>
-                            
+
                             <!-- 2. Loading Status -->
                             <div id="element-loading" class="text-center text-muted py-3" style="display: none;">
                                 <span class="spinner-border text-primary" role="status"></span> <span data-i18n="model_analysis.loading_element">Loading element group data...</span>
                             </div>
-                            
+
                             <!-- 3. Dynamic Element Group Container (each group has independent three boxes) -->
                             <div id="dynamic-element-groups" class="d-flex flex-column gap-4 mb-4" style="display: none;">
                                 <!-- Structure for each group will be dynamically generated by JS -->
@@ -447,7 +448,7 @@
 
                             <!-- New: Three-box Selection Area Container -->
                             <div id="three-box-selection" style="display: none;"></div>
-                            
+
                             <!-- Apply Filter Button -->
                             <button class="btn btn-outline-primary" id="apply-filters">
                                 <i class="fas fa-check me-1"></i> <span data-i18n="model_analysis.apply_filter">Apply Element Filter</span>
@@ -469,7 +470,7 @@
                 <span id="status-text" class="text-xs text-gray-500" data-i18n="model_analysis.analyzing">Analyzing...</span>
             </div>
         </div>
-        
+
         <!-- Console Content (initially displayed) -->
         <div id="console-content" class="bg-gray-900 text-gray-100 p-4 h-64 overflow-y-auto text-sm font-mono">
             <div class="mb-1">
@@ -491,7 +492,7 @@
                 <span class="text-gray-400" data-i18n="model_analysis.console_line_6">// Please wait for analysis to complete...</span>
             </div>
         </div>
-        
+
                 <!-- CSV Viewer (initially hidden) -->
                 <div id="csv-viewer" class="hidden p-4 h-64 overflow-y-auto">
                     <div class="mb-4 flex items-center justify-between">
@@ -503,7 +504,7 @@
                             <i class="fas fa-download mr-1"></i> <span data-i18n="model_analysis.download">Download</span>
                         </button>
                     </div>
-                    
+
                     <!-- CSV Table Display -->
                     <div class="border border-gray-200 rounded-lg overflow-hidden">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -536,7 +537,7 @@
             <i class="fas fa-download me-2"></i><span data-i18n="model_analysis.step_5_title">Model Output</span>
         </h2>
         <p class="text-muted mb-4" data-i18n="model_analysis.step_5_desc">Please select the final model for output and manage elements through two boxes. The system will generate corresponding TDB model files. Model data is loaded from CSV file.</p>
-        
+
             <div class="row">
                 <div class="col-md-5">
                     <!-- Model Selection Area Remains Unchanged -->
@@ -556,7 +557,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <div class="col-md-7">
                     <div class="card mb-4">
                         <div class="card-header">
@@ -567,12 +568,12 @@
                             <div id="step5-model-confirm-tip" class="text-center text-muted py-3">
                                 <i class="fas fa-info-circle me-1"></i> <span data-i18n="model_analysis.model_confirm_tip">Please select a model on the left and click "Confirm Selected Model"</span>
                             </div>
-                            
+
                             <!-- 2. Loading Status -->
                             <div id="step5-element-loading" class="text-center text-muted py-3" style="display: none;">
                                 <span class="spinner-border text-primary" role="status"></span> <span data-i18n="model_analysis.loading_element">Loading element group data...</span>
                             </div>
-                            
+
                             <!-- 3. Dynamic Element Group Container (each group has independent two boxes) -->
                             <div id="step5-dynamic-element-groups" class="d-flex flex-column gap-4 mb-4" style="display: none;">
                                 <!-- Structure for each group will be dynamically generated by JS -->
@@ -586,7 +587,7 @@
             </div>
             <div class="mt-6 border border-gray-200 rounded-lg shadow-sm overflow-hidden transition-all duration-300" id="analysis-console-container">
             </div>
-        
+
         <!-- Output Settings -->
         <div class="card mb-4">
             <div class="card-header">
@@ -610,7 +611,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-check mt-3">
                     <input class="form-check-input" type="checkbox" id="include-metrics">
                     <label class="form-check-label" for="include-metrics" data-i18n="model_analysis.include_metrics">
@@ -619,7 +620,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="btn-group-actions">
             <button class="btn btn-secondary btn-nav" id="step5-prev">
                 <i class="fas fa-arrow-left me-1"></i> <span data-i18n="model_analysis.btn_prev">Previous</span>

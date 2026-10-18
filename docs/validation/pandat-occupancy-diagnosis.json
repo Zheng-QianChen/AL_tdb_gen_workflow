@@ -1,0 +1,4085 @@
+{
+  "experiments": {
+    "source_validation": "<repository>\\data\\pandat_literature_validation_0a76eb40994c\\summary.json",
+    "folder": "<repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0",
+    "seed_provenance": "Known local minima and previously exported Pandat occupancies; targeted diagnosis, not independent validation",
+    "initial_chemical_potentials": "Pandat default-mode output at the same T/P/composition",
+    "cases": [
+      {
+        "case": "AlNi_gt_2",
+        "point_index": 0,
+        "phase": "FCC4",
+        "T_K": 300.0,
+        "composition": {
+          "AL": 0.1,
+          "NI": 0.9
+        },
+        "G_local": -24151.75037056733,
+        "G_pandat_baseline": -24101.59153,
+        "database_sha256": "917924ec911889fd2112478ee9a7816787593c13c320c4efa95eee35dc367d79",
+        "seed_occupancies": {
+          "local": {
+            "Y_0_AL": 0.3987517241624299,
+            "Y_0_NI": 0.6012482758375701,
+            "Y_1_AL": 0.00041606960602229027,
+            "Y_1_NI": 0.9995839303939776,
+            "Y_2_AL": 0.0004161063466709465,
+            "Y_2_NI": 0.9995838936533291,
+            "Y_3_AL": 0.0004160998848769027,
+            "Y_3_NI": 0.9995839001151231
+          },
+          "pandat": {
+            "Y_0_AL": 0.0999999,
+            "Y_0_NI": 0.9,
+            "Y_1_AL": 0.0999999,
+            "Y_1_NI": 0.9,
+            "Y_2_AL": 0.0999999,
+            "Y_2_NI": 0.9,
+            "Y_3_AL": 0.0999999,
+            "Y_3_NI": 0.9
+          },
+          "asymmetric": {
+            "Y_0_AL": 0.10029865182416244,
+            "Y_0_NI": 0.8997012482758375,
+            "Y_1_AL": 0.09990031616960603,
+            "Y_1_NI": 0.900099583930394,
+            "Y_2_AL": 0.09990031620634668,
+            "Y_2_NI": 0.9000995838936533,
+            "Y_3_AL": 0.09990031619988489,
+            "Y_3_NI": 0.9000995839001151
+          },
+          "permuted": {
+            "Y_0_AL": 0.00041606960602229027,
+            "Y_0_NI": 0.9995839303939776,
+            "Y_1_AL": 0.3987517241624299,
+            "Y_1_NI": 0.6012482758375701,
+            "Y_2_AL": 0.0004161063466709465,
+            "Y_2_NI": 0.9995838936533291,
+            "Y_3_AL": 0.0004160998848769027,
+            "Y_3_NI": 0.9995839001151231
+          }
+        },
+        "variants": [
+          {
+            "variant": "legacy_default",
+            "equilibrium_type": "legacy individual_phase=true",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.1",
+                  "x(NI)": "0.9",
+                  "phase_name": "A1",
+                  "G(@A1)": "-24101.59153",
+                  "x(AL@A1)": "0.0999999",
+                  "x(NI@A1)": "0.9",
+                  "y(AL#1@A1)": "0.0999999",
+                  "y(NI#1@A1)": "0.9",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-160457",
+                  "mu(NI)": "-8951.03"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -24101.59153,
+              "reported_phase": "A1",
+              "X_AL": 0.1,
+              "X_NI": 0.9,
+              "Y_0_AL": 0.0999999,
+              "Y_0_NI": 0.9,
+              "Y_1_AL": 0.0999999,
+              "Y_1_NI": 0.9,
+              "Y_2_AL": 0.0999999,
+              "Y_2_NI": 0.9,
+              "Y_3_AL": 0.0999999,
+              "Y_3_NI": 0.9
+            },
+            "delta_from_local_J_mol_atoms": 50.1588405673283,
+            "formula_delta_J_mol_atoms": 0.0012604292496689595,
+            "max_composition_error": 9.000000901482341e-08,
+            "max_site_sum_error": 9.999999994736442e-08
+          },
+          {
+            "variant": "individual_default",
+            "equilibrium_type": "individual",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.1",
+                  "x(NI)": "0.9",
+                  "phase_name": "A1",
+                  "G(@A1)": "-24101.59153",
+                  "x(AL@A1)": "0.0999999",
+                  "x(NI@A1)": "0.9",
+                  "y(AL#1@A1)": "0.0999999",
+                  "y(NI#1@A1)": "0.9",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-160457",
+                  "mu(NI)": "-8951.03"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -24101.59153,
+              "reported_phase": "A1",
+              "X_AL": 0.1,
+              "X_NI": 0.9,
+              "Y_0_AL": 0.0999999,
+              "Y_0_NI": 0.9,
+              "Y_1_AL": 0.0999999,
+              "Y_1_NI": 0.9,
+              "Y_2_AL": 0.0999999,
+              "Y_2_NI": 0.9,
+              "Y_3_AL": 0.0999999,
+              "Y_3_NI": 0.9
+            },
+            "delta_from_local_J_mol_atoms": 50.1588405673283,
+            "formula_delta_J_mol_atoms": 0.0012604292496689595,
+            "max_composition_error": 9.000000901482341e-08,
+            "max_site_sum_error": 9.999999994736442e-08
+          },
+          {
+            "variant": "individual_local_seed",
+            "equilibrium_type": "individual",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.1",
+                  "x(NI)": "0.9",
+                  "phase_name": "A1",
+                  "G(@A1)": "-24101.59153",
+                  "x(AL@A1)": "0.0999999",
+                  "x(NI@A1)": "0.9",
+                  "y(AL#1@A1)": "0.0999999",
+                  "y(NI#1@A1)": "0.9",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-160457",
+                  "mu(NI)": "-8951.03"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -24101.59153,
+              "reported_phase": "A1",
+              "X_AL": 0.1,
+              "X_NI": 0.9,
+              "Y_0_AL": 0.0999999,
+              "Y_0_NI": 0.9,
+              "Y_1_AL": 0.0999999,
+              "Y_1_NI": 0.9,
+              "Y_2_AL": 0.0999999,
+              "Y_2_NI": 0.9,
+              "Y_3_AL": 0.0999999,
+              "Y_3_NI": 0.9
+            },
+            "delta_from_local_J_mol_atoms": 50.1588405673283,
+            "formula_delta_J_mol_atoms": 0.0012604292496689595,
+            "max_composition_error": 9.000000901482341e-08,
+            "max_site_sum_error": 9.999999994736442e-08
+          },
+          {
+            "variant": "local_pandat_seed",
+            "equilibrium_type": "local",
+            "seed": "pandat",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gt_2\\local_pandat_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_asymmetric_seed",
+            "equilibrium_type": "local",
+            "seed": "asymmetric",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gt_2\\local_asymmetric_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_local_seed",
+            "equilibrium_type": "local",
+            "seed": "local",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gt_2\\local_local_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_permuted_seed",
+            "equilibrium_type": "local",
+            "seed": "permuted",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gt_2\\local_permuted_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "global_default",
+            "equilibrium_type": "global",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "G(@FCC4)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "x(AL@FCC4)": "mole/mole",
+                "x(NI@FCC4)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "y(AL#1@FCC4)": "",
+                "y(NI#1@FCC4)": "",
+                "y(AL#2@FCC4)": "",
+                "y(NI#2@FCC4)": "",
+                "y(AL#3@FCC4)": "",
+                "y(NI#3@FCC4)": "",
+                "y(AL#4@FCC4)": "",
+                "y(NI#4@FCC4)": "",
+                "f(@A1)": "",
+                "f(@FCC4)": "",
+                "struct(@A1)": "",
+                "struct(@FCC4)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.1",
+                  "x(NI)": "0.9",
+                  "phase_name": "A1+FCC4",
+                  "G(@A1)": "-8942.314509",
+                  "G(@FCC4)": "-49895.14605",
+                  "x(AL@A1)": "2.11949E-05",
+                  "x(NI@A1)": "0.999979",
+                  "x(AL@FCC4)": "0.2499748548",
+                  "x(NI@FCC4)": "0.7500251452",
+                  "y(AL#1@A1)": "2.11949E-05",
+                  "y(NI#1@A1)": "0.999979",
+                  "y(AL#1@FCC4)": "1.355295433E-17",
+                  "y(NI#1@FCC4)": "1",
+                  "y(AL#2@FCC4)": "0.9998994191",
+                  "y(NI#2@FCC4)": "0.0001005808881",
+                  "y(AL#3@FCC4)": "1.355295433E-17",
+                  "y(NI#3@FCC4)": "1",
+                  "y(AL#4@FCC4)": "1.355295433E-17",
+                  "y(NI#4@FCC4)": "1",
+                  "f(@A1)": "0.600011",
+                  "f(@FCC4)": "0.3999894194",
+                  "struct(@A1)": "[1]",
+                  "struct(@FCC4)": "[3 1 0 0]",
+                  "mu(AL)": "-172781",
+                  "mu(NI)": "-8938.84"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase A1+FCC4, expected a single FCC4"
+          },
+          {
+            "variant": "global_local_seed",
+            "equilibrium_type": "global",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "G(@FCC4)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "x(AL@FCC4)": "mole/mole",
+                "x(NI@FCC4)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "y(AL#1@FCC4)": "",
+                "y(NI#1@FCC4)": "",
+                "y(AL#2@FCC4)": "",
+                "y(NI#2@FCC4)": "",
+                "y(AL#3@FCC4)": "",
+                "y(NI#3@FCC4)": "",
+                "y(AL#4@FCC4)": "",
+                "y(NI#4@FCC4)": "",
+                "f(@A1)": "",
+                "f(@FCC4)": "",
+                "struct(@A1)": "",
+                "struct(@FCC4)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.1",
+                  "x(NI)": "0.9",
+                  "phase_name": "A1+FCC4",
+                  "G(@A1)": "-8942.314509",
+                  "G(@FCC4)": "-49895.14605",
+                  "x(AL@A1)": "2.11949E-05",
+                  "x(NI@A1)": "0.999979",
+                  "x(AL@FCC4)": "0.2499748548",
+                  "x(NI@FCC4)": "0.7500251452",
+                  "y(AL#1@A1)": "2.11949E-05",
+                  "y(NI#1@A1)": "0.999979",
+                  "y(AL#1@FCC4)": "1.355295433E-17",
+                  "y(NI#1@FCC4)": "1",
+                  "y(AL#2@FCC4)": "0.9998994191",
+                  "y(NI#2@FCC4)": "0.0001005808881",
+                  "y(AL#3@FCC4)": "1.355295433E-17",
+                  "y(NI#3@FCC4)": "1",
+                  "y(AL#4@FCC4)": "1.355295433E-17",
+                  "y(NI#4@FCC4)": "1",
+                  "f(@A1)": "0.600011",
+                  "f(@FCC4)": "0.3999894194",
+                  "struct(@A1)": "[1]",
+                  "struct(@FCC4)": "[3 1 0 0]",
+                  "mu(AL)": "-172781",
+                  "mu(NI)": "-8938.84"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase A1+FCC4, expected a single FCC4"
+          }
+        ],
+        "initial_chemical_potentials": {
+          "AL": -160457.0,
+          "NI": -8951.03
+        }
+      },
+      {
+        "case": "AlNi_gx",
+        "point_index": 3,
+        "phase": "FCC4",
+        "T_K": 300.0,
+        "composition": {
+          "AL": 0.38,
+          "NI": 0.62
+        },
+        "G_local": -60351.51376706776,
+        "G_pandat_baseline": -55689.9307,
+        "database_sha256": "917924ec911889fd2112478ee9a7816787593c13c320c4efa95eee35dc367d79",
+        "seed_occupancies": {
+          "local": {
+            "Y_0_AL": 0.5200185385760255,
+            "Y_0_NI": 0.4799814614239746,
+            "Y_1_AL": 0.9999814614293814,
+            "Y_1_NI": 1.8538570618617083e-05,
+            "Y_2_AL": 0.0,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.0,
+            "Y_3_NI": 1.0
+          },
+          "pandat": {
+            "Y_0_AL": 0.38,
+            "Y_0_NI": 0.62,
+            "Y_1_AL": 0.38,
+            "Y_1_NI": 0.62,
+            "Y_2_AL": 0.38,
+            "Y_2_NI": 0.62,
+            "Y_3_AL": 0.38,
+            "Y_3_NI": 0.62
+          },
+          "asymmetric": {
+            "Y_0_AL": 0.38014001853857604,
+            "Y_0_NI": 0.6198599814614241,
+            "Y_1_AL": 0.3806199814614294,
+            "Y_1_NI": 0.6193800185385706,
+            "Y_2_AL": 0.37962,
+            "Y_2_NI": 0.62038,
+            "Y_3_AL": 0.37962,
+            "Y_3_NI": 0.62038
+          },
+          "permuted": {
+            "Y_0_AL": 0.9999814614293814,
+            "Y_0_NI": 1.8538570618617083e-05,
+            "Y_1_AL": 0.5200185385760255,
+            "Y_1_NI": 0.4799814614239746,
+            "Y_2_AL": 0.0,
+            "Y_2_NI": 1.0,
+            "Y_3_AL": 0.0,
+            "Y_3_NI": 1.0
+          }
+        },
+        "variants": [
+          {
+            "variant": "legacy_default",
+            "equilibrium_type": "legacy individual_phase=true",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.38",
+                  "x(NI)": "0.62",
+                  "phase_name": "A1",
+                  "G(@A1)": "-55689.9307",
+                  "x(AL@A1)": "0.38",
+                  "x(NI@A1)": "0.62",
+                  "y(AL#1@A1)": "0.38",
+                  "y(NI#1@A1)": "0.62",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-88292.9",
+                  "mu(NI)": "-35707.5"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -55689.9307,
+              "reported_phase": "A1",
+              "X_AL": 0.38,
+              "X_NI": 0.62,
+              "Y_0_AL": 0.38,
+              "Y_0_NI": 0.62,
+              "Y_1_AL": 0.38,
+              "Y_1_NI": 0.62,
+              "Y_2_AL": 0.38,
+              "Y_2_NI": 0.62,
+              "Y_3_AL": 0.38,
+              "Y_3_NI": 0.62
+            },
+            "delta_from_local_J_mol_atoms": 4661.583067067761,
+            "formula_delta_J_mol_atoms": 0.001988376745430287,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_default",
+            "equilibrium_type": "individual",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.38",
+                  "x(NI)": "0.62",
+                  "phase_name": "A1",
+                  "G(@A1)": "-55689.9307",
+                  "x(AL@A1)": "0.38",
+                  "x(NI@A1)": "0.62",
+                  "y(AL#1@A1)": "0.38",
+                  "y(NI#1@A1)": "0.62",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-88292.9",
+                  "mu(NI)": "-35707.5"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -55689.9307,
+              "reported_phase": "A1",
+              "X_AL": 0.38,
+              "X_NI": 0.62,
+              "Y_0_AL": 0.38,
+              "Y_0_NI": 0.62,
+              "Y_1_AL": 0.38,
+              "Y_1_NI": 0.62,
+              "Y_2_AL": 0.38,
+              "Y_2_NI": 0.62,
+              "Y_3_AL": 0.38,
+              "Y_3_NI": 0.62
+            },
+            "delta_from_local_J_mol_atoms": 4661.583067067761,
+            "formula_delta_J_mol_atoms": 0.001988376745430287,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_local_seed",
+            "equilibrium_type": "individual",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@A1)": "",
+                "x(AL@A1)": "mole/mole",
+                "x(NI@A1)": "mole/mole",
+                "y(AL#1@A1)": "",
+                "y(NI#1@A1)": "",
+                "f(@A1)": "",
+                "struct(@A1)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.38",
+                  "x(NI)": "0.62",
+                  "phase_name": "A1",
+                  "G(@A1)": "-55689.9307",
+                  "x(AL@A1)": "0.38",
+                  "x(NI@A1)": "0.62",
+                  "y(AL#1@A1)": "0.38",
+                  "y(NI#1@A1)": "0.62",
+                  "f(@A1)": "1",
+                  "struct(@A1)": "[1]",
+                  "mu(AL)": "-88292.9",
+                  "mu(NI)": "-35707.5"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -55689.9307,
+              "reported_phase": "A1",
+              "X_AL": 0.38,
+              "X_NI": 0.62,
+              "Y_0_AL": 0.38,
+              "Y_0_NI": 0.62,
+              "Y_1_AL": 0.38,
+              "Y_1_NI": 0.62,
+              "Y_2_AL": 0.38,
+              "Y_2_NI": 0.62,
+              "Y_3_AL": 0.38,
+              "Y_3_NI": 0.62
+            },
+            "delta_from_local_J_mol_atoms": 4661.583067067761,
+            "formula_delta_J_mol_atoms": 0.001988376745430287,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "local_pandat_seed",
+            "equilibrium_type": "local",
+            "seed": "pandat",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gx\\local_pandat_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_asymmetric_seed",
+            "equilibrium_type": "local",
+            "seed": "asymmetric",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gx\\local_asymmetric_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_local_seed",
+            "equilibrium_type": "local",
+            "seed": "local",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gx\\local_local_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_permuted_seed",
+            "equilibrium_type": "local",
+            "seed": "permuted",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlNi_gx\\local_permuted_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "global_default",
+            "equilibrium_type": "global",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4#1)": "",
+                "G(@FCC4#2)": "",
+                "x(AL@FCC4#1)": "mole/mole",
+                "x(NI@FCC4#1)": "mole/mole",
+                "x(AL@FCC4#2)": "mole/mole",
+                "x(NI@FCC4#2)": "mole/mole",
+                "y(AL#1@FCC4#1)": "",
+                "y(NI#1@FCC4#1)": "",
+                "y(AL#2@FCC4#1)": "",
+                "y(NI#2@FCC4#1)": "",
+                "y(AL#3@FCC4#1)": "",
+                "y(NI#3@FCC4#1)": "",
+                "y(AL#4@FCC4#1)": "",
+                "y(NI#4@FCC4#1)": "",
+                "y(AL#1@FCC4#2)": "",
+                "y(NI#1@FCC4#2)": "",
+                "y(AL#2@FCC4#2)": "",
+                "y(NI#2@FCC4#2)": "",
+                "y(AL#3@FCC4#2)": "",
+                "y(NI#3@FCC4#2)": "",
+                "y(AL#4@FCC4#2)": "",
+                "y(NI#4@FCC4#2)": "",
+                "f(@FCC4#1)": "",
+                "f(@FCC4#2)": "",
+                "struct(@FCC4#1)": "",
+                "struct(@FCC4#2)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.38",
+                  "x(NI)": "0.62",
+                  "phase_name": "FCC4+FCC4",
+                  "G(@FCC4#1)": "-71491.03532",
+                  "G(@FCC4#2)": "-49925.4541",
+                  "x(AL@FCC4#1)": "0.499795",
+                  "x(NI@FCC4#1)": "0.500205",
+                  "x(AL@FCC4#2)": "0.2502950835",
+                  "x(NI@FCC4#2)": "0.7497049165",
+                  "y(AL#1@FCC4#1)": "1.83025E-42",
+                  "y(NI#1@FCC4#1)": "1",
+                  "y(AL#2@FCC4#1)": "0.999591",
+                  "y(NI#2@FCC4#1)": "0.000409441",
+                  "y(AL#3@FCC4#1)": "0.999591",
+                  "y(NI#3@FCC4#1)": "0.000409441",
+                  "y(AL#4@FCC4#1)": "1.83025E-42",
+                  "y(NI#4@FCC4#1)": "1",
+                  "y(AL#1@FCC4#2)": "0.0003934446571",
+                  "y(NI#1@FCC4#2)": "0.9996065553",
+                  "y(AL#2@FCC4#2)": "1",
+                  "y(NI#2@FCC4#2)": "3.683845882E-18",
+                  "y(AL#3@FCC4#2)": "0.0003934446571",
+                  "y(NI#3@FCC4#2)": "0.9996065553",
+                  "y(AL#4@FCC4#2)": "0.0003934446571",
+                  "y(NI#4@FCC4#2)": "0.9996065553",
+                  "f(@FCC4#1)": "0.519859",
+                  "f(@FCC4#2)": "0.4801410496",
+                  "struct(@FCC4#1)": "[2 2 0 0]",
+                  "struct(@FCC4#2)": "[3 1 0 0]",
+                  "mu(AL)": "-114726",
+                  "mu(NI)": "-28291.2"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase FCC4+FCC4, expected a single FCC4"
+          },
+          {
+            "variant": "global_local_seed",
+            "equilibrium_type": "global",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4#1)": "",
+                "G(@FCC4#2)": "",
+                "x(AL@FCC4#1)": "mole/mole",
+                "x(NI@FCC4#1)": "mole/mole",
+                "x(AL@FCC4#2)": "mole/mole",
+                "x(NI@FCC4#2)": "mole/mole",
+                "y(AL#1@FCC4#1)": "",
+                "y(NI#1@FCC4#1)": "",
+                "y(AL#2@FCC4#1)": "",
+                "y(NI#2@FCC4#1)": "",
+                "y(AL#3@FCC4#1)": "",
+                "y(NI#3@FCC4#1)": "",
+                "y(AL#4@FCC4#1)": "",
+                "y(NI#4@FCC4#1)": "",
+                "y(AL#1@FCC4#2)": "",
+                "y(NI#1@FCC4#2)": "",
+                "y(AL#2@FCC4#2)": "",
+                "y(NI#2@FCC4#2)": "",
+                "y(AL#3@FCC4#2)": "",
+                "y(NI#3@FCC4#2)": "",
+                "y(AL#4@FCC4#2)": "",
+                "y(NI#4@FCC4#2)": "",
+                "f(@FCC4#1)": "",
+                "f(@FCC4#2)": "",
+                "struct(@FCC4#1)": "",
+                "struct(@FCC4#2)": "",
+                "mu(AL)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.38",
+                  "x(NI)": "0.62",
+                  "phase_name": "FCC4+FCC4",
+                  "G(@FCC4#1)": "-71491.03532",
+                  "G(@FCC4#2)": "-49925.4541",
+                  "x(AL@FCC4#1)": "0.499795",
+                  "x(NI@FCC4#1)": "0.500205",
+                  "x(AL@FCC4#2)": "0.2502950835",
+                  "x(NI@FCC4#2)": "0.7497049165",
+                  "y(AL#1@FCC4#1)": "1.83025E-42",
+                  "y(NI#1@FCC4#1)": "1",
+                  "y(AL#2@FCC4#1)": "0.999591",
+                  "y(NI#2@FCC4#1)": "0.000409441",
+                  "y(AL#3@FCC4#1)": "0.999591",
+                  "y(NI#3@FCC4#1)": "0.000409441",
+                  "y(AL#4@FCC4#1)": "1.83025E-42",
+                  "y(NI#4@FCC4#1)": "1",
+                  "y(AL#1@FCC4#2)": "0.0003934446571",
+                  "y(NI#1@FCC4#2)": "0.9996065553",
+                  "y(AL#2@FCC4#2)": "1",
+                  "y(NI#2@FCC4#2)": "3.683845882E-18",
+                  "y(AL#3@FCC4#2)": "0.0003934446571",
+                  "y(NI#3@FCC4#2)": "0.9996065553",
+                  "y(AL#4@FCC4#2)": "0.0003934446571",
+                  "y(NI#4@FCC4#2)": "0.9996065553",
+                  "f(@FCC4#1)": "0.519859",
+                  "f(@FCC4#2)": "0.4801410496",
+                  "struct(@FCC4#1)": "[2 2 0 0]",
+                  "struct(@FCC4#2)": "[3 1 0 0]",
+                  "mu(AL)": "-114726",
+                  "mu(NI)": "-28291.2"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase FCC4+FCC4, expected a single FCC4"
+          }
+        ],
+        "initial_chemical_potentials": {
+          "AL": -88292.9,
+          "NI": -35707.5
+        }
+      },
+      {
+        "case": "FeNi_gt_1",
+        "point_index": 1,
+        "phase": "FCC4",
+        "T_K": 500.0,
+        "composition": {
+          "FE": 0.5,
+          "NI": 0.5
+        },
+        "G_local": -21808.050571695934,
+        "G_pandat_baseline": -21713.24445,
+        "database_sha256": "46add0817b433a94d6866648f0266799ccac4ed7855d38779876e4468e0c97bd",
+        "seed_occupancies": {
+          "local": {
+            "Y_0_FE": 0.9533597311889541,
+            "Y_0_NI": 0.04664026881104586,
+            "Y_1_FE": 0.34888004641108783,
+            "Y_1_NI": 0.6511199535889122,
+            "Y_2_FE": 0.34888004641108744,
+            "Y_2_NI": 0.6511199535889127,
+            "Y_3_FE": 0.34888017598887067,
+            "Y_3_NI": 0.6511198240111293,
+            "Y_4_VA": 1.0
+          },
+          "pandat": {
+            "Y_0_FE": 0.6268297383,
+            "Y_0_NI": 0.3731702617,
+            "Y_1_FE": 0.3731702615,
+            "Y_1_NI": 0.6268297385,
+            "Y_2_FE": 0.3731702615,
+            "Y_2_NI": 0.6268297385,
+            "Y_3_FE": 0.6268297383,
+            "Y_3_NI": 0.3731702617,
+            "Y_4_VA": 1.0
+          },
+          "asymmetric": {
+            "Y_0_FE": 0.627156268292889,
+            "Y_0_NI": 0.3728437317071111,
+            "Y_1_FE": 0.37314597128491106,
+            "Y_1_NI": 0.6268540287150889,
+            "Y_2_FE": 0.37314597128491106,
+            "Y_2_NI": 0.6268540287150889,
+            "Y_3_FE": 0.6265517887376889,
+            "Y_3_NI": 0.37344821126231115,
+            "Y_4_VA": 1.0
+          },
+          "permuted": {
+            "Y_0_FE": 0.34888004641108783,
+            "Y_0_NI": 0.6511199535889122,
+            "Y_1_FE": 0.9533597311889541,
+            "Y_1_NI": 0.04664026881104586,
+            "Y_2_FE": 0.34888004641108744,
+            "Y_2_NI": 0.6511199535889127,
+            "Y_3_FE": 0.34888017598887067,
+            "Y_3_NI": 0.6511198240111293,
+            "Y_4_VA": 1.0
+          }
+        },
+        "variants": [
+          {
+            "variant": "legacy_default",
+            "equilibrium_type": "legacy individual_phase=true",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(FE)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4)": "",
+                "x(FE@FCC4)": "mole/mole",
+                "x(NI@FCC4)": "mole/mole",
+                "y(FE#1@FCC4)": "",
+                "y(NI#1@FCC4)": "",
+                "y(FE#2@FCC4)": "",
+                "y(NI#2@FCC4)": "",
+                "y(FE#3@FCC4)": "",
+                "y(NI#3@FCC4)": "",
+                "y(FE#4@FCC4)": "",
+                "y(NI#4@FCC4)": "",
+                "y(VA#5@FCC4)": "",
+                "f(@FCC4)": "",
+                "struct(@FCC4)": "",
+                "mu(FE)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "500",
+                  "P": "1",
+                  "x(FE)": "0.5",
+                  "x(NI)": "0.5",
+                  "phase_name": "FCC4",
+                  "G(@FCC4)": "-21713.24445",
+                  "x(FE@FCC4)": "0.5",
+                  "x(NI@FCC4)": "0.5",
+                  "y(FE#1@FCC4)": "0.62683",
+                  "y(NI#1@FCC4)": "0.37317",
+                  "y(FE#2@FCC4)": "0.37317",
+                  "y(NI#2@FCC4)": "0.62683",
+                  "y(FE#3@FCC4)": "0.37317",
+                  "y(NI#3@FCC4)": "0.62683",
+                  "y(FE#4@FCC4)": "0.62683",
+                  "y(NI#4@FCC4)": "0.37317",
+                  "y(VA#5@FCC4)": "1",
+                  "f(@FCC4)": "1",
+                  "struct(@FCC4)": "[2 2 0 0 1]",
+                  "mu(FE)": "-12813.1",
+                  "mu(NI)": "-30613.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 500.0,
+              "P_Pa": 101325.0,
+              "G": -21713.24445,
+              "reported_phase": "FCC4",
+              "X_FE": 0.5,
+              "X_NI": 0.5,
+              "Y_0_FE": 0.62683,
+              "Y_0_NI": 0.37317,
+              "Y_1_FE": 0.37317,
+              "Y_1_NI": 0.62683,
+              "Y_2_FE": 0.37317,
+              "Y_2_NI": 0.62683,
+              "Y_3_FE": 0.62683,
+              "Y_3_NI": 0.37317,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 94.80612169593587,
+            "formula_delta_J_mol_atoms": 0.00564691732506617,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_default",
+            "equilibrium_type": "individual",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(FE)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4)": "",
+                "x(FE@FCC4)": "mole/mole",
+                "x(NI@FCC4)": "mole/mole",
+                "y(FE#1@FCC4)": "",
+                "y(NI#1@FCC4)": "",
+                "y(FE#2@FCC4)": "",
+                "y(NI#2@FCC4)": "",
+                "y(FE#3@FCC4)": "",
+                "y(NI#3@FCC4)": "",
+                "y(FE#4@FCC4)": "",
+                "y(NI#4@FCC4)": "",
+                "y(VA#5@FCC4)": "",
+                "f(@FCC4)": "",
+                "struct(@FCC4)": "",
+                "mu(FE)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "500",
+                  "P": "1",
+                  "x(FE)": "0.5",
+                  "x(NI)": "0.5",
+                  "phase_name": "FCC4",
+                  "G(@FCC4)": "-21713.24445",
+                  "x(FE@FCC4)": "0.5",
+                  "x(NI@FCC4)": "0.5",
+                  "y(FE#1@FCC4)": "0.62683",
+                  "y(NI#1@FCC4)": "0.37317",
+                  "y(FE#2@FCC4)": "0.37317",
+                  "y(NI#2@FCC4)": "0.62683",
+                  "y(FE#3@FCC4)": "0.37317",
+                  "y(NI#3@FCC4)": "0.62683",
+                  "y(FE#4@FCC4)": "0.62683",
+                  "y(NI#4@FCC4)": "0.37317",
+                  "y(VA#5@FCC4)": "1",
+                  "f(@FCC4)": "1",
+                  "struct(@FCC4)": "[2 2 0 0 1]",
+                  "mu(FE)": "-12813.1",
+                  "mu(NI)": "-30613.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 500.0,
+              "P_Pa": 101325.0,
+              "G": -21713.24445,
+              "reported_phase": "FCC4",
+              "X_FE": 0.5,
+              "X_NI": 0.5,
+              "Y_0_FE": 0.62683,
+              "Y_0_NI": 0.37317,
+              "Y_1_FE": 0.37317,
+              "Y_1_NI": 0.62683,
+              "Y_2_FE": 0.37317,
+              "Y_2_NI": 0.62683,
+              "Y_3_FE": 0.62683,
+              "Y_3_NI": 0.37317,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 94.80612169593587,
+            "formula_delta_J_mol_atoms": 0.00564691732506617,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_local_seed",
+            "equilibrium_type": "individual",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(FE)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4)": "",
+                "x(FE@FCC4)": "mole/mole",
+                "x(NI@FCC4)": "mole/mole",
+                "y(FE#1@FCC4)": "",
+                "y(NI#1@FCC4)": "",
+                "y(FE#2@FCC4)": "",
+                "y(NI#2@FCC4)": "",
+                "y(FE#3@FCC4)": "",
+                "y(NI#3@FCC4)": "",
+                "y(FE#4@FCC4)": "",
+                "y(NI#4@FCC4)": "",
+                "y(VA#5@FCC4)": "",
+                "f(@FCC4)": "",
+                "struct(@FCC4)": "",
+                "mu(FE)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "500",
+                  "P": "1",
+                  "x(FE)": "0.5",
+                  "x(NI)": "0.5",
+                  "phase_name": "FCC4",
+                  "G(@FCC4)": "-21713.24445",
+                  "x(FE@FCC4)": "0.5",
+                  "x(NI@FCC4)": "0.5",
+                  "y(FE#1@FCC4)": "0.62683",
+                  "y(NI#1@FCC4)": "0.37317",
+                  "y(FE#2@FCC4)": "0.37317",
+                  "y(NI#2@FCC4)": "0.62683",
+                  "y(FE#3@FCC4)": "0.37317",
+                  "y(NI#3@FCC4)": "0.62683",
+                  "y(FE#4@FCC4)": "0.62683",
+                  "y(NI#4@FCC4)": "0.37317",
+                  "y(VA#5@FCC4)": "1",
+                  "f(@FCC4)": "1",
+                  "struct(@FCC4)": "[2 2 0 0 1]",
+                  "mu(FE)": "-12813.1",
+                  "mu(NI)": "-30613.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "FCC4",
+              "T_K": 500.0,
+              "P_Pa": 101325.0,
+              "G": -21713.24445,
+              "reported_phase": "FCC4",
+              "X_FE": 0.5,
+              "X_NI": 0.5,
+              "Y_0_FE": 0.62683,
+              "Y_0_NI": 0.37317,
+              "Y_1_FE": 0.37317,
+              "Y_1_NI": 0.62683,
+              "Y_2_FE": 0.37317,
+              "Y_2_NI": 0.62683,
+              "Y_3_FE": 0.62683,
+              "Y_3_NI": 0.37317,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 94.80612169593587,
+            "formula_delta_J_mol_atoms": 0.00564691732506617,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "local_pandat_seed",
+            "equilibrium_type": "local",
+            "seed": "pandat",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\FeNi_gt_1\\local_pandat_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_asymmetric_seed",
+            "equilibrium_type": "local",
+            "seed": "asymmetric",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\FeNi_gt_1\\local_asymmetric_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_local_seed",
+            "equilibrium_type": "local",
+            "seed": "local",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\FeNi_gt_1\\local_local_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_permuted_seed",
+            "equilibrium_type": "local",
+            "seed": "permuted",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\FeNi_gt_1\\local_permuted_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "global_default",
+            "equilibrium_type": "global",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(FE)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4#1)": "",
+                "G(@FCC4#2)": "",
+                "x(FE@FCC4#1)": "mole/mole",
+                "x(NI@FCC4#1)": "mole/mole",
+                "x(FE@FCC4#2)": "mole/mole",
+                "x(NI@FCC4#2)": "mole/mole",
+                "y(FE#1@FCC4#1)": "",
+                "y(NI#1@FCC4#1)": "",
+                "y(FE#2@FCC4#1)": "",
+                "y(NI#2@FCC4#1)": "",
+                "y(FE#3@FCC4#1)": "",
+                "y(NI#3@FCC4#1)": "",
+                "y(FE#4@FCC4#1)": "",
+                "y(NI#4@FCC4#1)": "",
+                "y(VA#5@FCC4#1)": "",
+                "y(FE#1@FCC4#2)": "",
+                "y(NI#1@FCC4#2)": "",
+                "y(FE#2@FCC4#2)": "",
+                "y(NI#2@FCC4#2)": "",
+                "y(FE#3@FCC4#2)": "",
+                "y(NI#3@FCC4#2)": "",
+                "y(FE#4@FCC4#2)": "",
+                "y(NI#4@FCC4#2)": "",
+                "y(VA#5@FCC4#2)": "",
+                "f(@FCC4#1)": "",
+                "f(@FCC4#2)": "",
+                "struct(@FCC4#1)": "",
+                "struct(@FCC4#2)": "",
+                "mu(FE)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "500",
+                  "P": "1",
+                  "x(FE)": "0.5",
+                  "x(NI)": "0.5",
+                  "phase_name": "FCC4+FCC4",
+                  "G(@FCC4#1)": "-21999.2393",
+                  "G(@FCC4#2)": "-14052.53352",
+                  "x(FE@FCC4#1)": "0.490516",
+                  "x(NI@FCC4#1)": "0.509484",
+                  "x(FE@FCC4#2)": "0.8900620811",
+                  "x(NI@FCC4#2)": "0.1099379189",
+                  "y(FE#1@FCC4#1)": "0.333521",
+                  "y(NI#1@FCC4#1)": "0.666479",
+                  "y(FE#2@FCC4#1)": "0.333521",
+                  "y(NI#2@FCC4#1)": "0.666479",
+                  "y(FE#3@FCC4#1)": "0.961503",
+                  "y(NI#3@FCC4#1)": "0.0384969",
+                  "y(FE#4@FCC4#1)": "0.333521",
+                  "y(NI#4@FCC4#1)": "0.666479",
+                  "y(VA#5@FCC4#1)": "1",
+                  "y(FE#1@FCC4#2)": "0.8900620811",
+                  "y(NI#1@FCC4#2)": "0.1099379189",
+                  "y(FE#2@FCC4#2)": "0.8900620811",
+                  "y(NI#2@FCC4#2)": "0.1099379189",
+                  "y(FE#3@FCC4#2)": "0.8900620811",
+                  "y(NI#3@FCC4#2)": "0.1099379189",
+                  "y(FE#4@FCC4#2)": "0.8900620811",
+                  "y(NI#4@FCC4#2)": "0.1099379189",
+                  "y(VA#5@FCC4#2)": "1",
+                  "f(@FCC4#1)": "0.976264",
+                  "f(@FCC4#2)": "0.02373578835",
+                  "struct(@FCC4#1)": "[3 0 1 0 1]",
+                  "struct(@FCC4#2)": "[4 0 0 0 1]",
+                  "mu(FE)": "-11865.9",
+                  "mu(NI)": "-31755.3"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase FCC4+FCC4, expected a single FCC4"
+          },
+          {
+            "variant": "global_local_seed",
+            "equilibrium_type": "global",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(FE)": "mole/mole",
+                "x(NI)": "mole/mole",
+                "phase_name": "",
+                "G(@FCC4#1)": "",
+                "G(@FCC4#2)": "",
+                "x(FE@FCC4#1)": "mole/mole",
+                "x(NI@FCC4#1)": "mole/mole",
+                "x(FE@FCC4#2)": "mole/mole",
+                "x(NI@FCC4#2)": "mole/mole",
+                "y(FE#1@FCC4#1)": "",
+                "y(NI#1@FCC4#1)": "",
+                "y(FE#2@FCC4#1)": "",
+                "y(NI#2@FCC4#1)": "",
+                "y(FE#3@FCC4#1)": "",
+                "y(NI#3@FCC4#1)": "",
+                "y(FE#4@FCC4#1)": "",
+                "y(NI#4@FCC4#1)": "",
+                "y(VA#5@FCC4#1)": "",
+                "y(FE#1@FCC4#2)": "",
+                "y(NI#1@FCC4#2)": "",
+                "y(FE#2@FCC4#2)": "",
+                "y(NI#2@FCC4#2)": "",
+                "y(FE#3@FCC4#2)": "",
+                "y(NI#3@FCC4#2)": "",
+                "y(FE#4@FCC4#2)": "",
+                "y(NI#4@FCC4#2)": "",
+                "y(VA#5@FCC4#2)": "",
+                "f(@FCC4#1)": "",
+                "f(@FCC4#2)": "",
+                "struct(@FCC4#1)": "",
+                "struct(@FCC4#2)": "",
+                "mu(FE)": "",
+                "mu(NI)": ""
+              },
+              "rows": [
+                {
+                  "T": "500",
+                  "P": "1",
+                  "x(FE)": "0.5",
+                  "x(NI)": "0.5",
+                  "phase_name": "FCC4+FCC4",
+                  "G(@FCC4#1)": "-21999.2393",
+                  "G(@FCC4#2)": "-14052.53352",
+                  "x(FE@FCC4#1)": "0.490516",
+                  "x(NI@FCC4#1)": "0.509484",
+                  "x(FE@FCC4#2)": "0.8900620811",
+                  "x(NI@FCC4#2)": "0.1099379189",
+                  "y(FE#1@FCC4#1)": "0.333521",
+                  "y(NI#1@FCC4#1)": "0.666479",
+                  "y(FE#2@FCC4#1)": "0.333521",
+                  "y(NI#2@FCC4#1)": "0.666479",
+                  "y(FE#3@FCC4#1)": "0.961503",
+                  "y(NI#3@FCC4#1)": "0.0384969",
+                  "y(FE#4@FCC4#1)": "0.333521",
+                  "y(NI#4@FCC4#1)": "0.666479",
+                  "y(VA#5@FCC4#1)": "1",
+                  "y(FE#1@FCC4#2)": "0.8900620811",
+                  "y(NI#1@FCC4#2)": "0.1099379189",
+                  "y(FE#2@FCC4#2)": "0.8900620811",
+                  "y(NI#2@FCC4#2)": "0.1099379189",
+                  "y(FE#3@FCC4#2)": "0.8900620811",
+                  "y(NI#3@FCC4#2)": "0.1099379189",
+                  "y(FE#4@FCC4#2)": "0.8900620811",
+                  "y(NI#4@FCC4#2)": "0.1099379189",
+                  "y(VA#5@FCC4#2)": "1",
+                  "f(@FCC4#1)": "0.976264",
+                  "f(@FCC4#2)": "0.02373578835",
+                  "struct(@FCC4#1)": "[3 0 1 0 1]",
+                  "struct(@FCC4#2)": "[4 0 0 0 1]",
+                  "mu(FE)": "-11865.9",
+                  "mu(NI)": "-31755.3"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase FCC4+FCC4, expected a single FCC4"
+          }
+        ],
+        "initial_chemical_potentials": {
+          "FE": -12813.1,
+          "NI": -30613.4
+        }
+      },
+      {
+        "case": "AlFe_gt_2",
+        "point_index": 2,
+        "phase": "BCC_4SL",
+        "T_K": 650.0,
+        "composition": {
+          "AL": 0.25,
+          "FE": 0.75
+        },
+        "G_local": -41920.89374628067,
+        "G_pandat_baseline": -41911.34403,
+        "database_sha256": "c7cc9fe3f824de69b8695cac1cbf84095ac164a672174fd3fc4a60e6c99a8e72",
+        "seed_occupancies": {
+          "local": {
+            "Y_0_AL": 0.6455194576652374,
+            "Y_0_FE": 0.3544805423347625,
+            "Y_1_AL": 0.2572635959796765,
+            "Y_1_FE": 0.7427364040203235,
+            "Y_2_AL": 0.04860849984655468,
+            "Y_2_FE": 0.9513915001534453,
+            "Y_3_AL": 0.04860844650853138,
+            "Y_3_FE": 0.9513915534914686,
+            "Y_4_VA": 1.0
+          },
+          "pandat": {
+            "Y_0_AL": 0.05172160762,
+            "Y_0_FE": 0.9482783924,
+            "Y_1_AL": 0.05172160762,
+            "Y_1_FE": 0.9482783924,
+            "Y_2_AL": 0.4482783908,
+            "Y_2_FE": 0.5517216092,
+            "Y_3_AL": 0.4482783907,
+            "Y_3_FE": 0.5517216093,
+            "Y_4_VA": 1.0
+          },
+          "asymmetric": {
+            "Y_0_AL": 0.052315405470045234,
+            "Y_0_FE": 0.9476845945499348,
+            "Y_1_AL": 0.051927149608359674,
+            "Y_1_FE": 0.9480728504116204,
+            "Y_2_AL": 0.4478787209090465,
+            "Y_2_FE": 0.5521212790909534,
+            "Y_3_AL": 0.44787872075580853,
+            "Y_3_FE": 0.5521212792441915,
+            "Y_4_VA": 1.0
+          },
+          "permuted": {
+            "Y_0_AL": 0.2572635959796765,
+            "Y_0_FE": 0.7427364040203235,
+            "Y_1_AL": 0.6455194576652374,
+            "Y_1_FE": 0.3544805423347625,
+            "Y_2_AL": 0.04860849984655468,
+            "Y_2_FE": 0.9513915001534453,
+            "Y_3_AL": 0.04860844650853138,
+            "Y_3_FE": 0.9513915534914686,
+            "Y_4_VA": 1.0
+          }
+        },
+        "variants": [
+          {
+            "variant": "legacy_default",
+            "equilibrium_type": "legacy individual_phase=true",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "phase_name": "",
+                "G(@BCC_4SL)": "",
+                "x(AL@BCC_4SL)": "mole/mole",
+                "x(FE@BCC_4SL)": "mole/mole",
+                "y(AL#1@BCC_4SL)": "",
+                "y(FE#1@BCC_4SL)": "",
+                "y(AL#2@BCC_4SL)": "",
+                "y(FE#2@BCC_4SL)": "",
+                "y(AL#3@BCC_4SL)": "",
+                "y(FE#3@BCC_4SL)": "",
+                "y(AL#4@BCC_4SL)": "",
+                "y(FE#4@BCC_4SL)": "",
+                "y(VA#5@BCC_4SL)": "",
+                "f(@BCC_4SL)": "",
+                "struct(@BCC_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": ""
+              },
+              "rows": [
+                {
+                  "T": "650",
+                  "P": "1",
+                  "x(AL)": "0.25",
+                  "x(FE)": "0.75",
+                  "phase_name": "BCC_4SL",
+                  "G(@BCC_4SL)": "-41911.34403",
+                  "x(AL@BCC_4SL)": "0.25",
+                  "x(FE@BCC_4SL)": "0.75",
+                  "y(AL#1@BCC_4SL)": "0.0517216",
+                  "y(FE#1@BCC_4SL)": "0.948278",
+                  "y(AL#2@BCC_4SL)": "0.0517216",
+                  "y(FE#2@BCC_4SL)": "0.948278",
+                  "y(AL#3@BCC_4SL)": "0.448278",
+                  "y(FE#3@BCC_4SL)": "0.551722",
+                  "y(AL#4@BCC_4SL)": "0.448278",
+                  "y(FE#4@BCC_4SL)": "0.551722",
+                  "y(VA#5@BCC_4SL)": "1",
+                  "f(@BCC_4SL)": "1",
+                  "struct(@BCC_4SL)": "[2 0 2 0 1]",
+                  "mu(AL)": "-77977.3",
+                  "mu(FE)": "-29889.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "BCC_4SL",
+              "T_K": 650.0,
+              "P_Pa": 101325.0,
+              "G": -41911.34403,
+              "reported_phase": "BCC_4SL",
+              "X_AL": 0.25,
+              "X_FE": 0.75,
+              "Y_0_AL": 0.0517216,
+              "Y_0_FE": 0.948278,
+              "Y_1_AL": 0.0517216,
+              "Y_1_FE": 0.948278,
+              "Y_2_AL": 0.448278,
+              "Y_2_FE": 0.551722,
+              "Y_3_AL": 0.448278,
+              "Y_3_FE": 0.551722,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 9.549716280671419,
+            "formula_delta_J_mol_atoms": 0.016878792259376496,
+            "max_composition_error": 1.500000300080906e-07,
+            "max_site_sum_error": 4.0000000001150227e-07
+          },
+          {
+            "variant": "individual_default",
+            "equilibrium_type": "individual",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "phase_name": "",
+                "G(@BCC_4SL)": "",
+                "x(AL@BCC_4SL)": "mole/mole",
+                "x(FE@BCC_4SL)": "mole/mole",
+                "y(AL#1@BCC_4SL)": "",
+                "y(FE#1@BCC_4SL)": "",
+                "y(AL#2@BCC_4SL)": "",
+                "y(FE#2@BCC_4SL)": "",
+                "y(AL#3@BCC_4SL)": "",
+                "y(FE#3@BCC_4SL)": "",
+                "y(AL#4@BCC_4SL)": "",
+                "y(FE#4@BCC_4SL)": "",
+                "y(VA#5@BCC_4SL)": "",
+                "f(@BCC_4SL)": "",
+                "struct(@BCC_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": ""
+              },
+              "rows": [
+                {
+                  "T": "650",
+                  "P": "1",
+                  "x(AL)": "0.25",
+                  "x(FE)": "0.75",
+                  "phase_name": "BCC_4SL",
+                  "G(@BCC_4SL)": "-41911.34403",
+                  "x(AL@BCC_4SL)": "0.25",
+                  "x(FE@BCC_4SL)": "0.75",
+                  "y(AL#1@BCC_4SL)": "0.0517216",
+                  "y(FE#1@BCC_4SL)": "0.948278",
+                  "y(AL#2@BCC_4SL)": "0.0517216",
+                  "y(FE#2@BCC_4SL)": "0.948278",
+                  "y(AL#3@BCC_4SL)": "0.448278",
+                  "y(FE#3@BCC_4SL)": "0.551722",
+                  "y(AL#4@BCC_4SL)": "0.448278",
+                  "y(FE#4@BCC_4SL)": "0.551722",
+                  "y(VA#5@BCC_4SL)": "1",
+                  "f(@BCC_4SL)": "1",
+                  "struct(@BCC_4SL)": "[2 0 2 0 1]",
+                  "mu(AL)": "-77977.3",
+                  "mu(FE)": "-29889.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "BCC_4SL",
+              "T_K": 650.0,
+              "P_Pa": 101325.0,
+              "G": -41911.34403,
+              "reported_phase": "BCC_4SL",
+              "X_AL": 0.25,
+              "X_FE": 0.75,
+              "Y_0_AL": 0.0517216,
+              "Y_0_FE": 0.948278,
+              "Y_1_AL": 0.0517216,
+              "Y_1_FE": 0.948278,
+              "Y_2_AL": 0.448278,
+              "Y_2_FE": 0.551722,
+              "Y_3_AL": 0.448278,
+              "Y_3_FE": 0.551722,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 9.549716280671419,
+            "formula_delta_J_mol_atoms": 0.016878792259376496,
+            "max_composition_error": 1.500000300080906e-07,
+            "max_site_sum_error": 4.0000000001150227e-07
+          },
+          {
+            "variant": "individual_local_seed",
+            "equilibrium_type": "individual",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "phase_name": "",
+                "G(@BCC_4SL)": "",
+                "x(AL@BCC_4SL)": "mole/mole",
+                "x(FE@BCC_4SL)": "mole/mole",
+                "y(AL#1@BCC_4SL)": "",
+                "y(FE#1@BCC_4SL)": "",
+                "y(AL#2@BCC_4SL)": "",
+                "y(FE#2@BCC_4SL)": "",
+                "y(AL#3@BCC_4SL)": "",
+                "y(FE#3@BCC_4SL)": "",
+                "y(AL#4@BCC_4SL)": "",
+                "y(FE#4@BCC_4SL)": "",
+                "y(VA#5@BCC_4SL)": "",
+                "f(@BCC_4SL)": "",
+                "struct(@BCC_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": ""
+              },
+              "rows": [
+                {
+                  "T": "650",
+                  "P": "1",
+                  "x(AL)": "0.25",
+                  "x(FE)": "0.75",
+                  "phase_name": "BCC_4SL",
+                  "G(@BCC_4SL)": "-41911.34403",
+                  "x(AL@BCC_4SL)": "0.25",
+                  "x(FE@BCC_4SL)": "0.75",
+                  "y(AL#1@BCC_4SL)": "0.0517216",
+                  "y(FE#1@BCC_4SL)": "0.948278",
+                  "y(AL#2@BCC_4SL)": "0.0517216",
+                  "y(FE#2@BCC_4SL)": "0.948278",
+                  "y(AL#3@BCC_4SL)": "0.448278",
+                  "y(FE#3@BCC_4SL)": "0.551722",
+                  "y(AL#4@BCC_4SL)": "0.448278",
+                  "y(FE#4@BCC_4SL)": "0.551722",
+                  "y(VA#5@BCC_4SL)": "1",
+                  "f(@BCC_4SL)": "1",
+                  "struct(@BCC_4SL)": "[2 0 2 0 1]",
+                  "mu(AL)": "-77977.3",
+                  "mu(FE)": "-29889.4"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "BCC_4SL",
+              "T_K": 650.0,
+              "P_Pa": 101325.0,
+              "G": -41911.34403,
+              "reported_phase": "BCC_4SL",
+              "X_AL": 0.25,
+              "X_FE": 0.75,
+              "Y_0_AL": 0.0517216,
+              "Y_0_FE": 0.948278,
+              "Y_1_AL": 0.0517216,
+              "Y_1_FE": 0.948278,
+              "Y_2_AL": 0.448278,
+              "Y_2_FE": 0.551722,
+              "Y_3_AL": 0.448278,
+              "Y_3_FE": 0.551722,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 9.549716280671419,
+            "formula_delta_J_mol_atoms": 0.016878792259376496,
+            "max_composition_error": 1.500000300080906e-07,
+            "max_site_sum_error": 4.0000000001150227e-07
+          },
+          {
+            "variant": "local_pandat_seed",
+            "equilibrium_type": "local",
+            "seed": "pandat",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFe_gt_2\\local_pandat_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_asymmetric_seed",
+            "equilibrium_type": "local",
+            "seed": "asymmetric",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFe_gt_2\\local_asymmetric_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_local_seed",
+            "equilibrium_type": "local",
+            "seed": "local",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFe_gt_2\\local_local_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_permuted_seed",
+            "equilibrium_type": "local",
+            "seed": "permuted",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFe_gt_2\\local_permuted_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "global_default",
+            "equilibrium_type": "global",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "phase_name": "",
+                "G(@A2_BCC)": "",
+                "G(@BCC_4SL)": "",
+                "x(AL@A2_BCC)": "mole/mole",
+                "x(FE@A2_BCC)": "mole/mole",
+                "x(AL@BCC_4SL)": "mole/mole",
+                "x(FE@BCC_4SL)": "mole/mole",
+                "y(AL#1@A2_BCC)": "",
+                "y(FE#1@A2_BCC)": "",
+                "y(VA#2@A2_BCC)": "",
+                "y(AL#1@BCC_4SL)": "",
+                "y(FE#1@BCC_4SL)": "",
+                "y(AL#2@BCC_4SL)": "",
+                "y(FE#2@BCC_4SL)": "",
+                "y(AL#3@BCC_4SL)": "",
+                "y(FE#3@BCC_4SL)": "",
+                "y(AL#4@BCC_4SL)": "",
+                "y(FE#4@BCC_4SL)": "",
+                "y(VA#5@BCC_4SL)": "",
+                "f(@A2_BCC)": "",
+                "f(@BCC_4SL)": "",
+                "struct(@A2_BCC)": "",
+                "struct(@BCC_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": ""
+              },
+              "rows": [
+                {
+                  "T": "650",
+                  "P": "1",
+                  "x(AL)": "0.25",
+                  "x(FE)": "0.75",
+                  "phase_name": "A2_BCC+BCC_4SL",
+                  "G(@A2_BCC)": "-40864.52879",
+                  "G(@BCC_4SL)": "-42242.79254",
+                  "x(AL@A2_BCC)": "0.22812",
+                  "x(FE@A2_BCC)": "0.77188",
+                  "x(AL@BCC_4SL)": "0.2566164202",
+                  "x(FE@BCC_4SL)": "0.7433835798",
+                  "y(AL#1@A2_BCC)": "0.22812",
+                  "y(FE#1@A2_BCC)": "0.77188",
+                  "y(VA#2@A2_BCC)": "1",
+                  "y(AL#1@BCC_4SL)": "0.687727437",
+                  "y(FE#1@BCC_4SL)": "0.312272563",
+                  "y(AL#2@BCC_4SL)": "0.2616957705",
+                  "y(FE#2@BCC_4SL)": "0.7383042295",
+                  "y(AL#3@BCC_4SL)": "0.03852123669",
+                  "y(FE#3@BCC_4SL)": "0.9614787633",
+                  "y(AL#4@BCC_4SL)": "0.03852123669",
+                  "y(FE#4@BCC_4SL)": "0.9614787633",
+                  "y(VA#5@BCC_4SL)": "1",
+                  "f(@A2_BCC)": "0.232186",
+                  "f(@BCC_4SL)": "0.767813933",
+                  "struct(@A2_BCC)": "[1 1]",
+                  "struct(@BCC_4SL)": "[1 1 2 0 1]",
+                  "mu(AL)": "-78198",
+                  "mu(FE)": "-29831"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase A2_BCC+BCC_4SL, expected a single BCC_4SL"
+          },
+          {
+            "variant": "global_local_seed",
+            "equilibrium_type": "global",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "phase_name": "",
+                "G(@A2_BCC)": "",
+                "G(@BCC_4SL)": "",
+                "x(AL@A2_BCC)": "mole/mole",
+                "x(FE@A2_BCC)": "mole/mole",
+                "x(AL@BCC_4SL)": "mole/mole",
+                "x(FE@BCC_4SL)": "mole/mole",
+                "y(AL#1@A2_BCC)": "",
+                "y(FE#1@A2_BCC)": "",
+                "y(VA#2@A2_BCC)": "",
+                "y(AL#1@BCC_4SL)": "",
+                "y(FE#1@BCC_4SL)": "",
+                "y(AL#2@BCC_4SL)": "",
+                "y(FE#2@BCC_4SL)": "",
+                "y(AL#3@BCC_4SL)": "",
+                "y(FE#3@BCC_4SL)": "",
+                "y(AL#4@BCC_4SL)": "",
+                "y(FE#4@BCC_4SL)": "",
+                "y(VA#5@BCC_4SL)": "",
+                "f(@A2_BCC)": "",
+                "f(@BCC_4SL)": "",
+                "struct(@A2_BCC)": "",
+                "struct(@BCC_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": ""
+              },
+              "rows": [
+                {
+                  "T": "650",
+                  "P": "1",
+                  "x(AL)": "0.25",
+                  "x(FE)": "0.75",
+                  "phase_name": "A2_BCC+BCC_4SL",
+                  "G(@A2_BCC)": "-40864.52879",
+                  "G(@BCC_4SL)": "-42242.79254",
+                  "x(AL@A2_BCC)": "0.22812",
+                  "x(FE@A2_BCC)": "0.77188",
+                  "x(AL@BCC_4SL)": "0.2566164202",
+                  "x(FE@BCC_4SL)": "0.7433835798",
+                  "y(AL#1@A2_BCC)": "0.22812",
+                  "y(FE#1@A2_BCC)": "0.77188",
+                  "y(VA#2@A2_BCC)": "1",
+                  "y(AL#1@BCC_4SL)": "0.687727437",
+                  "y(FE#1@BCC_4SL)": "0.312272563",
+                  "y(AL#2@BCC_4SL)": "0.2616957705",
+                  "y(FE#2@BCC_4SL)": "0.7383042295",
+                  "y(AL#3@BCC_4SL)": "0.03852123669",
+                  "y(FE#3@BCC_4SL)": "0.9614787633",
+                  "y(AL#4@BCC_4SL)": "0.03852123669",
+                  "y(FE#4@BCC_4SL)": "0.9614787633",
+                  "y(VA#5@BCC_4SL)": "1",
+                  "f(@A2_BCC)": "0.232186",
+                  "f(@BCC_4SL)": "0.767813933",
+                  "struct(@A2_BCC)": "[1 1]",
+                  "struct(@BCC_4SL)": "[1 1 2 0 1]",
+                  "mu(AL)": "-78198",
+                  "mu(FE)": "-29831"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase A2_BCC+BCC_4SL, expected a single BCC_4SL"
+          }
+        ],
+        "initial_chemical_potentials": {
+          "AL": -77977.3,
+          "FE": -29889.4
+        }
+      },
+      {
+        "case": "AlFeNb_gx",
+        "point_index": 4,
+        "phase": "B2_4SL",
+        "T_K": 300.0,
+        "composition": {
+          "AL": 0.45,
+          "FE": 0.53,
+          "NB": 0.02
+        },
+        "G_local": -35315.441676405004,
+        "G_pandat_baseline": -31826.73573,
+        "database_sha256": "b67a9a3969e2f5246f09741d6b2bb477dfac95dffc4b7235cbad0798bd1c17f2",
+        "seed_occupancies": {
+          "local": {
+            "Y_0_AL": 0.0,
+            "Y_0_FE": 0.9996713829621617,
+            "Y_0_NB": 0.0003286170378383595,
+            "Y_1_AL": 0.0,
+            "Y_1_FE": 0.9996714003857249,
+            "Y_1_NB": 0.00032859961427517175,
+            "Y_2_AL": 0.899999917686697,
+            "Y_2_FE": 0.06032861881696306,
+            "Y_2_NB": 0.03967146349633996,
+            "Y_3_AL": 0.9000000823133029,
+            "Y_3_FE": 0.060328597835150495,
+            "Y_3_NB": 0.039671319851546566,
+            "Y_4_VA": 1.0
+          },
+          "pandat": {
+            "Y_0_AL": 0.45,
+            "Y_0_FE": 0.53,
+            "Y_0_NB": 0.02,
+            "Y_1_AL": 0.45,
+            "Y_1_FE": 0.53,
+            "Y_1_NB": 0.02,
+            "Y_2_AL": 0.45,
+            "Y_2_FE": 0.53,
+            "Y_2_NB": 0.02,
+            "Y_3_AL": 0.45,
+            "Y_3_FE": 0.53,
+            "Y_3_NB": 0.02,
+            "Y_4_VA": 1.0
+          },
+          "asymmetric": {
+            "Y_0_AL": 0.44955,
+            "Y_0_FE": 0.5304696713829622,
+            "Y_0_NB": 0.01998032861703784,
+            "Y_1_AL": 0.44955,
+            "Y_1_FE": 0.5304696714003857,
+            "Y_1_NB": 0.019980328599614277,
+            "Y_2_AL": 0.4504499999176867,
+            "Y_2_FE": 0.529530328618817,
+            "Y_2_NB": 0.02001967146349634,
+            "Y_3_AL": 0.4504500000823133,
+            "Y_3_FE": 0.5295303285978351,
+            "Y_3_NB": 0.020019671319851547,
+            "Y_4_VA": 1.0
+          },
+          "permuted": {
+            "Y_0_AL": 0.0,
+            "Y_0_FE": 0.9996714003857249,
+            "Y_0_NB": 0.00032859961427517175,
+            "Y_1_AL": 0.0,
+            "Y_1_FE": 0.9996713829621617,
+            "Y_1_NB": 0.0003286170378383595,
+            "Y_2_AL": 0.899999917686697,
+            "Y_2_FE": 0.06032861881696306,
+            "Y_2_NB": 0.03967146349633996,
+            "Y_3_AL": 0.9000000823133029,
+            "Y_3_FE": 0.060328597835150495,
+            "Y_3_NB": 0.039671319851546566,
+            "Y_4_VA": 1.0
+          }
+        },
+        "variants": [
+          {
+            "variant": "legacy_default",
+            "equilibrium_type": "legacy individual_phase=true",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "x(NB)": "mole/mole",
+                "phase_name": "",
+                "G(@B2_4SL)": "",
+                "x(AL@B2_4SL)": "mole/mole",
+                "x(FE@B2_4SL)": "mole/mole",
+                "x(NB@B2_4SL)": "mole/mole",
+                "y(AL#1@B2_4SL)": "",
+                "y(FE#1@B2_4SL)": "",
+                "y(NB#1@B2_4SL)": "",
+                "y(AL#2@B2_4SL)": "",
+                "y(FE#2@B2_4SL)": "",
+                "y(NB#2@B2_4SL)": "",
+                "y(AL#3@B2_4SL)": "",
+                "y(FE#3@B2_4SL)": "",
+                "y(NB#3@B2_4SL)": "",
+                "y(AL#4@B2_4SL)": "",
+                "y(FE#4@B2_4SL)": "",
+                "y(NB#4@B2_4SL)": "",
+                "y(VA#5@B2_4SL)": "",
+                "f(@B2_4SL)": "",
+                "struct(@B2_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": "",
+                "mu(NB)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.45",
+                  "x(FE)": "0.53",
+                  "x(NB)": "0.02",
+                  "phase_name": "B2_4SL",
+                  "G(@B2_4SL)": "-31826.73573",
+                  "x(AL@B2_4SL)": "0.45",
+                  "x(FE@B2_4SL)": "0.53",
+                  "x(NB@B2_4SL)": "0.02",
+                  "y(AL#1@B2_4SL)": "0.45",
+                  "y(FE#1@B2_4SL)": "0.53",
+                  "y(NB#1@B2_4SL)": "0.02",
+                  "y(AL#2@B2_4SL)": "0.45",
+                  "y(FE#2@B2_4SL)": "0.53",
+                  "y(NB#2@B2_4SL)": "0.02",
+                  "y(AL#3@B2_4SL)": "0.45",
+                  "y(FE#3@B2_4SL)": "0.53",
+                  "y(NB#3@B2_4SL)": "0.02",
+                  "y(AL#4@B2_4SL)": "0.45",
+                  "y(FE#4@B2_4SL)": "0.53",
+                  "y(NB#4@B2_4SL)": "0.02",
+                  "y(VA#5@B2_4SL)": "1",
+                  "f(@B2_4SL)": "1",
+                  "struct(@B2_4SL)": "[4 0 0 0 1]",
+                  "mu(AL)": "-30169.2",
+                  "mu(FE)": "-33466.7",
+                  "mu(NB)": "-25661"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "B2_4SL",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -31826.73573,
+              "reported_phase": "B2_4SL",
+              "X_AL": 0.45,
+              "X_FE": 0.53,
+              "X_NB": 0.02,
+              "Y_0_AL": 0.45,
+              "Y_0_FE": 0.53,
+              "Y_0_NB": 0.02,
+              "Y_1_AL": 0.45,
+              "Y_1_FE": 0.53,
+              "Y_1_NB": 0.02,
+              "Y_2_AL": 0.45,
+              "Y_2_FE": 0.53,
+              "Y_2_NB": 0.02,
+              "Y_3_AL": 0.45,
+              "Y_3_FE": 0.53,
+              "Y_3_NB": 0.02,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 3488.7059464050035,
+            "formula_delta_J_mol_atoms": 0.0037018631628598087,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_default",
+            "equilibrium_type": "individual",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "x(NB)": "mole/mole",
+                "phase_name": "",
+                "G(@B2_4SL)": "",
+                "x(AL@B2_4SL)": "mole/mole",
+                "x(FE@B2_4SL)": "mole/mole",
+                "x(NB@B2_4SL)": "mole/mole",
+                "y(AL#1@B2_4SL)": "",
+                "y(FE#1@B2_4SL)": "",
+                "y(NB#1@B2_4SL)": "",
+                "y(AL#2@B2_4SL)": "",
+                "y(FE#2@B2_4SL)": "",
+                "y(NB#2@B2_4SL)": "",
+                "y(AL#3@B2_4SL)": "",
+                "y(FE#3@B2_4SL)": "",
+                "y(NB#3@B2_4SL)": "",
+                "y(AL#4@B2_4SL)": "",
+                "y(FE#4@B2_4SL)": "",
+                "y(NB#4@B2_4SL)": "",
+                "y(VA#5@B2_4SL)": "",
+                "f(@B2_4SL)": "",
+                "struct(@B2_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": "",
+                "mu(NB)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.45",
+                  "x(FE)": "0.53",
+                  "x(NB)": "0.02",
+                  "phase_name": "B2_4SL",
+                  "G(@B2_4SL)": "-31826.73573",
+                  "x(AL@B2_4SL)": "0.45",
+                  "x(FE@B2_4SL)": "0.53",
+                  "x(NB@B2_4SL)": "0.02",
+                  "y(AL#1@B2_4SL)": "0.45",
+                  "y(FE#1@B2_4SL)": "0.53",
+                  "y(NB#1@B2_4SL)": "0.02",
+                  "y(AL#2@B2_4SL)": "0.45",
+                  "y(FE#2@B2_4SL)": "0.53",
+                  "y(NB#2@B2_4SL)": "0.02",
+                  "y(AL#3@B2_4SL)": "0.45",
+                  "y(FE#3@B2_4SL)": "0.53",
+                  "y(NB#3@B2_4SL)": "0.02",
+                  "y(AL#4@B2_4SL)": "0.45",
+                  "y(FE#4@B2_4SL)": "0.53",
+                  "y(NB#4@B2_4SL)": "0.02",
+                  "y(VA#5@B2_4SL)": "1",
+                  "f(@B2_4SL)": "1",
+                  "struct(@B2_4SL)": "[4 0 0 0 1]",
+                  "mu(AL)": "-30169.2",
+                  "mu(FE)": "-33466.7",
+                  "mu(NB)": "-25661"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "B2_4SL",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -31826.73573,
+              "reported_phase": "B2_4SL",
+              "X_AL": 0.45,
+              "X_FE": 0.53,
+              "X_NB": 0.02,
+              "Y_0_AL": 0.45,
+              "Y_0_FE": 0.53,
+              "Y_0_NB": 0.02,
+              "Y_1_AL": 0.45,
+              "Y_1_FE": 0.53,
+              "Y_1_NB": 0.02,
+              "Y_2_AL": 0.45,
+              "Y_2_FE": 0.53,
+              "Y_2_NB": 0.02,
+              "Y_3_AL": 0.45,
+              "Y_3_FE": 0.53,
+              "Y_3_NB": 0.02,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 3488.7059464050035,
+            "formula_delta_J_mol_atoms": 0.0037018631628598087,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "individual_local_seed",
+            "equilibrium_type": "individual",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "x(NB)": "mole/mole",
+                "phase_name": "",
+                "G(@B2_4SL)": "",
+                "x(AL@B2_4SL)": "mole/mole",
+                "x(FE@B2_4SL)": "mole/mole",
+                "x(NB@B2_4SL)": "mole/mole",
+                "y(AL#1@B2_4SL)": "",
+                "y(FE#1@B2_4SL)": "",
+                "y(NB#1@B2_4SL)": "",
+                "y(AL#2@B2_4SL)": "",
+                "y(FE#2@B2_4SL)": "",
+                "y(NB#2@B2_4SL)": "",
+                "y(AL#3@B2_4SL)": "",
+                "y(FE#3@B2_4SL)": "",
+                "y(NB#3@B2_4SL)": "",
+                "y(AL#4@B2_4SL)": "",
+                "y(FE#4@B2_4SL)": "",
+                "y(NB#4@B2_4SL)": "",
+                "y(VA#5@B2_4SL)": "",
+                "f(@B2_4SL)": "",
+                "struct(@B2_4SL)": "",
+                "mu(AL)": "",
+                "mu(FE)": "",
+                "mu(NB)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.45",
+                  "x(FE)": "0.53",
+                  "x(NB)": "0.02",
+                  "phase_name": "B2_4SL",
+                  "G(@B2_4SL)": "-31826.73573",
+                  "x(AL@B2_4SL)": "0.45",
+                  "x(FE@B2_4SL)": "0.53",
+                  "x(NB@B2_4SL)": "0.02",
+                  "y(AL#1@B2_4SL)": "0.45",
+                  "y(FE#1@B2_4SL)": "0.53",
+                  "y(NB#1@B2_4SL)": "0.02",
+                  "y(AL#2@B2_4SL)": "0.45",
+                  "y(FE#2@B2_4SL)": "0.53",
+                  "y(NB#2@B2_4SL)": "0.02",
+                  "y(AL#3@B2_4SL)": "0.45",
+                  "y(FE#3@B2_4SL)": "0.53",
+                  "y(NB#3@B2_4SL)": "0.02",
+                  "y(AL#4@B2_4SL)": "0.45",
+                  "y(FE#4@B2_4SL)": "0.53",
+                  "y(NB#4@B2_4SL)": "0.02",
+                  "y(VA#5@B2_4SL)": "1",
+                  "f(@B2_4SL)": "1",
+                  "struct(@B2_4SL)": "[4 0 0 0 1]",
+                  "mu(AL)": "-30169.2",
+                  "mu(FE)": "-33466.7",
+                  "mu(NB)": "-25661"
+                }
+              ]
+            },
+            "status": "homogeneous_result",
+            "result": {
+              "phase": "B2_4SL",
+              "T_K": 300.0,
+              "P_Pa": 101325.0,
+              "G": -31826.73573,
+              "reported_phase": "B2_4SL",
+              "X_AL": 0.45,
+              "X_FE": 0.53,
+              "X_NB": 0.02,
+              "Y_0_AL": 0.45,
+              "Y_0_FE": 0.53,
+              "Y_0_NB": 0.02,
+              "Y_1_AL": 0.45,
+              "Y_1_FE": 0.53,
+              "Y_1_NB": 0.02,
+              "Y_2_AL": 0.45,
+              "Y_2_FE": 0.53,
+              "Y_2_NB": 0.02,
+              "Y_3_AL": 0.45,
+              "Y_3_FE": 0.53,
+              "Y_3_NB": 0.02,
+              "Y_4_VA": 1.0
+            },
+            "delta_from_local_J_mol_atoms": 3488.7059464050035,
+            "formula_delta_J_mol_atoms": 0.0037018631628598087,
+            "max_composition_error": 0.0,
+            "max_site_sum_error": 0.0
+          },
+          {
+            "variant": "local_pandat_seed",
+            "equilibrium_type": "local",
+            "seed": "pandat",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFeNb_gx\\local_pandat_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_asymmetric_seed",
+            "equilibrium_type": "local",
+            "seed": "asymmetric",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFeNb_gx\\local_asymmetric_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_local_seed",
+            "equilibrium_type": "local",
+            "seed": "local",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFeNb_gx\\local_local_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "local_permuted_seed",
+            "equilibrium_type": "local",
+            "seed": "permuted",
+            "execution_error": "Pandat did not finish all points; see <repository>\\data\\pandat_occupancy_diagnosis_56560b3f2dc0\\AlFeNb_gx\\local_permuted_seed\\raw\\console.log",
+            "status": "execution_failed",
+            "reason": "Missing DAT or success log"
+          },
+          {
+            "variant": "global_default",
+            "equilibrium_type": "global",
+            "seed": null,
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "x(NB)": "mole/mole",
+                "phase_name": "",
+                "G(@B2_4SL#1)": "",
+                "G(@B2_4SL#2)": "",
+                "x(AL@B2_4SL#1)": "mole/mole",
+                "x(FE@B2_4SL#1)": "mole/mole",
+                "x(NB@B2_4SL#1)": "mole/mole",
+                "x(AL@B2_4SL#2)": "mole/mole",
+                "x(FE@B2_4SL#2)": "mole/mole",
+                "x(NB@B2_4SL#2)": "mole/mole",
+                "y(AL#1@B2_4SL#1)": "",
+                "y(FE#1@B2_4SL#1)": "",
+                "y(NB#1@B2_4SL#1)": "",
+                "y(AL#2@B2_4SL#1)": "",
+                "y(FE#2@B2_4SL#1)": "",
+                "y(NB#2@B2_4SL#1)": "",
+                "y(AL#3@B2_4SL#1)": "",
+                "y(FE#3@B2_4SL#1)": "",
+                "y(NB#3@B2_4SL#1)": "",
+                "y(AL#4@B2_4SL#1)": "",
+                "y(FE#4@B2_4SL#1)": "",
+                "y(NB#4@B2_4SL#1)": "",
+                "y(VA#5@B2_4SL#1)": "",
+                "y(AL#1@B2_4SL#2)": "",
+                "y(FE#1@B2_4SL#2)": "",
+                "y(NB#1@B2_4SL#2)": "",
+                "y(AL#2@B2_4SL#2)": "",
+                "y(FE#2@B2_4SL#2)": "",
+                "y(NB#2@B2_4SL#2)": "",
+                "y(AL#3@B2_4SL#2)": "",
+                "y(FE#3@B2_4SL#2)": "",
+                "y(NB#3@B2_4SL#2)": "",
+                "y(AL#4@B2_4SL#2)": "",
+                "y(FE#4@B2_4SL#2)": "",
+                "y(NB#4@B2_4SL#2)": "",
+                "y(VA#5@B2_4SL#2)": "",
+                "f(@B2_4SL#1)": "",
+                "f(@B2_4SL#2)": "",
+                "struct(@B2_4SL#1)": "",
+                "struct(@B2_4SL#2)": "",
+                "mu(AL)": "",
+                "mu(FE)": "",
+                "mu(NB)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.45",
+                  "x(FE)": "0.53",
+                  "x(NB)": "0.02",
+                  "phase_name": "B2_4SL+B2_4SL",
+                  "G(@B2_4SL#1)": "-28400.10806",
+                  "G(@B2_4SL#2)": "-35534.99376",
+                  "x(AL@B2_4SL#1)": "0.297411",
+                  "x(FE@B2_4SL#1)": "0.101668",
+                  "x(NB@B2_4SL#1)": "0.600921",
+                  "x(AL@B2_4SL#2)": "0.4539683852",
+                  "x(FE@B2_4SL#2)": "0.5411395994",
+                  "x(NB@B2_4SL#2)": "0.00489201542",
+                  "y(AL#1@B2_4SL#1)": "0.297411",
+                  "y(FE#1@B2_4SL#1)": "0.101668",
+                  "y(NB#1@B2_4SL#1)": "0.600921",
+                  "y(AL#2@B2_4SL#1)": "0.297411",
+                  "y(FE#2@B2_4SL#1)": "0.101668",
+                  "y(NB#2@B2_4SL#1)": "0.600921",
+                  "y(AL#3@B2_4SL#1)": "0.297411",
+                  "y(FE#3@B2_4SL#1)": "0.101668",
+                  "y(NB#3@B2_4SL#1)": "0.600921",
+                  "y(AL#4@B2_4SL#1)": "0.297411",
+                  "y(FE#4@B2_4SL#1)": "0.101668",
+                  "y(NB#4@B2_4SL#1)": "0.600921",
+                  "y(VA#5@B2_4SL#1)": "1",
+                  "y(AL#1@B2_4SL#2)": "0.907936768",
+                  "y(FE#1@B2_4SL#2)": "0.08230150022",
+                  "y(NB#1@B2_4SL#2)": "0.009761731747",
+                  "y(AL#2@B2_4SL#2)": "0.907936768",
+                  "y(FE#2@B2_4SL#2)": "0.08230150022",
+                  "y(NB#2@B2_4SL#2)": "0.009761731747",
+                  "y(AL#3@B2_4SL#2)": "2.337529313E-09",
+                  "y(FE#3@B2_4SL#2)": "0.9999776986",
+                  "y(NB#3@B2_4SL#2)": "2.229909329E-05",
+                  "y(AL#4@B2_4SL#2)": "2.337529313E-09",
+                  "y(FE#4@B2_4SL#2)": "0.9999776986",
+                  "y(NB#4@B2_4SL#2)": "2.229909329E-05",
+                  "y(VA#5@B2_4SL#2)": "1",
+                  "f(@B2_4SL#1)": "0.0253477",
+                  "f(@B2_4SL#2)": "0.9746522695",
+                  "struct(@B2_4SL#1)": "[4 0 0 0 1]",
+                  "struct(@B2_4SL#2)": "[2 0 2 0 1]",
+                  "mu(AL)": "-48492.9",
+                  "mu(FE)": "-24813.4",
+                  "mu(NB)": "-19062.5"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase B2_4SL+B2_4SL, expected a single B2_4SL"
+          },
+          {
+            "variant": "global_local_seed",
+            "equilibrium_type": "global",
+            "seed": "local",
+            "execution": {
+              "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+              "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+              "exit_code": 1,
+              "termination": "stopped_after_all_outputs_and_success_logs"
+            },
+            "raw_output": {
+              "units": {
+                "T": "K",
+                "P": "atm",
+                "x(AL)": "mole/mole",
+                "x(FE)": "mole/mole",
+                "x(NB)": "mole/mole",
+                "phase_name": "",
+                "G(@B2_4SL#1)": "",
+                "G(@B2_4SL#2)": "",
+                "x(AL@B2_4SL#1)": "mole/mole",
+                "x(FE@B2_4SL#1)": "mole/mole",
+                "x(NB@B2_4SL#1)": "mole/mole",
+                "x(AL@B2_4SL#2)": "mole/mole",
+                "x(FE@B2_4SL#2)": "mole/mole",
+                "x(NB@B2_4SL#2)": "mole/mole",
+                "y(AL#1@B2_4SL#1)": "",
+                "y(FE#1@B2_4SL#1)": "",
+                "y(NB#1@B2_4SL#1)": "",
+                "y(AL#2@B2_4SL#1)": "",
+                "y(FE#2@B2_4SL#1)": "",
+                "y(NB#2@B2_4SL#1)": "",
+                "y(AL#3@B2_4SL#1)": "",
+                "y(FE#3@B2_4SL#1)": "",
+                "y(NB#3@B2_4SL#1)": "",
+                "y(AL#4@B2_4SL#1)": "",
+                "y(FE#4@B2_4SL#1)": "",
+                "y(NB#4@B2_4SL#1)": "",
+                "y(VA#5@B2_4SL#1)": "",
+                "y(AL#1@B2_4SL#2)": "",
+                "y(FE#1@B2_4SL#2)": "",
+                "y(NB#1@B2_4SL#2)": "",
+                "y(AL#2@B2_4SL#2)": "",
+                "y(FE#2@B2_4SL#2)": "",
+                "y(NB#2@B2_4SL#2)": "",
+                "y(AL#3@B2_4SL#2)": "",
+                "y(FE#3@B2_4SL#2)": "",
+                "y(NB#3@B2_4SL#2)": "",
+                "y(AL#4@B2_4SL#2)": "",
+                "y(FE#4@B2_4SL#2)": "",
+                "y(NB#4@B2_4SL#2)": "",
+                "y(VA#5@B2_4SL#2)": "",
+                "f(@B2_4SL#1)": "",
+                "f(@B2_4SL#2)": "",
+                "struct(@B2_4SL#1)": "",
+                "struct(@B2_4SL#2)": "",
+                "mu(AL)": "",
+                "mu(FE)": "",
+                "mu(NB)": ""
+              },
+              "rows": [
+                {
+                  "T": "300",
+                  "P": "1",
+                  "x(AL)": "0.45",
+                  "x(FE)": "0.53",
+                  "x(NB)": "0.02",
+                  "phase_name": "B2_4SL+B2_4SL",
+                  "G(@B2_4SL#1)": "-28400.10806",
+                  "G(@B2_4SL#2)": "-35534.99376",
+                  "x(AL@B2_4SL#1)": "0.297411",
+                  "x(FE@B2_4SL#1)": "0.101668",
+                  "x(NB@B2_4SL#1)": "0.600921",
+                  "x(AL@B2_4SL#2)": "0.4539683852",
+                  "x(FE@B2_4SL#2)": "0.5411395994",
+                  "x(NB@B2_4SL#2)": "0.00489201542",
+                  "y(AL#1@B2_4SL#1)": "0.297411",
+                  "y(FE#1@B2_4SL#1)": "0.101668",
+                  "y(NB#1@B2_4SL#1)": "0.600921",
+                  "y(AL#2@B2_4SL#1)": "0.297411",
+                  "y(FE#2@B2_4SL#1)": "0.101668",
+                  "y(NB#2@B2_4SL#1)": "0.600921",
+                  "y(AL#3@B2_4SL#1)": "0.297411",
+                  "y(FE#3@B2_4SL#1)": "0.101668",
+                  "y(NB#3@B2_4SL#1)": "0.600921",
+                  "y(AL#4@B2_4SL#1)": "0.297411",
+                  "y(FE#4@B2_4SL#1)": "0.101668",
+                  "y(NB#4@B2_4SL#1)": "0.600921",
+                  "y(VA#5@B2_4SL#1)": "1",
+                  "y(AL#1@B2_4SL#2)": "0.907936768",
+                  "y(FE#1@B2_4SL#2)": "0.08230150022",
+                  "y(NB#1@B2_4SL#2)": "0.009761731747",
+                  "y(AL#2@B2_4SL#2)": "0.907936768",
+                  "y(FE#2@B2_4SL#2)": "0.08230150022",
+                  "y(NB#2@B2_4SL#2)": "0.009761731747",
+                  "y(AL#3@B2_4SL#2)": "2.337529313E-09",
+                  "y(FE#3@B2_4SL#2)": "0.9999776986",
+                  "y(NB#3@B2_4SL#2)": "2.229909329E-05",
+                  "y(AL#4@B2_4SL#2)": "2.337529313E-09",
+                  "y(FE#4@B2_4SL#2)": "0.9999776986",
+                  "y(NB#4@B2_4SL#2)": "2.229909329E-05",
+                  "y(VA#5@B2_4SL#2)": "1",
+                  "f(@B2_4SL#1)": "0.0253477",
+                  "f(@B2_4SL#2)": "0.9746522695",
+                  "struct(@B2_4SL#1)": "[4 0 0 0 1]",
+                  "struct(@B2_4SL#2)": "[2 0 2 0 1]",
+                  "mu(AL)": "-48492.9",
+                  "mu(FE)": "-24813.4",
+                  "mu(NB)": "-19062.5"
+                }
+              ]
+            },
+            "status": "not_comparable_as_homogeneous",
+            "reason": "Pandat returned phase B2_4SL+B2_4SL, expected a single B2_4SL"
+          }
+        ],
+        "initial_chemical_potentials": {
+          "AL": -30169.2,
+          "FE": -33466.7,
+          "NB": -25661.0
+        }
+      }
+    ],
+    "status": "completed_with_execution_failures"
+  },
+  "symmetry": {
+    "source_validation": "<repository>\\data\\pandat_literature_validation_0a76eb40994c\\summary.json",
+    "interpretation": "Imposed observed equalities in the local model, not verified internal Pandat constraints",
+    "cases": [
+      {
+        "equal_site_pairs": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "full_degrees_of_freedom": 3,
+        "restricted_degrees_of_freedom": 0,
+        "G_restricted": -24101.604535429877,
+        "G_local_multistart": -24151.75037056733,
+        "derivative_boundary_floor": 1e-14,
+        "restricted_site_fractions": {
+          "Y_0_AL": 0.1,
+          "Y_0_NI": 0.9,
+          "Y_1_AL": 0.1,
+          "Y_1_NI": 0.9,
+          "Y_2_AL": 0.1,
+          "Y_2_NI": 0.9,
+          "Y_3_AL": 0.09999999999999998,
+          "Y_3_NI": 0.9
+        },
+        "max_composition_error": 0.0,
+        "max_site_sum_error": 0.0,
+        "hessians": [
+          {
+            "step": 0.0001,
+            "full_eigenvalues": [
+              7040.771469249934,
+              7040.771469333948,
+              28163.08587716776
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          },
+          {
+            "step": 5e-05,
+            "full_eigenvalues": [
+              7040.770367233394,
+              7040.770367317403,
+              28163.081469101584
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          },
+          {
+            "step": 1e-05,
+            "full_eigenvalues": [
+              7040.770014799873,
+              7040.770015219949,
+              28163.080060039647
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          }
+        ],
+        "released_optimizations": [
+          {
+            "sign": -1,
+            "initial_energy_change": 0.0035279817711852957,
+            "G": -24101.60453542988,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.09999999934974109,
+              "Y_0_NI": 0.9000000006502589,
+              "Y_1_AL": 0.10000000023326416,
+              "Y_1_NI": 0.8999999997667358,
+              "Y_2_AL": 0.10000000001331644,
+              "Y_2_NI": 0.8999999999866836,
+              "Y_3_AL": 0.10000000040367835,
+              "Y_3_NI": 0.8999999995963217
+            }
+          },
+          {
+            "sign": 1,
+            "initial_energy_change": 0.0035128249583067372,
+            "G": -24101.604535429877,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.09999999946570211,
+              "Y_0_NI": 0.9000000005342979,
+              "Y_1_AL": 0.10000000024945616,
+              "Y_1_NI": 0.8999999997505439,
+              "Y_2_AL": 0.09999999991873106,
+              "Y_2_NI": 0.9000000000812689,
+              "Y_3_AL": 0.10000000036611073,
+              "Y_3_NI": 0.8999999996338892
+            }
+          }
+        ],
+        "coordinate_species": [
+          "AL"
+        ],
+        "coordinate_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "coordinate_offset": [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.4,
+          0.6
+        ],
+        "case": "AlNi_gt_2",
+        "T_K": 300.0,
+        "G_pandat": -24101.59153,
+        "restricted_minus_pandat": -0.013005429875192931
+      },
+      {
+        "equal_site_pairs": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "full_degrees_of_freedom": 3,
+        "restricted_degrees_of_freedom": 0,
+        "G_restricted": -55689.92871162324,
+        "G_local_multistart": -60351.51376706776,
+        "derivative_boundary_floor": 1e-14,
+        "restricted_site_fractions": {
+          "Y_0_AL": 0.38,
+          "Y_0_NI": 0.62,
+          "Y_1_AL": 0.38,
+          "Y_1_NI": 0.62,
+          "Y_2_AL": 0.38,
+          "Y_2_NI": 0.62,
+          "Y_3_AL": 0.3799999999999999,
+          "Y_3_NI": 0.6200000000000001
+        },
+        "max_composition_error": 0.0,
+        "max_site_sum_error": 0.0,
+        "hessians": [
+          {
+            "step": 0.0001,
+            "full_eigenvalues": [
+              4766.470261563049,
+              4766.4702616593,
+              19065.881046371942
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          },
+          {
+            "step": 5e-05,
+            "full_eigenvalues": [
+              4766.470685548638,
+              4766.470685741146,
+              19065.882742797847
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          },
+          {
+            "step": 1e-05,
+            "full_eigenvalues": [
+              4766.470821477069,
+              4766.470821897146,
+              19065.88328529324
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 1.0289757937229989e-11
+          }
+        ],
+        "released_optimizations": [
+          {
+            "sign": -1,
+            "initial_energy_change": 0.0023855592298787087,
+            "G": -55689.92871162324,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.37999999971983917,
+              "Y_0_NI": 0.6200000002801609,
+              "Y_1_AL": 0.38000000057982,
+              "Y_1_NI": 0.61999999942018,
+              "Y_2_AL": 0.3799999996653124,
+              "Y_2_NI": 0.6200000003346876,
+              "Y_3_AL": 0.3800000000350283,
+              "Y_3_NI": 0.6199999999649717
+            }
+          },
+          {
+            "sign": 1,
+            "initial_energy_change": 0.00238089743652381,
+            "G": -55689.92871162322,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.3799999995123353,
+              "Y_0_NI": 0.6200000004876647,
+              "Y_1_AL": 0.38000000067312467,
+              "Y_1_NI": 0.6199999993268753,
+              "Y_2_AL": 0.3799999998011688,
+              "Y_2_NI": 0.6200000001988313,
+              "Y_3_AL": 0.3800000000133712,
+              "Y_3_NI": 0.6199999999866288
+            }
+          }
+        ],
+        "coordinate_species": [
+          "AL"
+        ],
+        "coordinate_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "coordinate_offset": [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.52,
+          -0.52
+        ],
+        "case": "AlNi_gx",
+        "T_K": 300.0,
+        "G_pandat": -55689.9307,
+        "restricted_minus_pandat": 0.001988376759982202
+      },
+      {
+        "equal_site_pairs": [
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "full_degrees_of_freedom": 3,
+        "restricted_degrees_of_freedom": 1,
+        "G_restricted": -21713.238803084256,
+        "G_local_multistart": -21808.050571695934,
+        "derivative_boundary_floor": 1e-14,
+        "restricted_site_fractions": {
+          "Y_0_FE": 0.6268316973795035,
+          "Y_0_NI": 0.3731683026204965,
+          "Y_1_FE": 0.3731683026204965,
+          "Y_1_NI": 0.6268316973795035,
+          "Y_2_FE": 0.3731683026204965,
+          "Y_2_NI": 0.6268316973795035,
+          "Y_3_FE": 0.6268316973795036,
+          "Y_3_NI": 0.3731683026204964,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_site_sum_error": 0.0,
+        "hessians": [
+          {
+            "step": 0.0001,
+            "full_eigenvalues": [
+              -4282.24135723317,
+              381.516195908398,
+              1698.0628435658218
+            ],
+            "restricted_eigenvalues": [
+              367.02894942815567
+            ],
+            "projected_gradient_norm": 2.328314979023066e-08
+          },
+          {
+            "step": 5e-05,
+            "full_eigenvalues": [
+              -4282.241569945651,
+              381.51610881504445,
+              1698.0627833936524
+            ],
+            "restricted_eigenvalues": [
+              367.02886909248866
+            ],
+            "projected_gradient_norm": 2.328314979023066e-08
+          },
+          {
+            "step": 1e-05,
+            "full_eigenvalues": [
+              -4282.241638054265,
+              381.51608099470764,
+              1698.0627641714814
+            ],
+            "restricted_eigenvalues": [
+              367.0288434326111
+            ],
+            "projected_gradient_norm": 2.328314979023066e-08
+          }
+        ],
+        "released_optimizations": [
+          {
+            "sign": -1,
+            "initial_energy_change": -0.0021366062319430057,
+            "G": -21808.050571695756,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_FE": 0.9533596944273443,
+              "Y_0_NI": 0.04664030557265575,
+              "Y_1_FE": 0.34888025762921226,
+              "Y_1_NI": 0.6511197423707877,
+              "Y_2_FE": 0.34888025762932434,
+              "Y_2_NI": 0.6511197423706756,
+              "Y_3_FE": 0.3488797903141192,
+              "Y_3_NI": 0.6511202096858808,
+              "Y_4_VA": 1.0
+            }
+          },
+          {
+            "sign": 1,
+            "initial_energy_change": -0.0021456081740325317,
+            "G": -21808.050571695945,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_FE": 0.34888007089472717,
+              "Y_0_NI": 0.6511199291052728,
+              "Y_1_FE": 0.3488800846065015,
+              "Y_1_NI": 0.6511199153934986,
+              "Y_2_FE": 0.34888010358508714,
+              "Y_2_NI": 0.6511198964149129,
+              "Y_3_FE": 0.953359740913684,
+              "Y_3_NI": 0.04664025908631597,
+              "Y_4_VA": 1.0
+            }
+          }
+        ],
+        "coordinate_species": [
+          "FE"
+        ],
+        "coordinate_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "coordinate_offset": [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          2.0,
+          -1.0,
+          1.0
+        ],
+        "case": "FeNi_gt_1",
+        "T_K": 500.0,
+        "G_pandat": -21713.24445,
+        "restricted_minus_pandat": 0.005646915742545389
+      },
+      {
+        "equal_site_pairs": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "full_degrees_of_freedom": 3,
+        "restricted_degrees_of_freedom": 1,
+        "G_restricted": -41911.33952166587,
+        "G_local_multistart": -41920.89374628067,
+        "derivative_boundary_floor": 1e-14,
+        "restricted_site_fractions": {
+          "Y_0_AL": 0.051720865673034,
+          "Y_0_FE": 0.948279134326966,
+          "Y_1_AL": 0.051720865673034,
+          "Y_1_FE": 0.948279134326966,
+          "Y_2_AL": 0.44827913432696603,
+          "Y_2_FE": 0.5517208656730339,
+          "Y_3_AL": 0.448279134326966,
+          "Y_3_FE": 0.551720865673034,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 0.0,
+        "max_site_sum_error": 0.0,
+        "hessians": [
+          {
+            "step": 0.0001,
+            "full_eigenvalues": [
+              -1041.9996111053758,
+              9469.037670849899,
+              25063.528962600685
+            ],
+            "restricted_eigenvalues": [
+              6612.744380278554
+            ],
+            "projected_gradient_norm": 4.670572576640062e-07
+          },
+          {
+            "step": 5e-05,
+            "full_eigenvalues": [
+              -1041.9999259490244,
+              9469.013315213204,
+              25063.504545942124
+            ],
+            "restricted_eigenvalues": [
+              6612.7281068475
+            ],
+            "projected_gradient_norm": 4.670572576640062e-07
+          },
+          {
+            "step": 1e-05,
+            "full_eigenvalues": [
+              -1042.0000264983298,
+              9469.0055213303,
+              25063.496732582276
+            ],
+            "restricted_eigenvalues": [
+              6612.722899384004
+            ],
+            "projected_gradient_norm": 4.670572576640062e-07
+          }
+        ],
+        "released_optimizations": [
+          {
+            "sign": -1,
+            "initial_energy_change": -0.0005210776289459318,
+            "G": -41920.893746280635,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.04860842480990816,
+              "Y_0_FE": 0.9513915751900919,
+              "Y_1_AL": 0.048608424751793285,
+              "Y_1_FE": 0.9513915752482067,
+              "Y_2_AL": 0.2572639426984464,
+              "Y_2_FE": 0.7427360573015536,
+              "Y_3_AL": 0.6455192077398522,
+              "Y_3_FE": 0.35448079226014784,
+              "Y_4_VA": 1.0
+            }
+          },
+          {
+            "sign": 1,
+            "initial_energy_change": -0.0005209070586715825,
+            "G": -41920.89374628071,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.048608463034202076,
+              "Y_0_FE": 0.9513915369657979,
+              "Y_1_AL": 0.04860846493657918,
+              "Y_1_FE": 0.9513915350634208,
+              "Y_2_AL": 0.6455193538730045,
+              "Y_2_FE": 0.3544806461269955,
+              "Y_3_AL": 0.2572637181562142,
+              "Y_3_FE": 0.7427362818437858,
+              "Y_4_VA": 1.0
+            }
+          }
+        ],
+        "coordinate_species": [
+          "AL"
+        ],
+        "coordinate_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "coordinate_offset": [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "case": "AlFe_gt_2",
+        "T_K": 650.0,
+        "G_pandat": -41911.34403,
+        "restricted_minus_pandat": 0.004508334131969605
+      },
+      {
+        "equal_site_pairs": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "full_degrees_of_freedom": 6,
+        "restricted_degrees_of_freedom": 0,
+        "G_restricted": -31826.73202813684,
+        "G_local_multistart": -35315.441676405004,
+        "derivative_boundary_floor": 1e-14,
+        "restricted_site_fractions": {
+          "Y_0_AL": 0.45,
+          "Y_0_FE": 0.53,
+          "Y_0_NB": 0.02,
+          "Y_1_AL": 0.45,
+          "Y_1_FE": 0.53,
+          "Y_1_NB": 0.02,
+          "Y_2_AL": 0.45,
+          "Y_2_FE": 0.53,
+          "Y_2_NB": 0.02,
+          "Y_3_AL": 0.44999999999999996,
+          "Y_3_FE": 0.53,
+          "Y_3_NB": 0.020000000000000004,
+          "Y_4_VA": 1.0
+        },
+        "max_composition_error": 5.551115123125783e-17,
+        "max_site_sum_error": 0.0,
+        "hessians": [
+          {
+            "step": 0.0001,
+            "full_eigenvalues": [
+              -16143.344338445744,
+              -3628.5382702723896,
+              -2246.411787592938,
+              38207.87765418389,
+              38655.004363630746,
+              153622.6511853167
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 8.911191772433732e-12
+          },
+          {
+            "step": 5e-05,
+            "full_eigenvalues": [
+              -16143.345979097267,
+              -3628.5385817297683,
+              -2246.4119367941485,
+              38207.68338906438,
+              38654.8095899252,
+              153621.87281758804
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 8.911191772433732e-12
+          },
+          {
+            "step": 1e-05,
+            "full_eigenvalues": [
+              -16143.346503954408,
+              -3628.5386811584963,
+              -2246.411984528179,
+              38207.62122513597,
+              38654.74726332113,
+              153621.62374388898
+            ],
+            "restricted_eigenvalues": [],
+            "projected_gradient_norm": 8.911191772433732e-12
+          }
+        ],
+        "released_optimizations": [
+          {
+            "sign": -1,
+            "initial_energy_change": -0.008077560130914208,
+            "G": -35315.44168255906,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 4.936096756928881e-09,
+              "Y_0_FE": 0.999671386748934,
+              "Y_0_NB": 0.0003286083149693313,
+              "Y_1_AL": 4.934768939253999e-09,
+              "Y_1_FE": 0.9996713866782888,
+              "Y_1_NB": 0.00032860838694221566,
+              "Y_2_AL": 0.8999999951381334,
+              "Y_2_FE": 0.06032861324565697,
+              "Y_2_NB": 0.03967139161620956,
+              "Y_3_AL": 0.8999999949910009,
+              "Y_3_FE": 0.06032861332712014,
+              "Y_3_NB": 0.039671391681878894,
+              "Y_4_VA": 1.0
+            }
+          },
+          {
+            "sign": 1,
+            "initial_energy_change": -0.008065753132541431,
+            "G": -35315.44168255892,
+            "success": true,
+            "message": "Optimization terminated successfully",
+            "feasible": true,
+            "site_fractions": {
+              "Y_0_AL": 0.900000034192315,
+              "Y_0_FE": 0.060328582645100215,
+              "Y_0_NB": 0.03967138316258479,
+              "Y_1_AL": 0.8999999558887388,
+              "Y_1_FE": 0.06032865061449055,
+              "Y_1_NB": 0.0396713934967706,
+              "Y_2_AL": 4.970855342092747e-09,
+              "Y_2_FE": 0.999671384677321,
+              "Y_2_NB": 0.0003286103518237044,
+              "Y_3_AL": 4.948091048007086e-09,
+              "Y_3_FE": 0.999671382063088,
+              "Y_3_NB": 0.00032861298882090606,
+              "Y_4_VA": 1.0
+            }
+          }
+        ],
+        "coordinate_species": [
+          "NB",
+          "AL"
+        ],
+        "coordinate_matrix": [
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            -1.0,
+            0.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            0.0,
+            -1.0,
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "coordinate_offset": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.8,
+          -0.8800000000000001,
+          0.08,
+          1.0
+        ],
+        "case": "AlFeNb_gx",
+        "T_K": 300.0,
+        "G_pandat": -31826.73573,
+        "restricted_minus_pandat": 0.00370186315922183
+      }
+    ]
+  },
+  "simple_database_controls": [
+    {
+      "name": "global_two",
+      "mode": "global",
+      "source": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\User_Defined_Property\\AlMgZn.tdb",
+      "fixed_vacancy_seed_included": true,
+      "execution": {
+        "executable": "<PANDAT_HOME>\\bin\\Pandat.exe",
+        "executable_sha256": "0241fbd67057e5fe77cec353b9e17edf9060f0eeba5455b86797e3a70fb213c9",
+        "exit_code": 1,
+        "termination": "stopped_after_all_outputs_and_success_logs"
+      },
+      "output": {
+        "units": {
+          "T": "K",
+          "P": "atm",
+          "x(Al)": "mole/mole",
+          "x(Zn)": "mole/mole",
+          "phase_name": "",
+          "G(@Fcc)": "",
+          "G(@Hcp)": "",
+          "x(Al@Fcc)": "mole/mole",
+          "x(Zn@Fcc)": "mole/mole",
+          "x(Al@Hcp)": "mole/mole",
+          "x(Zn@Hcp)": "mole/mole",
+          "y(Al#1@Fcc)": "",
+          "y(Zn#1@Fcc)": "",
+          "y(Va#2@Fcc)": "",
+          "y(Al#1@Hcp)": "",
+          "y(Zn#1@Hcp)": "",
+          "y(Va#2@Hcp)": ""
+        },
+        "rows": [
+          {
+            "T": "500",
+            "P": "1",
+            "x(Al)": "0.5",
+            "x(Zn)": "0.5",
+            "phase_name": "Hcp+Fcc",
+            "G(@Fcc)": "-16401.77243",
+            "G(@Hcp)": "-22259.99297",
+            "x(Al@Fcc)": "0.9156386446",
+            "x(Zn@Fcc)": "0.08436135541",
+            "x(Al@Hcp)": "0.0098902",
+            "x(Zn@Hcp)": "0.99011",
+            "y(Al#1@Fcc)": "0.9156386446",
+            "y(Zn#1@Fcc)": "0.08436135541",
+            "y(Va#2@Fcc)": "1",
+            "y(Al#1@Hcp)": "0.0098902",
+            "y(Zn#1@Hcp)": "0.99011",
+            "y(Va#2@Hcp)": "1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "local_two",
+      "mode": "local",
+      "source": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\User_Defined_Property\\AlMgZn.tdb",
+      "fixed_vacancy_seed_included": true,
+      "error": "Pandat did not finish all points; see data\\pandat_occupancy_diagnosis_56560b3f2dc0\\alzn_control\\local_two\\raw\\console.log"
+    },
+    {
+      "name": "local_two_no_va",
+      "mode": "local",
+      "source": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\User_Defined_Property\\AlMgZn.tdb",
+      "fixed_vacancy_seed_included": false,
+      "error": "Pandat did not finish all points; see data\\pandat_occupancy_diagnosis_56560b3f2dc0\\alzn_control\\local_two_no_va\\raw\\console.log"
+    },
+    {
+      "name": "local_single",
+      "mode": "local",
+      "source": "<PANDAT_HOME>\\Pandat 2022 Examples\\PanPhaseDiagram\\User_Defined_Property\\AlMgZn.tdb",
+      "fixed_vacancy_seed_included": true,
+      "error": "Pandat did not finish all points; see data\\pandat_occupancy_diagnosis_56560b3f2dc0\\alzn_control\\local_single\\raw\\console.log"
+    }
+  ],
+  "chemical_potential_check": {
+    "definition": "M_A_B(s)=N_atoms/a_s*(dG_m/dy_A_s-dG_m/dy_B_s); fixed atom count, substitutional exchange, no variable vacancies",
+    "units": "J/mol",
+    "points": [
+      {
+        "case": "AlNi_gt_2",
+        "T_K": 300.0,
+        "states": {
+          "pandat_export": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NI": {
+                "by_sublattice": [
+                  -151505.7143909083,
+                  -151505.71439090828,
+                  -151505.71439090825,
+                  -151505.71439090825
+                ],
+                "max_minus_min": 5.820766091346741e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.0999999,
+              "Y_0_NI": 0.9,
+              "Y_1_AL": 0.0999999,
+              "Y_1_NI": 0.9,
+              "Y_2_AL": 0.0999999,
+              "Y_2_NI": 0.9,
+              "Y_3_AL": 0.0999999,
+              "Y_3_NI": 0.9
+            }
+          },
+          "same_branch_refined": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NI": {
+                "by_sublattice": [
+                  -151505.72326647834,
+                  -151505.72326647834,
+                  -151505.7232664783,
+                  -151505.7232664783
+                ],
+                "max_minus_min": 2.9103830456733704e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.1,
+              "Y_0_NI": 0.9,
+              "Y_1_AL": 0.1,
+              "Y_1_NI": 0.9,
+              "Y_2_AL": 0.1,
+              "Y_2_NI": 0.9,
+              "Y_3_AL": 0.09999999999999998,
+              "Y_3_NI": 0.9
+            }
+          },
+          "local_multistart": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NI": {
+                "by_sublattice": [
+                  -160256.17193394725,
+                  -160256.3647627787,
+                  -160256.14421343931,
+                  -160256.18300133978
+                ],
+                "max_minus_min": 0.22054933939944021
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.3987517241624299,
+              "Y_0_NI": 0.6012482758375701,
+              "Y_1_AL": 0.00041606960602229027,
+              "Y_1_NI": 0.9995839303939776,
+              "Y_2_AL": 0.0004161063466709465,
+              "Y_2_NI": 0.9995838936533291,
+              "Y_3_AL": 0.0004160998848769027,
+              "Y_3_NI": 0.9995839001151231
+            }
+          }
+        }
+      },
+      {
+        "case": "AlNi_gx",
+        "T_K": 300.0,
+        "states": {
+          "pandat_export": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NI": {
+                "by_sublattice": [
+                  -52585.37462285216,
+                  -52585.37462285209,
+                  -52585.37462285212,
+                  -52585.374622852105
+                ],
+                "max_minus_min": 7.275957614183426e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.38,
+              "Y_0_NI": 0.62,
+              "Y_1_AL": 0.38,
+              "Y_1_NI": 0.62,
+              "Y_2_AL": 0.38,
+              "Y_2_NI": 0.62,
+              "Y_3_AL": 0.38,
+              "Y_3_NI": 0.62
+            }
+          },
+          "same_branch_refined": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NI": {
+                "by_sublattice": [
+                  -52585.37462285212,
+                  -52585.37462285209,
+                  -52585.37462285215,
+                  -52585.37462285212
+                ],
+                "max_minus_min": 5.820766091346741e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.38,
+              "Y_0_NI": 0.62,
+              "Y_1_AL": 0.38,
+              "Y_1_NI": 0.62,
+              "Y_2_AL": 0.38,
+              "Y_2_NI": 0.62,
+              "Y_3_AL": 0.3799999999999999,
+              "Y_3_NI": 0.6200000000000001
+            }
+          },
+          "local_multistart": {
+            "status": "boundary_state_requires_one_sided_KKT",
+            "site_fractions": {
+              "Y_0_AL": 0.5200185385760255,
+              "Y_0_NI": 0.4799814614239746,
+              "Y_1_AL": 0.9999814614293814,
+              "Y_1_NI": 1.8538570618617083e-05,
+              "Y_2_AL": 0.0,
+              "Y_2_NI": 1.0,
+              "Y_3_AL": 0.0,
+              "Y_3_NI": 1.0
+            }
+          }
+        }
+      },
+      {
+        "case": "FeNi_gt_1",
+        "T_K": 500.0,
+        "states": {
+          "pandat_export": {
+            "status": "interior",
+            "exchange_potentials": {
+              "FE-NI": {
+                "by_sublattice": [
+                  17800.204273744806,
+                  17800.20858889238,
+                  17800.208588892383,
+                  17800.20427374481
+                ],
+                "max_minus_min": 0.004315147576562595
+              }
+            },
+            "site_fractions": {
+              "Y_0_FE": 0.6268297383,
+              "Y_0_NI": 0.3731702617,
+              "Y_1_FE": 0.3731702615,
+              "Y_1_NI": 0.6268297385,
+              "Y_2_FE": 0.3731702615,
+              "Y_2_NI": 0.6268297385,
+              "Y_3_FE": 0.6268297383,
+              "Y_3_NI": 0.3731702617,
+              "Y_4_VA": 1.0
+            }
+          },
+          "same_branch_refined": {
+            "status": "interior",
+            "exchange_potentials": {
+              "FE-NI": {
+                "by_sublattice": [
+                  17800.21922772471,
+                  17800.219227658858,
+                  17800.219227658858,
+                  17800.219227724712
+                ],
+                "max_minus_min": 6.585469236597419e-08
+              }
+            },
+            "site_fractions": {
+              "Y_0_FE": 0.6268316973795035,
+              "Y_0_NI": 0.3731683026204965,
+              "Y_1_FE": 0.3731683026204965,
+              "Y_1_NI": 0.6268316973795035,
+              "Y_2_FE": 0.3731683026204965,
+              "Y_2_NI": 0.6268316973795035,
+              "Y_3_FE": 0.6268316973795036,
+              "Y_3_NI": 0.3731683026204964,
+              "Y_4_VA": 1.0
+            }
+          },
+          "local_multistart": {
+            "status": "interior",
+            "exchange_potentials": {
+              "FE-NI": {
+                "by_sublattice": [
+                  20422.144678075936,
+                  20422.144629856677,
+                  20422.144629856666,
+                  20422.14585119032
+                ],
+                "max_minus_min": 0.0012213336522108875
+              }
+            },
+            "site_fractions": {
+              "Y_0_FE": 0.9533597311889541,
+              "Y_0_NI": 0.04664026881104586,
+              "Y_1_FE": 0.34888004641108783,
+              "Y_1_NI": 0.6511199535889122,
+              "Y_2_FE": 0.34888004641108744,
+              "Y_2_NI": 0.6511199535889127,
+              "Y_3_FE": 0.34888017598887067,
+              "Y_3_NI": 0.6511198240111293,
+              "Y_4_VA": 1.0
+            }
+          }
+        }
+      },
+      {
+        "case": "AlFe_gt_2",
+        "T_K": 650.0,
+        "states": {
+          "pandat_export": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-FE": {
+                "by_sublattice": [
+                  -48087.94252236723,
+                  -48087.94252236723,
+                  -48087.97187708554,
+                  -48087.97187688661
+                ],
+                "max_minus_min": 0.02935471831005998
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.05172160762,
+              "Y_0_FE": 0.9482783924,
+              "Y_1_AL": 0.05172160762,
+              "Y_1_FE": 0.9482783924,
+              "Y_2_AL": 0.4482783908,
+              "Y_2_FE": 0.5517216092,
+              "Y_3_AL": 0.4482783907,
+              "Y_3_FE": 0.5517216093,
+              "Y_4_VA": 1.0
+            }
+          },
+          "same_branch_refined": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-FE": {
+                "by_sublattice": [
+                  -48088.0101473004,
+                  -48088.0101473004,
+                  -48088.010148621455,
+                  -48088.01014862144
+                ],
+                "max_minus_min": 1.3210519682615995e-06
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.051720865673034,
+              "Y_0_FE": 0.948279134326966,
+              "Y_1_AL": 0.051720865673034,
+              "Y_1_FE": 0.948279134326966,
+              "Y_2_AL": 0.44827913432696603,
+              "Y_2_FE": 0.5517208656730339,
+              "Y_3_AL": 0.448279134326966,
+              "Y_3_FE": 0.551720865673034,
+              "Y_4_VA": 1.0
+            }
+          },
+          "local_multistart": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-FE": {
+                "by_sublattice": [
+                  -48905.45406368924,
+                  -48905.45490177057,
+                  -48905.45094871709,
+                  -48905.456496660365
+                ],
+                "max_minus_min": 0.005547943277633749
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.6455194576652374,
+              "Y_0_FE": 0.3544805423347625,
+              "Y_1_AL": 0.2572635959796765,
+              "Y_1_FE": 0.7427364040203235,
+              "Y_2_AL": 0.04860849984655468,
+              "Y_2_FE": 0.9513915001534453,
+              "Y_3_AL": 0.04860844650853138,
+              "Y_3_FE": 0.9513915534914686,
+              "Y_4_VA": 1.0
+            }
+          }
+        }
+      },
+      {
+        "case": "AlFeNb_gx",
+        "T_K": 300.0,
+        "states": {
+          "pandat_export": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NB": {
+                "by_sublattice": [
+                  -4508.261008190191,
+                  -4508.261008190191,
+                  -4508.261008190191,
+                  -4508.261008190191
+                ],
+                "max_minus_min": 0.0
+              },
+              "FE-NB": {
+                "by_sublattice": [
+                  -7805.772605434686,
+                  -7805.772605434679,
+                  -7805.772605434679,
+                  -7805.772605434693
+                ],
+                "max_minus_min": 1.4551915228366852e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.45,
+              "Y_0_FE": 0.53,
+              "Y_0_NB": 0.02,
+              "Y_1_AL": 0.45,
+              "Y_1_FE": 0.53,
+              "Y_1_NB": 0.02,
+              "Y_2_AL": 0.45,
+              "Y_2_FE": 0.53,
+              "Y_2_NB": 0.02,
+              "Y_3_AL": 0.45,
+              "Y_3_FE": 0.53,
+              "Y_3_NB": 0.02,
+              "Y_4_VA": 1.0
+            }
+          },
+          "same_branch_refined": {
+            "status": "interior",
+            "exchange_potentials": {
+              "AL-NB": {
+                "by_sublattice": [
+                  -4508.261008190191,
+                  -4508.261008190191,
+                  -4508.261008190191,
+                  -4508.261008190191
+                ],
+                "max_minus_min": 0.0
+              },
+              "FE-NB": {
+                "by_sublattice": [
+                  -7805.772605434671,
+                  -7805.772605434671,
+                  -7805.772605434671,
+                  -7805.772605434686
+                ],
+                "max_minus_min": 1.4551915228366852e-11
+              }
+            },
+            "site_fractions": {
+              "Y_0_AL": 0.45,
+              "Y_0_FE": 0.53,
+              "Y_0_NB": 0.02,
+              "Y_1_AL": 0.45,
+              "Y_1_FE": 0.53,
+              "Y_1_NB": 0.02,
+              "Y_2_AL": 0.45,
+              "Y_2_FE": 0.53,
+              "Y_2_NB": 0.02,
+              "Y_3_AL": 0.44999999999999996,
+              "Y_3_FE": 0.53,
+              "Y_3_NB": 0.020000000000000004,
+              "Y_4_VA": 1.0
+            }
+          },
+          "local_multistart": {
+            "status": "boundary_state_requires_one_sided_KKT",
+            "site_fractions": {
+              "Y_0_AL": 0.0,
+              "Y_0_FE": 0.9996713829621617,
+              "Y_0_NB": 0.0003286170378383595,
+              "Y_1_AL": 0.0,
+              "Y_1_FE": 0.9996714003857249,
+              "Y_1_NB": 0.00032859961427517175,
+              "Y_2_AL": 0.899999917686697,
+              "Y_2_FE": 0.06032861881696306,
+              "Y_2_NB": 0.03967146349633996,
+              "Y_3_AL": 0.9000000823133029,
+              "Y_3_FE": 0.060328597835150495,
+              "Y_3_NB": 0.039671319851546566,
+              "Y_4_VA": 1.0
+            }
+          }
+        }
+      }
+    ]
+  }
+}

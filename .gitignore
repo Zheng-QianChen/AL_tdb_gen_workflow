@@ -8,3 +8,18 @@ venv/
 data/
 static/run/
 eigenvalue
+
+# Runtime/test artifacts and Windows download metadata
+.venv/
+.pytest_cache/
+.ruff_cache/
+.test-data/
+*:Zone.Identifier
+*.log
+build/
+dist/
+*.egg-info/
+POTCAR
+POTCAR.*
+OUTCAR
+vasprun.xml

@@ -1,21 +1,19 @@
-import ast
-import copy
 import os
-import random
 import matplotlib
 matplotlib.use('Agg')  # 切换至Agg后端（需在导入plt前执行）
 import matplotlib.pyplot as plt
 from datetime import datetime
-import sklearn
 
 import numpy as np
 import pandas as pd
 from sklearn.metrics import root_mean_squared_error,r2_score, mean_absolute_error
+from src.thermodynamics import formation_energy
 
 def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
     data = pd.read_csv(f'{csv_path}/iter.csv')
 
     if style:
+        import scienceplots  # noqa: F401 - registers optional publication styles.
         # 设置全局样式，全局字体样式为罗马字体
         plt.style.use(['science','ieee','notebook'])
         plt.rcParams['font.family'] = 'serif'
@@ -35,20 +33,22 @@ def iter_plot(csv_path,fig_size=(12,8),dpi=300,style=False):
     plt.xlabel('traning data amount', fontsize=20)
     plt.ylabel('kJ/mol', fontsize=20)
     plt.legend(
-        loc='upper right', 
+        loc='upper right',
         bbox_to_anchor=(1.0, 1.0),  # 默认位置是 (0,0)~1,1，此处保持右上角
     )
     plt.tight_layout()
     os.makedirs(f'{csv_path}/fig',exist_ok=True)
     plt.savefig(f'{csv_path}/fig/iter.png', bbox_inches='tight')
+    plt.close()
     # plt.savefig('static/fig/iter.png', bbox_inches='tight')
-    
 
-def pred_calc_fig(pkl_phase_path,iter):
+
+def pred_calc_fig(pkl_phase_path,iter, phase=None):
     from src.class_def import Phase
     process = 2
 
-    phase=Phase.load(f'{pkl_phase_path}/model_{iter:06d}_{process}.pd')
+    if phase is None:
+        phase=Phase.load(f'{pkl_phase_path}/model_{iter:06d}_{process}.pd')
     save_dir=phase.record_path
     os.makedirs(save_dir, exist_ok=True)
     print(save_dir)
@@ -74,15 +74,15 @@ def pred_calc_fig(pkl_phase_path,iter):
     elif phase.ML_style == 'stack':
         X_col = phase.eigen_table
         X_imp = MLmodel.get_X_imp(X_train)
-    
+
     # 准备绘图数据
     y_true = phase.y_test
     y_pred = phase.y_pred_test_MLmodel
     y_true = np.array(y_true, copy=True)
     y_pred = np.array(y_pred, copy=True)
-    
+
     # 计算核心指标
-    r2 = r2_score(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred) if len(y_true) >= 2 else np.nan
     mae = mean_absolute_error(y_true, y_pred)
     rmse = np.sqrt(np.mean((y_true - y_pred) ** 2))  # 手动计算RMSE
     print(y_pred_train_MLmodel)
@@ -93,7 +93,7 @@ def pred_calc_fig(pkl_phase_path,iter):
     temp = phase.subl_energy.copy()
     valid_mask = temp['in_iter'].notna()  # 或 ~temp['in_iter'].isna()
     temp = temp[valid_mask]
-    temp['energy'] = (temp['Atom_ref']*13 - temp['DFT_2'])/13*96.485
+    temp['energy'] = formation_energy(temp['DFT_2'], phase.total_atoms, temp['Atom_ref'])
     save_path = os.path.join(save_dir, f"whole_calced_points_in_iter_{phase.iter:04d}.csv")
     temp.to_csv(save_path)
 
@@ -106,35 +106,35 @@ def pred_calc_fig(pkl_phase_path,iter):
     a.to_csv(save_path)
     save_path = (f"{save_dir}/iter_tr_te_points/y_test_in_iter_{phase.iter:04d}.csv")
     b.to_csv(save_path)
-    
+
     # 创建画布
     plt.figure(figsize=(10, 10), dpi=300)
-    
+
     # 绘制散点图
-    plt.scatter(y_train, y_pred_train_MLmodel, 
-                s=40, 
+    plt.scatter(y_train, y_pred_train_MLmodel,
+                s=40,
                 alpha=0.5,
                 c='blue',
                 label='train')
-    plt.scatter(y_true, y_pred, 
-                s=40, 
+    plt.scatter(y_true, y_pred,
+                s=40,
                 alpha=0.5,
                 c='red',
                 label='pred')
-    
+
     # 添加参考线（完美预测线）
     min_val = min(y_train.min(), y_pred_train_MLmodel.min())
     max_val = max(y_train.max(), y_pred_train_MLmodel.max())
-    plt.plot([min_val, max_val], [min_val, max_val], 
-             'r--', 
+    plt.plot([min_val, max_val], [min_val, max_val],
+             'r--',
              lw=2,
              label='y=x')
-    
+
     # 添加统计指标文本
     stats_text = (f'$R^2 = {r2:.4f}$\n'
                 f'$MAE = {mae:.4f}$\n'
                 f'$RMSE = {rmse:.4f}$')
-    
+
     plt.annotate(stats_text,
                 xy=(0.05, 0.85),
                 xycoords='axes fraction',
@@ -143,26 +143,27 @@ def pred_calc_fig(pkl_phase_path,iter):
                           fc="ghostwhite",
                           ec="lightgray",
                           alpha=0.8))
-    
+
     # 设置坐标轴
     plt.axis('equal')
     plt.xlim(min_val-0.1*(max_val-min_val), max_val+0.1*(max_val-min_val))
     plt.ylim(min_val-0.1*(max_val-min_val), max_val+0.1*(max_val-min_val))
-    
+
     # 添加标签
     plt.xlabel('vasp', fontsize=14, fontname='SimHei')
     plt.ylabel('pred', fontsize=14, fontname='SimHei')
-    plt.title(f'pred-calc (with iter:{phase.iter})', 
+    plt.title(f'pred-calc (with iter:{phase.iter})',
              fontsize=16,
              fontname='SimHei',
              pad=15)
     plt.legend(loc='upper right', fontsize=12)
-    
+
     # 添加网格
     plt.grid(True, ls=':', alpha=0.7, color='lightgray')
-    
+
     # 自动创建保存路径并保存
     save_path = (f"{save_dir}/fig/pred_test_{phase.name}_iter{phase.iter:04d}_process{process}.png")
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, bbox_inches='tight')
     # plt.savefig(f"static/fig/pred_test_{phase.name}_iter{phase.iter:04d}_process{process}.png", bbox_inches='tight')
     plt.close()
@@ -178,13 +179,11 @@ def assess(file,MLmodel,X_imp,X,X_train,X_col,y,y_train,y_pred_train_MLmodel,y_t
     # # 模型参数重要性评价
     # X_imp=pd.DataFrame(X_train,columns=X_col)
     # 提取训练后的特征重要性
-    feature_importances = MLmodel.feature_importances_
-    # 创建一个数据框来存储特征名称和它们的重要性
-    feature_importances_df = pd.DataFrame({'Feature': X_imp.columns, 'Importance': feature_importances})
-    # 按重要性降序排列
-    feature_importances_df = feature_importances_df.sort_values('Importance', ascending=False)
-    # 打印特征及其重要性
-    model_log.write(feature_importances_df.to_string(index=False))
+    if hasattr(MLmodel, 'feature_importances_'):
+        feature_importances_df = pd.DataFrame({'Feature': X_imp.columns, 'Importance': MLmodel.feature_importances_})
+        model_log.write(feature_importances_df.sort_values('Importance', ascending=False).to_string(index=False))
+    else:
+        model_log.write('Feature importance is not supplied by this estimator.\n')
 
     # 评价之偏离真实值
     rmse_tr_MLmodel = root_mean_squared_error(y_train, y_pred_train_MLmodel)
@@ -195,10 +194,13 @@ def assess(file,MLmodel,X_imp,X,X_train,X_col,y,y_train,y_pred_train_MLmodel,y_t
     # 评价之交叉验证法
     from sklearn.model_selection import KFold, cross_val_score
 
-    crossvalidation = KFold(n_splits=10, shuffle=True)
-    r2_scores_MLmodel = cross_val_score(MLmodel,X,y,scoring='r2',cv=crossvalidation)
-    rmse_scores_MLmodel = cross_val_score(MLmodel,X,y,scoring='neg_root_mean_squared_error',
-                                    cv = crossvalidation)
+    if len(y) >= 4:
+        crossvalidation = list(KFold(n_splits=min(10, len(y)//2), shuffle=True, random_state=42).split(X))
+        r2_scores_MLmodel = cross_val_score(MLmodel, X, y, scoring='r2', cv=crossvalidation, error_score='raise')
+        rmse_scores_MLmodel = cross_val_score(MLmodel, X, y, scoring='neg_root_mean_squared_error', cv=crossvalidation, error_score='raise')
+    else:
+        r2_scores_MLmodel = np.array([np.nan])
+        rmse_scores_MLmodel = np.array([np.nan])
     model_log.write('Cross-validation results:\n')
     model_log.write('Folds: %i, mean R2: %.3f\n' %(len(r2_scores_MLmodel),r2_scores_MLmodel.mean()))
     model_log.write('Folds: %i, mean RMSE: %.3f\n' %(len(rmse_scores_MLmodel),-rmse_scores_MLmodel.mean()))

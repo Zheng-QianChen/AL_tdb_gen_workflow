@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gibbs 自由能曲线 · AL-TDB</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <style>
+    body { background:#f3f6fa; color:#172a3a; }
+    [hidden] { display:none !important; }
+    main { max-width:1180px; margin:auto; padding:30px 24px 64px; }
+    .card { border:1px solid #dce4ed; border-radius:12px; margin-bottom:20px; }
+    .card-body { padding:24px; }
+    h1 { font-size:28px; font-weight:650; } h2 { font-size:19px; margin-bottom:18px; }
+    label { font-weight:550; margin-bottom:6px; } .hint { color:#546778; font-size:14px; }
+    fieldset { padding:12px 16px; border:1px solid #dce4ed; border-radius:8px; margin:10px 0; }
+    legend { float:none; width:auto; font-size:14px; padding:0 5px; margin:0; }
+    fieldset label { margin:0 20px 0 0; font-weight:400; }
+    #plot { max-width:100%; } #notice { white-space:pre-wrap; }
+    .links a { margin-right:18px; } .form-control, .form-select { min-height:40px; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary px-4"><a class="navbar-brand" href="/">AL-TDB</a><a class="text-white" href="/phase-diagram">多相平衡与相图</a><a class="text-white" href="/model_analysis">返回模型分析</a></nav>
+<main>
+  <h1>相的 Gibbs 自由能曲线</h1>
+  <p class="hint mb-4">选择各亚点阵允许的组元，在给定总成分下优化占位。自由能采用所提供 TDB 的参考态及物理贡献，保持为单一均匀相，不允许分解为两相。</p>
+  <section class="card"><div class="card-body">
+    <h2>1 · 相模型与参考数据库</h2>
+    <div class="row g-3">
+      <div class="col-md-6"><label for="config">已有运行配置（可选）</label><input id="config" class="form-control" placeholder="run/my_phase.json 或配置名"><div class="hint mt-1">读取已训练的检查点，自动生成该相片段。已有完整 TDB 时留空。</div></div>
+      <div class="col-md-6"><label for="phase">相名称</label><input id="phase" class="form-control" placeholder="例如 BCC_A2"><div class="hint mt-1">使用运行配置时自动填入。</div></div>
+      <div class="col-12"><label for="databases">TDB 文件路径（每行一个）</label><textarea id="databases" class="form-control" rows="3" placeholder="uploads/reference.tdb&#10;output/models/selected_phase.tdb"></textarea><div class="hint mt-1">路径相对于数据目录。相片段需同时提供包含 GHSER 等函数的相容参考数据库；不会将缺失函数设为零。</div></div>
+    </div>
+    <button id="load" class="btn btn-outline-primary mt-3">读取亚点阵</button>
+    <div id="sublattices" class="mt-3"></div>
+  </div></section>
+  <section class="card"><div class="card-body">
+    <h2>2 · 曲线条件</h2>
+    <div class="row g-3">
+      <div class="col-md-4"><label for="mode">曲线类型</label><select id="mode" class="form-select"><option value="gx">G–成分：固定温度，优化占位</option><option value="gt">G–温度：固定总成分，优化占位</option></select></div>
+      <div class="col-md-4"><label for="pressure">压力（Pa）</label><input id="pressure" class="form-control" type="number" min="1" value="101325"></div>
+      <div class="col-md-4"><label for="starts">优化起点数</label><input id="starts" class="form-control" type="number" min="2" max="32" value="8"></div>
+    </div>
+    <div id="gx-fields" class="row g-3 mt-1">
+      <div class="col-md-6"><label for="temperatures">温度（K，逗号分隔）</label><input id="temperatures" class="form-control" value="600, 1000, 1400"></div>
+      <div class="col-md-3"><label for="points">成分采样点数</label><input id="points" type="number" min="2" max="501" value="101" class="form-control"></div>
+      <div class="col-md-3"><label for="axis">横坐标组元</label><select id="axis" class="form-select"></select></div>
+      <div class="col-md-6"><label for="start">起始总成分</label><input id="start" class="form-control" placeholder="AL=1, NI=0"></div>
+      <div class="col-md-6"><label for="end">终止总成分</label><input id="end" class="form-control" placeholder="AL=0, NI=1"></div>
+      <div class="col-12 hint">总成分采用原子分数，合计为 1。多元体系沿两个端点之间的直线截面计算。</div>
+    </div>
+    <div id="gt-fields" class="row g-3 mt-1" hidden>
+      <div class="col-md-6"><label for="composition">固定总成分</label><input id="composition" class="form-control" placeholder="AL=0.5, NI=0.5"></div>
+      <div class="col-md-2"><label for="t-min">起始温度（K）</label><input id="t-min" type="number" value="300" class="form-control"></div>
+      <div class="col-md-2"><label for="t-max">终止温度（K）</label><input id="t-max" type="number" value="1500" class="form-control"></div>
+      <div class="col-md-2"><label for="t-points">温度点数</label><input id="t-points" type="number" value="61" min="2" max="501" class="form-control"></div>
+    </div>
+    <button id="calculate" class="btn btn-primary mt-4" disabled>计算自由能曲线</button>
+  </div></section>
+  <div id="notice" role="status" aria-live="polite" class="alert alert-secondary">先读取模型，再选择亚点阵组元。</div>
+  <section id="results" class="card" hidden><div class="card-body">
+    <h2 id="result-title">计算结果</h2><p id="summary" class="hint"></p>
+    <img id="plot" alt="计算得到的 Gibbs 自由能曲线">
+    <div id="downloads" class="links mt-3"></div>
+    <p class="hint mt-3 mb-0">CSV 包含自由能各项、总成分与各亚点阵占位。多起点局部优化不构成全局最低值证明；复杂有序模型可增加起点数检查结果稳定性。</p>
+  </div></section>
+  <section class="card"><div class="card-body">
+    <h2>3 · Pandat / Thermo-Calc 单点对比</h2>
+    <p class="hint">先生成空白参考表，在外部软件使用相同 TDB、亚点阵组元、参考态及单一均匀相约束计算。填入参考 G，记录软件版本，再导入对比请求。可只保留需要核对的采样点。</p>
+    <label for="compare-result">本程序的结果 JSON 路径</label>
+    <input id="compare-result" class="form-control" placeholder="gibbs/curve_…/gibbs.json">
+    <button id="reference-template" class="btn btn-outline-primary mt-3">生成单点参考表与对比请求</button>
+    <div id="reference-downloads" class="links mt-3"></div>
+    <div class="mt-3"><label for="compare-request">已填写的 compare.json</label>
+      <input id="compare-request" type="file" accept=".json,application/json" class="form-control">
+      <div class="hint mt-1">参考 CSV 须保存在应用数据目录内；JSON 中记录它的路径。能量支持 J/mol-atoms 与 kJ/mol-atoms。</div>
+    </div>
+    <button id="compare" class="btn btn-primary mt-3">比较单点结果</button>
+    <div id="compare-notice" class="alert alert-secondary mt-3" role="status" aria-live="polite">尚未导入外部计算结果。</div>
+    <div id="comparison-downloads" class="links"></div>
+  </div></section>
+</main>
+<script src="/static/gibbs.js"></script>
+</body></html>
