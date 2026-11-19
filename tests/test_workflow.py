@@ -159,8 +159,33 @@ def test_changed_reference_file_cannot_resume(phase):
 
 def test_reimport_is_idempotent(phase):
     path = write_synthetic_results(phase)
-    phase.phase.add_calced_points(path)
+    phase.phase.add_calced_points(path, source_kind="synthetic")
     before = phase.phase.calc_points.copy()
-    phase.phase.add_calced_points(path)
+    phase.phase.add_calced_points(path, source_kind="synthetic")
     assert len(phase.phase.y_test) == 0
     assert len(phase.phase.calc_points) == len(before)
+    assert set(phase.phase.subl_energy.loc[phase.phase.subl_energy["in_iter"].notna(), "source_kind"]) == {"synthetic"}
+
+
+def test_missing_tasks_manifest_fails_closed(phase):
+    async def exercise():
+        write_synthetic_results(phase)
+        phase._checkpoint()
+        manifest = Path(phase.phase.generate_DFT_path) / str(phase.phase.iter) / "tasks.json"
+        manifest.unlink()
+        with pytest.raises(ValueError, match="task manifest"):
+            await phase.advance_once()
+    asyncio.run(exercise())
+
+
+def test_training_uses_database_not_tampered_calc(phase):
+    async def exercise():
+        write_synthetic_results(phase)
+        phase._checkpoint()
+        calc = Path(phase.phase.calced_DFT_path) / f"iter.{phase.iter:06d}" / "calc.txt"
+        calc.write_text("AL:AL,999,999\nAL:NI,999,999\nNI:AL,999,999\nNI:NI,999,999\n")
+        assert await phase.advance_once()
+        assert phase.process == 2
+        energies = phase.phase.subl_energy.set_index("endmember")["DFT_2"]
+        assert energies["AL:AL"] != 999
+    asyncio.run(exercise())

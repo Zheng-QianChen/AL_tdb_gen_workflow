@@ -1,10 +1,30 @@
-# AL_tdb_gen_workflow
+# AL–TDB 热力学数据库工作台
 
-用主动学习连接第一性原理计算与 CALPHAD 相模型：生成端元结构、导入 DFT 总能量、训练回归模型、计算下凸包、选择下一批计算，并导出 TDB 相片段。
+AL–TDB 把文献原表、实验观测、结构候选、第一性原理结果和 CALPHAD 模型关联到同一个本地项目。可以从元素清单开始建库，比较同一相的多种亚点阵模型，再用留出的实验记录检验候选 TDB。
 
-## 安装
+## 启动工作台
 
-推荐 Python 3.11 或 3.12。基础流程支持 Windows/Linux，不要求 CUDA 或 WSL。
+从 [GitHub Releases](https://github.com/Zheng-QianChen/AL_tdb_gen_workflow/releases) 下载桌面启动包，完整解压。预先安装带 `venv` 的 Python 3.11 或 3.12。首次运行时启动器建立独立环境并联网安装依赖。
+
+| 平台 | 在解压目录启动 |
+| --- | --- |
+| Windows | 双击 `Start-AL-TDB.cmd` |
+| Linux | 运行 `sh Start-AL-TDB.sh`；无桌面时加 `--no-browser` |
+| macOS | 双击 `Start-AL-TDB.command`，也可运行 `sh Start-AL-TDB.sh` |
+
+启动后使用终端打印的本机地址进入 `/projects`。默认端口为 8003。关闭服务可在启动窗口按 Ctrl+C，或用同一入口加 `--stop`。
+
+## 从空项目到候选数据库
+
+1. **确定范围。** 新建项目，输入元素，例如 Al、Ce、La。按二元、三元和更高阶子体系盘点来源，记录要验证的温区和相区。
+2. **整理实验。** 在文献库登记题录或 DOI，挂接 PDF 后可直接阅读。由来源文献进入表格导入，映射 CSV/TSV 的测量项目、相名、位置、单位和温度。对照预览再入库，保留原行、文件摘要与修订。多相试样可先保留文献相名。
+3. **选择结构和模型。** 比对原型、点阵重复、对称性与占位，确定本库相名。同一相可建立多个独立模型。可导入 CIF，或查询 Materials Project 和 OQMD；MP 密钥从运行环境的 `MP_API_KEY` 读取。
+4. **计算、优化、验证。** 配置第一性原理作业并收集收敛信息，按独立试样划分拟合与留出数据。内置优化器产生候选 TDB；Pandat 和 Thermo-Calc 可通过已配置的适配器或导出的任务交接。使用相图、热化学量和二元限制面复查结果。
+5. **保存与移交。** 完整工作台包包含该项目的数据和附件，仅设置模式保存界面配置。安装包默认把可写数据放在 `~/.altdb/data`；源码运行默认使用仓库下的 `data/`。通过 `AL_TDB_DATA_DIR` 可改用独立研究目录。
+
+推荐让本地 AI 助手从证据盘点开始。仓库根目录的 [AGENTS.md](AGENTS.md) 列出了操作顺序、API 路径与验收方法；首页的「协作指南」提供可直接交给助手的首个任务。软件发布只包含通用代码、使用文档和合成示例。完整工作台包可能包含用户的原文和研究数据，请按项目授权分享。
+
+## 从源码运行
 
 ```bash
 git clone https://github.com/Zheng-QianChen/AL_tdb_gen_workflow.git
@@ -12,33 +32,11 @@ cd AL_tdb_gen_workflow
 python -m venv .venv
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 # Linux/macOS: source .venv/bin/activate
-python -m pip install -r requirements.txt
-```
-
-也支持安装为程序包并从其他工作目录调用：
-
-```bash
-python -m pip install -e ".[terminal,fp,thermo]"
-altdb --help
+python -m pip install -c constraints-test.txt -e ".[terminal,fp,thermo]"
 altdb-web
 ```
 
-用 `python -m pip wheel --no-deps .` 可构建包含网页资源的 wheel。wheel 安装后的默认可写数据目录是 `~/.altdb/data`，也可设置 `AL_TDB_DATA_DIR`。源码运行仍默认使用仓库下的 `data/`。
-
-也可以运行 `conda env create -f environment.yml`，然后 `conda activate AL_process`。
-
-可选模型分别安装 `xgboost` 或 `catboost`；桌面窗口需要 `pywebview`。这些不影响默认浏览器模式。
-
-## 启动
-
-```bash
-python app.py
-```
-
-访问 [主界面](http://127.0.0.1:8003) 或 [API 文档](http://127.0.0.1:8003/docs)。
-`python main.py` 与 `python local_server.py` 启动同一个应用；`python main.py --desktop` 打开可选桌面窗口。
-
-默认只监听本机。环境变量 `AL_TDB_HOST`、`AL_TDB_PORT` 可调整地址，`AL_TDB_DATA_DIR` 可指定数据根目录。默认数据目录为仓库下的 `data/`，不依赖启动时的工作目录。服务是本地工具，未实现多用户认证；任务使用一个服务进程管理。
+本地接口说明见服务的 `/docs` 和 `/openapi.json`。用 `python -m altdb --help` 查看终端入口。详细的运行参数见[启动设置](docs/windows-server.md)。
 
 ## CLI、TUI 与 VASP/Slurm
 
@@ -66,13 +64,7 @@ python -m examples.gibbs_demo
 
 网页 `/gibbs` 或 TUI 的 **Gibbs curves** 可按所选亚点阵组元计算 G–成分和 G–温度曲线，支持约束占位优化、能量分项和 CSV/JSON/PNG/SVG 导出。完整 Gibbs 能量需要相容的参考 TDB；现有 DFT 相片段本身不提供全部温度依赖。计算对象为单一均匀相，不允许两相分解。配置、参考态和优化范围见 [Gibbs 曲线说明](docs/gibbs.md)。
 
-Pandat / Thermo-Calc 单点结果可通过 `gibbs-reference` 生成参考表、`gibbs-compare` 导入比较。网页也有对应入口；模型条件和实际 Pandat 验证见 [单点对比说明](docs/gibbs-comparison.md)。
-
-三、四、五亚点阵及化学有序/无序耦合模型已完成 **19 组、150 个 Pandat 实际单点验证**，最大自由能差约 0.0222 J/mol-atoms。覆盖范围、占位对比和脚本入口见 [多模型验证记录](docs/gibbs-validation.md)。
-
-材料数据库、空位/间隙和磁性有序专项新增 **17 组、123 点**：9 组真实材料示例的 75 点全部通过；人工四亚点阵磁性有序模型保留 6 个优化结果超差点。同占位自由能表达式的 123 点对比全部通过。代码修正、误差图与可复现反例见 [专项验证记录](docs/gibbs-material-validation.md)。
-
-公开文献/作者库新增 Al–Ni 四亚点阵及 Fe–Ni、Al–Fe、Al–Fe–Nb 五亚点阵的 **14 组、120 点**：同占位公式 120 点通过，独立占位优化保留 19 个差异点。数据库来源、导入等价性、独立搜索诊断与复现入口见 [真实材料四/五亚点阵验证](docs/gibbs-literature-validation.md)。
+Pandat / Thermo-Calc 单点结果可通过 `gibbs-reference` 生成参考表、`gibbs-compare` 导入比较。网页也有对应入口；模型条件与比较方法见 [单点对比说明](docs/gibbs-comparison.md)。
 
 ## 无 DFT 环境的完整示例
 
@@ -95,6 +87,12 @@ python -m examples.demo
 7. 模型分析页面读取已保存的检查点导出数据库；导出不会启动计算任务。凸包容差单位为 kJ/mol-atoms，标记近凸包端元，TDB 保留完整的端元参数。
 
 参考能 CSV 存储 eV/atom；成分内部为原子分数；预测与凸包距离为 kJ/mol-atoms。超参数必须为合法 JSON 对象，不能填写 Python 表达式。所有配置路径必须位于数据根目录内。
+
+## 计算结果与人工修订
+
+网页 `/results` 展示每个运行的计算结果、INCAR/K 点设置、计算耗时、电子与离子收敛信息、原始文件校验值和修订历史。能量与备注可以人工修改，必须填写修改人、原因和所依据的版本；原始记录保留，修订追加。
+
+0.3.0 起训练从每个运行的 SQLite 数据库读取结果，并记录实际使用的条目版本。`calc.txt` 保留为兼容格式；已有数据库记录时，改写该文件不会改变训练输入。已训练模型继续使用原来的版本。CLI 用 `altdb results list/show/amend` 操作同一份记录。详见[计算结果与修订](docs/result-records.md)。
 
 ## 恢复与兼容性
 
@@ -122,4 +120,4 @@ python -m pip install -r requirements-dev.txt -c constraints-test.txt
 python -m pytest -q
 ```
 
-数值约定、模块职责、检查点设计及已知边界见 [维护说明](docs/maintenance.md)。GitHub Actions 配置了 Windows/Linux、Python 3.11/3.12 回归测试。
+数值约定、模块职责、检查点设计及已知边界见 [维护说明](docs/maintenance.md)。GitHub Actions 运行 Windows 和 Linux 的 Python 3.11/3.12 回归。macOS 提供启动入口，尚待原生环境验证。

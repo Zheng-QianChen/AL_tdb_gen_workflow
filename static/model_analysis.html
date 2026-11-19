@@ -19,6 +19,7 @@
 
     <script>
         tailwind.config = {
+            corePlugins: { preflight: false },
             theme: {
                 extend: {
                     colors: {
@@ -48,52 +49,26 @@
         }
     </style>
     <link rel="stylesheet" href="/static/css/model_analysis.css">
+<link rel="stylesheet" href="/static/workbench.css">
+<link rel="stylesheet" href="/static/workbench-project.css">
+<link rel="stylesheet" href="/static/tool-workbench.css">
+<script src="/static/project-icons.js"></script>
+<script src="/static/workbench-navigation.js"></script>
 </head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-atom me-2"></i><span data-i18n="common.brand">AL Loop Control Panel</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="fas fa-home me-1"></i> <span data-i18n="common.nav_home">Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="data_preparation.html">
-                            <i class="fas fa-database me-1"></i> <span data-i18n="common.nav_prep">Data Preparation & Model Setup</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="visualization.html">
-                            <i class="fas fa-chart-line me-1"></i> <span data-i18n="common.nav_viz">Visualization & ML Model Analysis</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="model_analysis.html">
-                            <i class="fas fa-microscope me-1"></i> <span data-i18n="common.nav_analysis">TDB Model Analysis & Output</span>
-                        </a>
-                    </li>
-                    <li class="nav-item ms-lg-3">
-                        <select id="langSelect" class="form-select form-select-sm mt-1">
+<body class="tool-workbench" data-tool="analysis">
+<a class="skip" href="#main">跳到工作区</a>
+<aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><a href="/projects">项目工作台</a><span>计算与建模</span></div><nav class="railnav projnav" aria-label="工作区"></nav></aside>
+<button id="scrim" type="button" aria-label="收起导航" hidden></button>
+<div class="shell"><header class="topbar"><select id="langSelect" aria-label="界面语言" class="form-select form-select-sm mt-1">
                             <option value="zh">中文</option>
                             <option value="en">English</option>
-                        </select>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+                        </select></header>
+<main class="tool-content" id="main" tabindex="-1">
+<!-- Navigation Bar -->
 
-    <div class="container py-4">
-        <p class="text-end"><a id="gibbs-link" class="btn btn-outline-primary" href="/gibbs">Gibbs 自由能曲线</a></p>
+
+    <div class="tool-sections">
+        <div class="pagehead"><div><h1 data-i18n="common.nav_analysis">模型分析与输出</h1></div><a id="gibbs-link" class="btn btn-outline-primary" href="/gibbs">Gibbs 自由能曲线</a></div>
         <!-- Workflow Navigation Chart -->
         <div class="flow-chart">
             <h3 class="flow-title" data-i18n="model_analysis.workflow_title">Model Analysis Workflow</h3>
@@ -135,12 +110,12 @@
                 <div class="col-md-6">
                     <div class="param-group">
                         <label class="param-label" for="user-input" data-i18n="model_analysis.param_user">User Identifier (user)</label>
-                        <input type="text" id="user-input" class="form-control" placeholder="Enter user identifier string">
+                        <input type="text" id="user-input" value="guest" class="form-control" placeholder="Enter user identifier string">
                     </div>
 
                     <div class="param-group">
                         <label class="param-label" for="mask-input" data-i18n="model_analysis.param_mask">Mask Value (mask)</label>
-                        <input type="number" id="mask-input" class="form-control" min="0" step="any" placeholder="Hull tolerance (kJ/mol-atoms)">
+                        <input type="number" id="mask-input" value="5" class="form-control" min="0" step="any" placeholder="Hull tolerance (kJ/mol-atoms)">
                     </div>
 
                     <div class="param-group">
@@ -192,6 +167,7 @@
                         <i class="fas fa-calculator me-1"></i> <span data-i18n="model_analysis.btn_confirm">Confirm Calculation</span>
                     </button>
                 </div>
+                <button class="btn btn-outline-primary" id="identity-trial" disabled>直接尝试当前模型的位点删减</button>
                 <button class="btn btn-primary btn-nav" id="step1-next" disabled>
                     <span data-i18n="model_analysis.btn_next">Next</span> <i class="fas fa-arrow-right ms-1"></i>
                 </button>
@@ -403,7 +379,7 @@
             <h2 class="section-title">
                 <i class="fas fa-sliders me-2"></i><span data-i18n="model_analysis.step_4_title">Model Fine-tuning</span>
             </h2>
-            <p class="text-muted mb-4" data-i18n="model_analysis.step_4_desc">Please select the model to fine-tune. After confirmation, load element groups, then manage elements through three boxes for each group.</p>
+            <p class="text-muted mb-4">确认一个模型，选择各位点的占位范围，然后比较候选。</p>
 
             <div class="row">
                 <div class="col-md-5">
@@ -450,9 +426,10 @@
                             <div id="three-box-selection" style="display: none;"></div>
 
                             <!-- Apply Filter Button -->
-                            <button class="btn btn-outline-primary" id="apply-filters">
-                                <i class="fas fa-check me-1"></i> <span data-i18n="model_analysis.apply_filter">Apply Element Filter</span>
-                            </button>
+                            <p>“指定去掉”会一起生效。“尝试去掉”会在该限制下逐个评估。例：μ 相 1:4:2:6，在权重 4 位保留 W、Ta，并将该位其他元素设为指定去掉。</p>
+                            <details><summary>加入需要保护的实验相成分（可选）</summary><label for="trial-probes">每行一个 JSON，成分为原子分数，温度为 K</label><textarea id="trial-probes" class="form-control" rows="3" placeholder='{"source":"样品编号或文献","temperature_K":1473.15,"composition":{"NI":0.65,"TA":0.35}}'></textarea></details>
+                            <button class="btn btn-outline-primary" id="apply-filters">比较占位候选</button>
+                            <div class="table-responsive mt-3" role="status" id="trial-results"></div>
                         </div>
                     </div>
                 </div>
@@ -634,10 +611,11 @@
     <div class="alert alert-success alert-custom" id="alert-message" style="display: none;">
         <strong data-i18n="common.success">Success!</strong> <span id="alert-text"></span>
     </div>
-
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+</main></div>
+<script src="/static/tool-shell.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
     <script src="/static/i18n.js"></script>
     <script src="/static/css/bootstrap.bundle.min.js"></script>
+    <script src="/static/occupancy.js"></script>
     <script src="/static/model_analysis.js"></script>
-</body>
-</html>
+</body></html>

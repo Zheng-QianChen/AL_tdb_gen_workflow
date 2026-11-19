@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "al-tdb-workflow"
-version = "0.2.0"
+version = "0.4.6"
 description = "Active-learning thermodynamic databases, terminal workflows and phase diagrams"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -31,8 +31,8 @@ include-package-data = false
 "altdb.web_assets" = "static"
 
 [tool.setuptools.package-data]
-"altdb.web_assets" = ["**/*"]
-examples = ["vasp_slurm/*.json", "vasp_slurm/*.md"]
+"altdb.web_assets" = ["*.html", "*.js", "*.css", "languages.json", "css/*.css", "css/*.js", "css/3.4.17", "js/*.js", "webfonts/*.woff2"]
+examples = ["vasp_slurm/INCAR"]
 
 [tool.setuptools.exclude-package-data]
 "*" = ["*:Zone.Identifier", "**/*:Zone.Identifier", "run/*", "run/**/*", "*.pyc", "**/__pycache__/*"]

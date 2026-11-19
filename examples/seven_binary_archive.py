@@ -13,7 +13,6 @@ from pathlib import Path
 import shutil
 from urllib.parse import quote
 
-from examples.seven_binary_evidence import REFERENCES, NOTES
 from examples.verify_research_archive import digest, verify
 
 
@@ -41,6 +40,10 @@ def build(study, output):
     expected = {'-'.join(p) for p in itertools.combinations(['CO','CU','FE','NI','TA','TI','W'], 2)}
     if {r['pair'] for r in ledger} != expected or len(ledger) != 21 or set(acceptance) != expected:
         raise ValueError('Expected exactly the 21 Co-Cu-Fe-Ni-Ta-Ti-W binary systems')
+    # The caller owns the bibliography and interpretations as well as the measurements.
+    context = read(study/'reference_context.json')
+    if set(context) != expected:
+        raise ValueError('Supply one bibliography entry per system in reference_context.json')
     source_files = sorted(p for p in study.rglob('*') if p.is_file())
     if any(p.is_symlink() for p in study.rglob('*')):
         raise ValueError('Resolve linked files explicitly before archiving')
@@ -66,7 +69,7 @@ def build(study, output):
     all_sources, all_records, catalogs = [], [], []
     for item in ledger:
         pair = item['pair']
-        doi, title = REFERENCES[pair]
+        doi, title = context[pair]['doi'], context[pair]['title']
         sources = [dict(id=pair+'-context', doi=doi, title=title, url='https://doi.org/'+doi,
                         evidence_type='bibliographic_context_not_automatically_experimental',
                         metadata=metadata_by_doi.get(doi.lower()))]
@@ -96,7 +99,7 @@ def build(study, output):
         additions = [r for r in supplements.get('records', []) if r.get('pair') == pair]
         related = [r['path'] for r in originals if pair in r['path'] or pair.replace('-','').lower() in r['path'].lower()]
         record = dict(pair=pair, prior_screening=item, calculation=acceptance[pair],
-                      interpretation=NOTES[pair], sources=sources, datasets=datasets,
+                      interpretation=context[pair]['interpretation'], sources=sources, datasets=datasets,
                       supplemental_records=additions, related_files=related,
                       full_diagram_validated=bool(acceptance[pair]['complete_experimental_validation']))
         catalogs.append(record)

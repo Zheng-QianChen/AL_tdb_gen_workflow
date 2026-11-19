@@ -1,0 +1,24 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>热力学参数优化 · AL-TDB</title>
+<link rel="stylesheet" href="/static/workbench.css">
+<link rel="stylesheet" href="/static/workbench-project.css">
+<link rel="stylesheet" href="/static/tool-workbench.css">
+<script src="/static/project-icons.js"></script>
+<script src="/static/workbench-navigation.js"></script>
+</head>
+<body class="tool-workbench" data-tool="parameters">
+<a class="skip" href="#main">跳到工作区</a>
+<aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><a href="/projects">项目工作台</a><span>计算与建模</span></div><nav class="railnav projnav" aria-label="工作区"></nav></aside>
+<button id="scrim" type="button" aria-label="收起导航" hidden></button>
+<div class="shell"><header class="topbar"></header>
+<main class="tool-content" id="main" tabindex="-1">
+<div class="pagehead"><div><h1>热力学参数优化</h1><p>用实验相组成、固定占位下的 Gibbs 能、焓、熵或热容，拟合现有 TDB 的 G/L 参数。每次计算生成独立候选数据库。</p></div></div>
+<section class="card tool-pane"><h2>定义拟合任务</h2><p class="muted">TDB 路径位于 data/ 下。参数键需要精确匹配；同一组 keys 可共享改变量以保留指定的对称关系。每条数据必须附来源，validation 数据单独验收。同文献留出样品不算独立来源验证。</p>
+<button class="btn secondary-action" id="demo" type="button">载入可验证的合成示例</button><label>读取任务 JSON <input id="import" type="file" accept=".json,application/json"></label>
+<p><label for="request">任务 JSON</label></p><textarea id="request" rows="18" spellcheck="false" placeholder="载入示例，或粘贴参数与观测数据"></textarea>
+<button class="btn primary-action" id="run" type="button">开始拟合并导出候选</button><p class="muted">error_scale 是你指定的数值权重，不能自动视为实验不确定度。磁性 TC/BMAGN 参数本版保持固定；绝对端元缺项会报错，分割有序模型允许省略零修正项。</p></section>
+<section class="card tool-pane" aria-live="polite"><h2>结果</h2><p id="status" class="status">等待任务。</p><div id="downloads"></div><div class="scroll"><table id="parameters" hidden><thead><tr><th>参数</th><th>拟合系数（归一化）</th><th>实际改变量系数</th><th>接近边界</th></tr></thead><tbody></tbody></table></div><pre id="details"></pre></section>
+<p class="muted">相组成拟合同时检查所选竞争相的稳定性。数值收敛与验证通过不代表完整数据库获准采用；原始 TDB 始终保留。</p>
+</main></div>
+<script src="/static/tool-shell.js"></script>
+<script src="/static/js/parameter-fit.js"></script>
+</body></html>

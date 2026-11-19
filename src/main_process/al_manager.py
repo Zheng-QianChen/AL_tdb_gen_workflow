@@ -44,6 +44,8 @@ class ALManager:
             # Validation succeeds before a user configuration is replaced.
             lease = RunLease(data).acquire()
             try:
+                if not isinstance(config_dir, dict) and TaskConfig.model_validate_json(path.read_bytes()).model_dump() != data:
+                    raise ValueError("Configuration changed while starting; retry with the latest settings")
                 atomic_json(path, data)
             except BaseException:
                 lease.release()

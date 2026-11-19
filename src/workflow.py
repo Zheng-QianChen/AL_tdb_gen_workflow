@@ -58,7 +58,12 @@ def status(path):
         result["tasks"] = json.loads(manifest.read_text(encoding="utf-8"))["tasks"] if manifest.exists() else []
         round_dir = resolve_data_path(data["AL_set"]["calced_DFT_path"]) / f"iter.{iteration:06d}"
         result["calc_file"] = str(round_dir / "calc.txt")
-        result["results_ready"] = (round_dir / "calc.txt").is_file()
+        from src.result_records import database_path, has_database, iteration_ready
+        expected = [task["endmember"] for task in result["tasks"]] if result["tasks"] else None
+        result["results_database"] = str(database_path(data)) if has_database(data) else None
+        result["results_ready"] = bool(result["tasks"]) and iteration_ready(data, iteration, expected=expected)
+        if state.get("result_snapshot"):
+            result["result_snapshot"] = state["result_snapshot"]
         for key, filename in (("fp", "manifest.json"), ("collection", "collection.json"), ("dispatch", "dispatch.json")):
             info = round_dir / "02.fp" / filename
             if info.exists():

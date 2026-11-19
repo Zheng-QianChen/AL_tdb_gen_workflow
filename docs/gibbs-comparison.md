@@ -1,30 +1,5 @@
 # 与 Pandat / Thermo-Calc 单点计算对比
 
-当前支持导入两种软件的单点结果，按相名、温度、压力和所有组元的总体原子分数严格匹配，输出逐点差值、最大绝对误差、RMSE、平均有符号误差及覆盖点数。不会插值或自动平移参考能。对比结果说明导入点的数值一致程度，不等价于所有模型或真实材料预测均已验证。
-
-最新公开材料库验证见 [真实四/五亚点阵文献库记录](gibbs-literature-validation.md)：Al–Ni、Fe–Ni、Al–Fe、Al–Fe–Nb 共 120 点，同占位公式全部通过，独立优化有 19 点超差，保留失败及分支搜索诊断。
-
-## 实际验证
-
-三、四、五亚点阵的 **19 组、150 个 Pandat 单点**包括两类化学有序模型；全部通过，最大绝对差 0.02218515 J/mol-atoms，并对比了外部占位。后续材料、空位/间隙、磁性有序专项增加 **17 组、123 点**：真实材料示例的 75 点全部通过；人工四亚点阵磁性有序模型有 6 个优化结果超差点，同占位能量对比则 123 点全部通过。验证矩阵、复现命令及反例诊断见 [多模型验证记录](gibbs-validation.md) 和 [专项验证记录](gibbs-material-validation.md)。以下保留最初的双亚点阵基准。
-
-在用户本地 **Pandat 2022a Education，文件版本 2022.0.0.0** 中，使用 `examples/gibbs_demo.py` 的人工 `SYNTHETIC_B2` 双亚点阵数据库完成了九个独立单点：
-
-- 温度：600、1000、1400 K；压力：101325 Pa。
-- 总体 NI 原子分数：0.1、0.5、0.9；两个亚点阵均允许 AL/NI。
-- 单一均匀相，自由优化内部占位，沿用数据库参考态。
-- 九点全部通过 1 J/mol-atoms 的绝对容差；最大绝对差约 0.00382137 J/mol-atoms，RMSE 约 0.00234479 J/mol-atoms。
-
-这是实际调用 Pandat 引擎的交叉验证，数据库参数为人工构造，不能作为真实 Al–Ni 材料的预测依据。此次未对比外部占位分数，也未运行 Thermo-Calc。
-
-复现命令（需要用户自己的 Pandat 安装）：
-
-```powershell
-python -m examples.pandat_benchmark --executable 'D:\Program Files\CompuTherm LLC\Pandat 2022a Education\bin\Pandat.exe' --version '2022a Education (2022.0.0.0)'
-```
-
-该示例仅运行人工数据库的九个测试点，不是任意商业数据库的自动适配器。结果写入 `data/pandat_benchmark_<编号>/`，保留 `synthetic.tdb`、`points.pbfx`、`raw/*.dat`、控制台日志、可执行文件哈希、`reference.csv`、`compare.json` 和汇总。启动时使用英文临时目录、隐藏控制台和保持打开的输入管道，以适配旧版 Pandat；不会修改安装或许可配置。以每点成功日志和可解析的输出为依据；若某些版本完成后仍保留输入线程，记录结束方式并只终止本次启动的进程。
-
 ## 准备实际模型的对比
 
 先按 [Gibbs 曲线说明](gibbs.md) 计算本程序的结果。任意单点可用 `mode: "gt"`、一个 `temperatures` 值及固定 `composition` 计算。

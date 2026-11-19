@@ -31,6 +31,10 @@ class PhaseDiagramRequest(DiagramSource):
     points: int = Field(default=31, ge=2, le=301)
     sampling_density: int = Field(default=200, ge=20, le=2000)
     verify_sampling: bool = True
+    refine_branches: bool = True
+    branch_starts: int = Field(default=8, ge=2, le=32)
+    branch_rounds: int = Field(default=4, ge=1, le=12)
+    branch_tolerance: float = Field(default=1e-4, ge=1e-7, le=.01)
     map_boundaries: bool = True
     max_mapping_steps: int = Field(default=5000, ge=10, le=20000)
     allow_missing_ordered_endmembers: bool = False

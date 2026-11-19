@@ -42,6 +42,7 @@ class ALRunner:
         self.completed = False
         self.lease = None
         self.initialized = False
+        self.result_snapshot = None
 
     async def send_message(self, message):
         packet = message if isinstance(message, dict) else {"type": "message", "content": message}
@@ -146,15 +147,21 @@ class ALRunner:
                                   "fold_num_r2", "r2_score", "fold_num_rmse", "RMSE_score"]).to_csv(record / "iter.csv", index=False)
         return phase
 
-    def _checkpoint(self):
+    def _checkpoint(self, result_snapshot=None):
         folder = resolve_data_path(self.data["AL_set"]["pkl_phase_path"])
         filename = folder / f"model_{self.iter:06d}_{self.process}.pd"
         self.phase.save(filename)
         record = resolve_data_path(self.data["record_path"])
         # The manifest is authoritative and only references an already complete file.
-        atomic_json(record / "checkpoint.json", {
+        payload = {
             "version": 2, "iter": self.iter, "process": self.process,
-            "checkpoint": filename.name, "config": self.data, "input_hashes": self.input_hashes})
+            "checkpoint": filename.name, "config": self.data, "input_hashes": self.input_hashes}
+        snapshot = result_snapshot if result_snapshot is not None else getattr(self, "result_snapshot", None)
+        # Persist the binding on the training checkpoint and keep it on later
+        # manifests so exports remain tied to the consumed revision set.
+        if snapshot is not None:
+            payload["result_snapshot"] = snapshot
+        atomic_json(record / "checkpoint.json", payload)
         with (record / "record.txt").open("a", encoding="utf-8") as stream:
             stream.write(f"{self.iter} {self.process}\n")
 
@@ -173,6 +180,7 @@ class ALRunner:
             if state["checkpoint"] != filename or self.process not in {0, 1, 2, 3}:
                 raise ValueError("Invalid checkpoint manifest")
             self.phase = Phase.load(resolve_data_path(self.data["AL_set"]["pkl_phase_path"]) / filename)
+            self.result_snapshot = state.get("result_snapshot")
             return True
         if (record / "record.txt").exists():
             raise ValueError("Legacy run has no verified checkpoint manifest; use a new run directory")
@@ -225,13 +233,30 @@ class ALRunner:
             self.completed = True
             return False
         if self.process == 1:
-            result = resolve_data_path(self.data["AL_set"]["calced_DFT_path"]) / f"iter.{self.iter:06d}" / "calc.txt"
-            if not result.exists():
-                return False
+            from src.result_records import (bind_training_snapshot, export_calc_txt,
+                                           iteration_ready, records_for_training)
             manifest = resolve_data_path(self.data["AL_set"]["generate_DFT_path"]) / str(self.iter) / "tasks.json"
-            expected = ([task["endmember"] for task in json.loads(manifest.read_text(encoding="utf-8"))["tasks"]]
-                        if manifest.exists() else None)
-            await self._run_sync(self.phase.add_calced_points, result, expected)
+            if not manifest.is_file():
+                raise ValueError("No task manifest for this round; generate this round using the current version")
+            expected = [task["endmember"] for task in json.loads(manifest.read_text(encoding="utf-8"))["tasks"]]
+            if not iteration_ready(self.data, self.iter, expected=expected):
+                return False
+            checkpoint_name = f"model_{self.iter:06d}_2.pd"
+            records = records_for_training(self.data, self.iter, expected=expected, checkpoint=checkpoint_name)
+            await self._run_sync(self.phase.add_calced_records, records, expected)
+            snapshot = bind_training_snapshot(self.data, self.iter, checkpoint_name, records=records)
+            self.result_snapshot = {
+                "iteration": snapshot["iteration"],
+                "checkpoint": snapshot["checkpoint"],
+                "snapshot_hash": snapshot["snapshot_hash"],
+                "records": snapshot["records"],
+            }
+            bindings = dict(getattr(self.phase, 'result_bindings', {}))
+            bindings[str(self.iter)] = self.result_snapshot
+            self.phase.result_bindings = bindings
+            # Keep a compatibility calc.txt export aligned with the DB tip used for training.
+            round_dir = resolve_data_path(self.data["AL_set"]["calced_DFT_path"]) / f"iter.{self.iter:06d}"
+            export_calc_txt(self.data, self.iter, round_dir / "calc.txt", records=records)
             self.process = 2
         elif self.process == 2:
             await self._run_sync(self.phase.ML)

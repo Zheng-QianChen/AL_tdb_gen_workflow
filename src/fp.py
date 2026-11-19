@@ -1,5 +1,6 @@
 """Make/run/post first-principles tasks with DPDispatcher and dpdata."""
 from collections import Counter
+from datetime import datetime, timezone
 import glob
 import hashlib
 import json
@@ -154,6 +155,32 @@ def prepared(config, machine_file=None, iteration=None):
     return data, state, calculated, fp, manifest, settings
 
 
+def save_dispatch(fp, submission, machine_file, plan, status):
+    path = fp / "dispatch.json"
+    previous = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    platform = Path(machine_file).stem
+    now = datetime.now(timezone.utc).isoformat()
+    jobs = {job["id"]: dict(job) for job in previous.get("jobs", [])}
+    for job in submission.belonging_jobs:
+        if not job.job_id:
+            continue
+        sid = str(job.job_id)
+        for old in jobs.values():
+            if old["id"] != sid and old.get("group") == job.job_hash and old.get("state") == "submitted":
+                old["state"] = "superseded"
+        state = getattr(job.job_state, "name", "")
+        jobs[sid] = dict(id=sid, group=job.job_hash, tasks=len(job.job_task_list),
+                         state=state if state in {"finished", "failed"} else "submitted",
+                         receipt_at=jobs.get(sid, {}).get("receipt_at", now))
+    report = dict(status=status, directory=str(fp), task_count=plan["task_count"],
+                  submission_hash=submission.submission_hash, platform=previous.get("platform") or platform,
+                  queue=plan["queue"], recorded_at=now, jobs=list(jobs.values()))
+    if status == "interrupted_or_failed":
+        report["message"] = "Repeat the same dispatch command to recover; remote jobs are not cancelled."
+    atomic_json(path, report)
+    return report
+
+
 def dispatch(config, machine_file, *, wait=False, dry_run=False, iteration=None):
     _, _, _, fp, manifest, settings = prepared(config, machine_file, iteration)
     plan = {"status": "planned", "directory": str(fp), "task_count": len(manifest["tasks"]),
@@ -179,15 +206,10 @@ def dispatch(config, machine_file, *, wait=False, dry_run=False, iteration=None)
                 submission.run_submission(exit_on_submit=not wait, clean=False,
                                           check_interval=settings.check_interval)
             except BaseException:
-                atomic_json(fp / "dispatch.json", {"status": "interrupted_or_failed",
-                    "submission_hash": submission.submission_hash,
-                    "message": "Repeat the same dispatch command to recover; remote jobs are not cancelled."})
+                save_dispatch(fp, submission, machine_file, plan, "interrupted_or_failed")
                 raise
-            report = {"status": "finished" if submission.check_all_finished() else "submitted",
-                      "submission_hash": submission.submission_hash,
-                      "directory": str(fp), "task_count": len(tasks)}
-            atomic_json(fp / "dispatch.json", report)
-            return report
+            state = "finished" if submission.check_all_finished() else "submitted"
+            return save_dispatch(fp, submission, machine_file, plan, state)
     except Timeout as exc:
         raise RunBusyError("Another FP operation owns this round") from exc
     except ImportError as exc:
@@ -259,68 +281,131 @@ def read_labels(folder, task, fmt, filename):
                    "format": fmt, "convergence": "checked" if fmt.startswith("vasp/") else "external_dataset"}
 
 
+def _collect_source_kind(result_format):
+    if result_format.startswith("vasp/"):
+        return "vasp"
+    return "external_dataset"
+
+
 def collect(config, *, iteration=None):
-    _, state, calculated, fp, manifest, _ = prepared(config, iteration=iteration)
+    from src.result_analysis import analyze_task_directory
+    from src.result_records import batch_exists, export_calc_txt, record_attempts, register_batch
+    data, state, calculated, fp, manifest, _ = prepared(config, iteration=iteration)
     if manifest["iteration"] != state["iter"] or state["process"] != 1:
         raise ValueError("Collection is only allowed for the current waiting round")
+    source_kind = _collect_source_kind(manifest["result_format"])
     try:
         with round_lock(fp):
-            records, failures, datasets = [], [], []
+            records, failures, datasets, ledger, attempts = [], [], [], [], []
             for task in manifest["tasks"]:
+                folder = task_path(fp, task["task_id"])
+                parsed = {"analysis": {}, "evidence": {}}
+                attempt = {'task_id': task['task_id'], 'endmember': task['endmember'], 'status': 'invalid'}
                 try:
-                    labels, record = read_labels(task_path(fp, task["task_id"]), task,
+                    parsed = analyze_task_directory(
+                        folder, result_format=manifest['result_format'],
+                        result_file=manifest['result_file'], metadata=task)
+                    labels, record = read_labels(folder, task,
                                                  manifest["result_format"], manifest["result_file"])
+                    if (parsed['evidence'].get('result') is not None
+                            and parsed['evidence']['result'] != record['sha256']):
+                        raise ValueError('Result changed during analysis; synchronize outputs and retry')
+                    parsed['evidence']['collect'] = record
                     records.append(record)
                     datasets.append((labels, task["task_id"]))
+                    ledger.append({
+                        "endmember": record["endmember"],
+                        "energy_ev_cell": record["energy_ev_cell"],
+                        "source_kind": source_kind,
+                        "note": "",
+                        "analysis": parsed["analysis"],
+                        "evidence": {**parsed["evidence"],
+                                     "task_id": task["task_id"],
+                                     "result_format": manifest["result_format"],
+                                     "result_sha256": record["sha256"]},
+                    })
+                    attempt['status'] = 'valid'
                 except (ValueError, OSError, KeyError, IndexError, AssertionError, RuntimeError) as exc:
                     failures.append({"task_id": task["task_id"], "endmember": task["endmember"], "error": str(exc)})
+                    attempt['error'] = str(exc)
+                attempts.append({**attempt, **parsed})
+            record_attempts(config, manifest['iteration'], attempts)
             report = {"status": "ready" if not failures else "pending", "iteration": manifest["iteration"],
-                      "valid": len(records), "invalid": len(failures), "records": records, "failures": failures}
+                      "valid": len(records), "invalid": len(failures), "records": records, "failures": failures,
+                      "source_kind": source_kind}
             target = calculated / "calc.txt"
             old_report = fp / "collection.json"
-            text = "".join(f"{row['endmember']},{row['energy_ev_cell']:.17g},{row['energy_ev_cell']:.17g}\n" for row in records)
-            if target.exists():
-                if (failures or not old_report.exists()
-                        or json.loads(old_report.read_text(encoding="utf-8")) != report
-                        or target.read_text(encoding="utf-8") != text):
+            db_path = str(resolve_data_path(data["record_path"]) / "results.sqlite")
+            if batch_exists(config, manifest["iteration"]):
+                if failures:
                     raise ValueError("Results were already published; refusing to replace their provenance")
+                # Recollection compares immutable initial evidence, preserving
+                # any user revisions to the current records.
+                register_batch(config, manifest['iteration'], ledger, source_kind=source_kind,
+                               actor='fp.collect', reason='verify repeated collection')
+                if old_report.exists() and json.loads(old_report.read_text(encoding="utf-8")).get("records") != records:
+                    raise ValueError("Results were already published; refusing to replace their provenance")
+                export_calc_txt(config, manifest["iteration"], target)
                 report["calc_file"] = str(target)
+                report["database"] = db_path
                 return report
+            if target.exists() and not batch_exists(config, manifest["iteration"]):
+                raise ValueError("calc.txt exists without a results database; use an explicit import")
             if failures:
                 atomic_json(old_report, report)
                 return report
             for labels, task_id in datasets:
                 labels.to("deepmd/npy", str(fp / "datasets" / task_id))
-            # Checkpoint could have advanced through a manually supplied calc.txt.
             _, latest = load_config(config)
             current = read_checkpoint(latest)
             if current["iter"] != manifest["iteration"] or current["process"] != 1:
                 raise ValueError("Workflow advanced during collection")
+            register_batch(config, manifest["iteration"], ledger, source_kind=source_kind,
+                           actor="fp.collect", reason="collect complete batch",
+                           evidence={"manifest_iteration": manifest["iteration"],
+                                     "config_hash": manifest.get("config_hash"),
+                                     "machine_hash": manifest.get("machine_hash")})
+            export_calc_txt(config, manifest["iteration"], target)
             atomic_json(old_report, report)
-            atomic_write(target, text)
-            return {**report, "calc_file": str(target)}
+            return {**report, "calc_file": str(target), "database": db_path}
     except Timeout as exc:
         raise RunBusyError("Another FP operation owns this round") from exc
     except ImportError as exc:
         raise ImportError("Install requirements-fp.txt to collect VASP results") from exc
 
 
-def import_results(config, source):
-    """Validate a complete legacy calc.txt on a checkpoint copy before publishing."""
+def import_results(config, source, *, source_kind="manual", actor="import-results",
+                   reason="explicit one-time import"):
+    """Validate a complete calc.txt and register it in the authoritative results database."""
     from src.class_def import Phase
+    from src.result_records import export_calc_txt, register_batch
     _, data, state, generated, calculated, fp = round_context(config, waiting=True)
+    if source_kind not in {"manual", "synthetic", "legacy_unverified", "external_dataset"}:
+        raise ValueError("import source_kind must be manual, synthetic, legacy_unverified, or external_dataset")
     with round_lock(fp):
         path = resolve_data_path(data["AL_set"]["pkl_phase_path"]) / state["checkpoint"]
         phase = Phase.load(path)
         expected = {task["endmember"] for task in requested_tasks(generated)}
         original = Path(source).read_bytes()
-        records = phase.add_calced_points(source, expected)
+        validated = phase.add_calced_points(source, expected, source_kind=source_kind)
         if Path(source).read_bytes() != original:
             raise ValueError("Results changed during import; finish writing the source first")
-        text = original.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+        evidence_hash = hashlib.sha256(original).hexdigest()
+        ledger = [{
+            "endmember": member,
+            "energy_ev_cell": float(row["DFT_2"]),
+            "source_kind": source_kind,
+            "note": "",
+            "analysis": {},
+            "evidence": {"import_sha256": evidence_hash},
+        } for member, row in validated.iterrows()]
         target = calculated / "calc.txt"
-        if target.exists() and target.read_text(encoding="utf-8") != text:
-            raise ValueError("A different calc.txt is already published")
-        atomic_json(fp / "manual_import.json", {"source_sha256": hashlib.sha256(original).hexdigest(), "count": len(records)})
-        atomic_write(target, text)
-        return {"status": "ready", "count": len(records), "calc_file": str(target)}
+        register_batch(config, state["iter"], ledger, source_kind=source_kind,
+                       actor=actor, reason=reason,
+                       evidence={"import_sha256": evidence_hash, "source": str(source)})
+        export_calc_txt(config, state["iter"], target)
+        atomic_json(fp / "manual_import.json", {
+            "source_sha256": evidence_hash, "count": len(ledger), "source_kind": source_kind})
+        return {"status": "ready", "count": len(ledger), "calc_file": str(target),
+                "source_kind": source_kind,
+                "database": str(resolve_data_path(data["record_path"]) / "results.sqlite")}

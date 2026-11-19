@@ -73,6 +73,7 @@ class Phase:
         self.subl_energy = pd.DataFrame({
             "endmember": self.pool, "in_iter": np.full(len(self.pool), np.nan),
             "DFT_1": np.zeros(len(self.pool)), "DFT_2": np.zeros(len(self.pool)),
+            "source_kind": pd.Series([pd.NA] * len(self.pool), dtype=object),
         })
         self.subl_energy["Atom_ref"] = self.subl_energy["endmember"].apply(self.calculate_weighted_energy)
         species = model["sys_species"]
@@ -172,7 +173,8 @@ class Phase:
         return sum(references[e] * weight for e, weight in zip(elements, weights))
 
 
-    def add_calced_points(self, file, expected=None):
+    def add_calced_points(self, file, expected=None, source_kind="manual"):
+        """Validate a legacy three-column calc.txt. Prefer add_calced_records for training."""
         rows = []
         with open(file, encoding="utf-8") as stream:
             for line_number, line in enumerate(stream, 1):
@@ -187,16 +189,41 @@ class Phase:
                 values = [float(value) for value in parts[1:]]
                 if not np.isfinite(values).all():
                     raise ValueError(f"Nonfinite DFT energy on line {line_number}")
-                rows.append([member, self.iter, *values])
+                rows.append({
+                    "endmember": member, "energy_ev_cell": values[1],
+                    "source_kind": source_kind, "dft_1": values[0], "dft_2": values[1],
+                })
         if not rows:
             raise ValueError("calc.txt contains no results")
-        data = pd.DataFrame(rows, columns=["endmember", "in_iter", "DFT_1", "DFT_2"])
+        return self.add_calced_records(rows, expected=expected)
+
+    def add_calced_records(self, records, expected=None):
+        """Apply authoritative result records (database tip or validated import rows)."""
+        if not records:
+            raise ValueError("No calculation records to apply")
+        rows = []
+        for index, item in enumerate(records):
+            member = str(item["endmember"]).strip().replace("_", ":").upper()
+            if member not in self.pool:
+                raise ValueError(f"Unknown endmember: {member}")
+            energy = float(item.get("energy_ev_cell", item.get("dft_2")))
+            dft_1 = float(item.get("dft_1", energy))
+            dft_2 = float(item.get("dft_2", energy))
+            if not np.isfinite([dft_1, dft_2, energy]).all():
+                raise ValueError(f"Nonfinite DFT energy for {member}")
+            kind = item.get("source_kind") or "manual"
+            if not isinstance(kind, str) or not kind.strip():
+                raise ValueError(f"Missing source_kind for {member}")
+            rows.append([member, self.iter, dft_1, dft_2, kind.strip()])
+        data = pd.DataFrame(rows, columns=["endmember", "in_iter", "DFT_1", "DFT_2", "source_kind"])
         if expected is not None:
             if data["endmember"].duplicated().any():
                 raise ValueError("Duplicate endmember results in the current batch")
             if set(data["endmember"]) != set(expected):
                 raise ValueError("Results must cover exactly the requested endmembers for this round")
         data = data.drop_duplicates("endmember", keep="last").set_index("endmember")
+        if "source_kind" not in self.subl_energy.columns:
+            self.subl_energy["source_kind"] = pd.Series([pd.NA] * len(self.subl_energy), dtype=object)
         reference = self.subl_energy.set_index("endmember")["Atom_ref"].loc[data.index]
         points = self.get_points(data.index).set_index("endmember")
         points["Energy"] = formation_energy(data["DFT_2"].to_numpy(), self.total_atoms, reference.to_numpy())

@@ -46,3 +46,5 @@ def resolve_data_path(value):
     if not target.is_relative_to(BASE_DATA_DIR):
         raise ValueError("Path must stay within the application data directory")
     return target
+
+WORKSPACE_ARCHIVE_BYTES = int(os.environ.get("AL_TDB_WORKSPACE_MAX_BYTES", 1024**3))

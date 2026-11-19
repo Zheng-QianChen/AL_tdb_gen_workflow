@@ -5,6 +5,11 @@ from config import STATIC_DIR
 main_router = APIRouter()
 
 
+@main_router.get("/parameter-fit")
+async def parameter_fit():
+    return FileResponse(STATIC_DIR / "parameter-fit.html")
+
+
 @main_router.get("/")
 @main_router.get("/index.html")
 async def index():

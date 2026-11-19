@@ -40,6 +40,23 @@ def test_export_does_not_change_fraction_table(phase, tmp_path):
     table, _ = pre_for_model_assess(p, tmp_path)
     np.testing.assert_allclose(table[["AL", "NI"]].sum(axis=1), 1)
     pd.testing.assert_frame_equal(p.all_points, before)
+    assert set(table["from"]) == {"ML"}
+
+
+def test_export_preserves_source_kind_not_vasp_default(phase, tmp_path):
+    from examples.demo import write_synthetic_results
+    write_synthetic_results(phase)
+    p = phase.phase
+    from src.result_records import records_for_training
+    records = records_for_training(phase.data, 0)
+    p.add_calced_records(records, expected=[r["endmember"] for r in records])
+    p.pool_pred = pd.DataFrame({"endmember": p.pool, "y_pred_kJ_mol": [2, -20, -10, 3]})
+    p.convex_analy()
+    table, _ = pre_for_model_assess(p, tmp_path)
+    measured = table.loc[table["in_iter"].notna(), "from"]
+    assert not measured.empty
+    assert set(measured) == {"synthetic"}
+    assert "VASP" not in set(table["from"])
 
 
 def test_incomplete_constituent_parameters_are_rejected(tmp_path):

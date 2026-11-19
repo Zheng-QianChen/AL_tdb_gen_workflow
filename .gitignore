@@ -23,3 +23,22 @@ POTCAR
 POTCAR.*
 OUTCAR
 vasprun.xml
+
+# Local scientific inputs, evidence bundles and generated outputs
+/workbench/
+/research_library/
+/chats/
+/.runtime/
+.env.*
+*.tdb
+*.TDB
+*.sqlite*
+*.pdf
+*.bib
+*.ris
+*.exp
+*.zip
+*.cif
+CHGCAR
+WAVECAR
+CONTCAR

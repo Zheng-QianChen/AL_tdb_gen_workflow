@@ -64,12 +64,12 @@ def test_cli_step_and_partial_import(demo, tmp_path, capsys):
     assert not Path(first["calc_file"]).exists()
     assert cli(capsys, "step", path)[1]["process"] == 1
     assert cli(capsys, "run", path, "--max-steps", "0")[0] == 2
-    # Bypassing import-results must not allow a partial batch into training.
+    # Bypassing import-results with a bare calc.txt must not train: DB is authority.
     published = Path(first["calc_file"])
     published.parent.mkdir(parents=True, exist_ok=True)
     published.write_text(partial.read_text())
-    code, failed = cli(capsys, "step", path)
-    assert code == 2 and "exactly" in failed["error"]
+    code, state = cli(capsys, "step", path)
+    assert code == 0 and state["process"] == 1 and not state["results_ready"]
     assert cli(capsys, "status", path)[1]["process"] == 1
 
 
