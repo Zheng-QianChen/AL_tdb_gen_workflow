@@ -21,6 +21,7 @@ btnStart.onclick = doStart;
 // --- Core Logic: UI Update Function ---
 // This function is the endpoint of all data flows, implementing data-driven interface
 function updateUIWithConfig(data) {
+    ToolShell.setRun(activeConfigName);
     if (!data) return;
 
     // 1. Define mapping relationships
@@ -68,6 +69,15 @@ async function fetchSystemStatus(filename = activeConfigName) {
             signal: abortController.signal
         });
 
+        if (response.status === 404) {
+            document.getElementById('phase-name').textContent = '请选择运行配置';
+            document.getElementById('current-iteration').textContent = '—';
+            document.getElementById('current-operation-number').textContent = '';
+            document.getElementById('current-operation-text').textContent = '尚未加载';
+            document.getElementById('ml-model').textContent = '—';
+            recordPath = null;
+            return;
+        }
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 
         const data = await response.json();
@@ -82,7 +92,7 @@ async function fetchSystemStatus(filename = activeConfigName) {
 }
 
 // Function to change input.json configuration file
-async function loadSpecificConfig() {
+async function loadSpecificConfig(btn) {
     const filenameInput = document.getElementById('target-config-file');
     const filename = filenameInput.value.trim();
     if (!filename) {
@@ -90,7 +100,7 @@ async function loadSpecificConfig() {
         return;
     }
 
-    const btn = event.currentTarget;
+    btn = btn || document.querySelector('[onclick^="loadSpecificConfig"]');
     const originalText = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
@@ -113,8 +123,9 @@ async function loadSpecificConfig() {
             if (data) {
                 updateUIWithConfig(data);
                 initWebSocket(filename);
-                const newUrl = `${window.location.pathname}?task=${encodeURIComponent(filename)}`;
-                window.history.pushState({ path: newUrl }, '', newUrl);
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('task', filename);
+                window.history.pushState({ path: newUrl.href }, '', newUrl);
                 addToLog(`Monitoring task switched to: ${filename}`, 'info');
             } else {
                 alert("Loading failed: File does not exist or backend route not defined");

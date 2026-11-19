@@ -2,6 +2,8 @@ let assessmentTaskId = null;
 function assessmentURL(path) {
     return assessmentTaskId ? path + "?task_id=" + encodeURIComponent(assessmentTaskId) : path;
 }
+const requestedConfig = new URLSearchParams(location.search).get('config');
+if (requestedConfig) document.getElementById('input-file-path').value = requestedConfig.replace(/\.json$/i, '');
 // Global Variables
 let currentStep = 1;
 const totalSteps = 5;
@@ -9,10 +11,9 @@ let sublatticeNumber = 3; // Value fetched from input.json
 let selectedModel = null;
 let sublAssessRunner = null; // Used to store reference to subl_assess instance
 // Cache plot path to avoid repeated requests
-let cachedPlotPath = localStorage.getItem('cachedPlotPath') || null;
+let cachedPlotPath = null;
 const CACHE_EXPIRY = 3600000; // Cache expiration: 1 hour (ms)
-let cachedPlotTimestamp = localStorage.getItem('cachedPlotTimestamp') ?
-    parseInt(localStorage.getItem('cachedPlotTimestamp')) : 0;
+let cachedPlotTimestamp = 0;
 
 // Interactive Chart Related Variables
 let csvData = null;
@@ -99,6 +100,8 @@ document.getElementById('step1-calculate').addEventListener('click', async () =>
 
         if (response.ok && result.success) {
             assessmentTaskId = result.task_id;
+            cachedPlotPath = null; cachedPlotTimestamp = 0; selectedModel = null;
+            resetTrials();
             // Save sublatticeNumber
             sublatticeNumber = parseInt(result.sublatticeNumber, 10);
             initSublatticeCheckboxes();
@@ -109,6 +112,7 @@ document.getElementById('step1-calculate').addEventListener('click', async () =>
 
             // Enable Next Button
             document.getElementById('step1-next').disabled = false;
+            document.getElementById('identity-trial').disabled = false;
         } else {
             // Update status to Error
             statusEl.className = 'calculation-status status-error';
@@ -126,6 +130,15 @@ document.getElementById('step1-calculate').addEventListener('click', async () =>
 });
 
 // Step 1: Next Button Event
+document.getElementById('identity-trial').onclick = () => {
+    navigateToStep(4);
+    const labels = Array.from({length:sublatticeNumber}, (_, i) => String.fromCharCode(65 + i));
+    selectedModel = [sublatticeNumber, ...labels].join('_') + '.csv';
+    const confirm = document.getElementById('confirm-model');
+    confirm.disabled = false;
+    confirm.click();
+};
+
 document.getElementById('step1-next').addEventListener('click', () => {
     navigateToStep(2);
 });
@@ -203,8 +216,7 @@ document.getElementById('step2-calculate').addEventListener('click', async funct
                 // Cache plot path and timestamp
                 cachedPlotPath = result.plot_file;
                 cachedPlotTimestamp = Date.now();
-                localStorage.setItem('cachedPlotPath', cachedPlotPath);
-                localStorage.setItem('cachedPlotTimestamp', cachedPlotTimestamp.toString());
+
 
                 // Update Status to Success
                 statusEl.className = 'calculation-status status-success';
@@ -314,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-document.getElementById('updateChart').addEventListener('click', function() {
+document.getElementById('updateChart')?.addEventListener('click', function() {
     // Get all selected options
     const yAxisSelect = document.getElementById('yAxisSelect');
     const selectedYValues = Array.from(yAxisSelect.selectedOptions).map(option => option.value);
@@ -1024,6 +1036,8 @@ function Step5renderModelCardsFromCSV() {
 // 初始化模型确认按钮事件
 function initModelConfirmEvent() {
     const confirmBtn = document.getElementById('confirm-model');
+    if (confirmBtn.dataset.bound) return;
+    confirmBtn.dataset.bound = '1';
     const tipEl = document.getElementById('model-confirm-tip');
     const loadingEl = document.getElementById('element-loading');
     const dynamicGroupsEl = document.getElementById('dynamic-element-groups');
@@ -1035,6 +1049,8 @@ function initModelConfirmEvent() {
             return;
         }
 
+        const confirmedModel = selectedModel, confirmedTask = assessmentTaskId;
+        resetTrials();
         try {
             // 1. 切换状态：隐藏提示→显示加载
             tipEl.style.display = 'none';
@@ -1059,13 +1075,14 @@ function initModelConfirmEvent() {
                 throw new Error('后端未返回有效二维元素列表');
             }
 
+            if (confirmedModel !== selectedModel || confirmedTask !== assessmentTaskId) return;
             const elementGroups = result.element_groups;
             if (elementGroups.length === 0) {
                 throw new Error('后端返回的元素列表为空');
             }
 
             // 3. 渲染元素小框（数量=二维列表长度）
-            renderDynamicElementGroups(elementGroups);
+            occupancyChoices(elementGroups, result.site_ratios, confirmedModel, confirmedTask);
 
             // 4. 切换状态：隐藏加载→显示小框和三框
             loadingEl.style.display = 'none';
@@ -1073,7 +1090,7 @@ function initModelConfirmEvent() {
             threeBoxEl.style.display = 'block';
 
             // 5. 初始化三框移动事件（确保元素可移动）
-            initGroupMoveEvents();
+
         } catch (error) {
             // 异常处理：显示错误→恢复提示状态
             console.error('元素组加载错误:', error);
@@ -1089,6 +1106,8 @@ function initModelConfirmEvent() {
 // generate Step5
 function Step5initModelConfirmEvent() {
     const confirmBtn = document.getElementById('step5-confirm-model');
+    if (confirmBtn.dataset.bound) return;
+    confirmBtn.dataset.bound = '1';
     const tipEl = document.getElementById('step5-model-confirm-tip');
     const loadingEl = document.getElementById('step5-element-loading');
     const dynamicGroupsEl = document.getElementById('step5-dynamic-element-groups');
@@ -1152,111 +1171,6 @@ function Step5initModelConfirmEvent() {
 
 // 渲染动态元素小框（参数：后端返回的二维列表）
 // 渲染动态元素组（带独立三框）
-function renderDynamicElementGroups(elementGroups) {
-    const container = document.getElementById('dynamic-element-groups');
-    container.innerHTML = '';
-
-    elementGroups.forEach((elementList, groupIndex) => {
-        if (!Array.isArray(elementList) || elementList.length === 0) return;
-
-        // 创建组容器
-        const groupWrapper = document.createElement('div');
-        groupWrapper.className = 'element-group-wrapper';
-        groupWrapper.dataset.groupIndex = groupIndex;
-
-        // 组标题
-        const groupTitle = document.createElement('div');
-        groupTitle.className = 'element-group-title';
-        groupTitle.textContent = `site ${groupIndex + 1}( include elements ${elementList.join(', ')})`;
-        groupWrapper.appendChild(groupTitle);
-
-        // 创建组内三框容器
-        const threeBoxes = document.createElement('div');
-        threeBoxes.className = 'group-three-boxes';
-
-        // 三框配置（确定删除、可以删除、必须保留）
-        const boxConfigs = [
-            {
-                id: `to-delete-${groupIndex}`,
-                title: 'exclude',
-                badgeClass: 'bg-danger',
-                icon: 'trash'
-            },
-            {
-                id: `can-delete-${groupIndex}`,
-                title: 'need to try',
-                badgeClass: 'bg-warning',
-                icon: 'question-circle'
-            },
-            {
-                id: `must-keep-${groupIndex}`,
-                title: 'include',
-                badgeClass: 'bg-success',
-                icon: 'check-circle'
-            }
-        ];
-
-        // 生成三框
-        boxConfigs.forEach(config => {
-            const box = document.createElement('div');
-            box.className = 'group-box';
-            box.id = config.id; // 新增：设置框的id属性
-            box.innerHTML = `
-                <div class="group-box-title">
-                    <i class="fas fa-${config.icon} me-1"></i> ${config.title}
-                    <span class="element-count badge ${config.badgeClass} text-white">0</span>
-                </div>
-                <div class="elements-container min-h-[100px] border-dashed border p-2 rounded"></div>
-                <div class="d-flex justify-center gap-2 mt-2">
-                    ${config.id.includes('to-delete') ? `
-                        <button class="move-btn btn btn-sm btn-outline-secondary"
-                            data-from="${config.id}"
-                            data-to="can-delete-${groupIndex}">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    ` : ''}
-                    ${config.id.includes('can-delete') ? `
-                        <button class="move-btn btn btn-sm btn-outline-secondary"
-                            data-from="${config.id}"
-                            data-to="to-delete-${groupIndex}">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="move-btn btn btn-sm btn-outline-secondary"
-                            data-from="${config.id}"
-                            data-to="must-keep-${groupIndex}">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    ` : ''}
-                    ${config.id.includes('must-keep') ? `
-                        <button class="move-btn btn btn-sm btn-outline-secondary"
-                            data-from="${config.id}"
-                            data-to="can-delete-${groupIndex}">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-            threeBoxes.appendChild(box);
-        });
-
-        groupWrapper.appendChild(threeBoxes);
-        container.appendChild(groupWrapper);
-
-        // 初始化当前组元素到"可以被删除"框
-        const canDeleteContainer = document.querySelector(`#can-delete-${groupIndex} .elements-container`);
-        elementList.forEach(element => {
-            const elementTag = createElementTag(element);
-            canDeleteContainer.appendChild(elementTag);
-        });
-
-        // 更新当前组计数
-        updateGroupBoxCounts(groupIndex);
-    });
-
-    // 初始化移动事件
-    initGroupMoveEvents();
-}
-
 function Step5renderDynamicElementGroups(elementGroups) {
     const container = document.getElementById('step5-dynamic-element-groups');
     // 确保容器存在
@@ -1690,96 +1604,7 @@ function Step5updateGroupBoxCounts(groupIndex) {
 
 // 初始化应用过滤按钮事件
 function initApplyFiltersEvent() {
-    const applyBtn = document.getElementById('apply-filters');
-    // 先移除可能存在的旧事件监听器
-    const newApplyBtn = applyBtn.cloneNode(true);
-    applyBtn.parentNode.replaceChild(newApplyBtn, applyBtn);
-
-    newApplyBtn.addEventListener('click', async () => {
-        const elementGroups = document.querySelectorAll('.element-group-wrapper');
-        if (elementGroups.length === 0) {
-            showAlert('请先加载元素组数据');
-            return;
-        }
-
-        // 构建符合后端FilterSubmitRequest模型的数据结构
-        const submitData = {
-            selected_model: selectedModel || "",  // 匹配后端的selected_model字段
-            analys: [],       // 对应"可以删除"的元素（待分析）
-            need_del: [],     // 对应"确定删除"的元素
-            fix: []           // 对应"必须保留"的元素
-        };
-
-        // 遍历每个元素组，按后端要求的字段收集数据
-        elementGroups.forEach((group, groupIndex) => {
-            // 1. 必须保留的元素 → 对应后端fix字段
-            const retainElements = Array.from(
-                document.querySelectorAll(`#must-keep-${groupIndex} .element-tag`)
-            ).map(tag => tag.dataset.element || "").filter(Boolean);
-
-            // 2. 可以删除的元素 → 对应后端analys字段
-            const canDeleteElements = Array.from(
-                document.querySelectorAll(`#can-delete-${groupIndex} .element-tag`)
-            ).map(tag => tag.dataset.element || "").filter(Boolean);
-
-            // 3. 确定删除的元素 → 对应后端need_del字段
-            const deletedElements = Array.from(
-                document.querySelectorAll(`#to-delete-${groupIndex} .element-tag`)
-            ).map(tag => tag.dataset.element || "").filter(Boolean);
-
-            // 按组添加到对应字段（保持与后端list[list[str]]结构一致）
-            submitData.fix.push(retainElements);         // 必须保留 → fix
-            submitData.analys.push(canDeleteElements);   // 可以删除 → analys
-            submitData.need_del.push(deletedElements);   // 确定删除 → need_del
-        });
-
-        try {
-            console.log("提交的数据结构（适配后端）:", submitData);
-
-            const response = await fetch(assessmentURL('/submit_filtered_elements'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken()
-                },
-                body: JSON.stringify(submitData)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("后端验证错误详情:", errorData);
-
-                let errorMessage = '提交失败: ';
-                if (Array.isArray(errorData.detail)) {
-                    errorMessage += errorData.detail.map((msg, index) =>
-                        `${index + 1}. ${msg}`
-                    ).join('; ');
-                } else if (errorData.detail || errorData.message) {
-                    errorMessage += errorData.detail || errorData.message;
-                } else if (errorData.errors) {
-                    errorMessage += Object.entries(errorData.errors)
-                        .map(([field, msg]) => `${field}: ${Array.isArray(msg) ? msg.join('; ') : msg}`)
-                        .join('; ');
-                } else {
-                    errorMessage += `服务器返回 ${response.status} 错误`;
-                }
-
-                showAlert(errorMessage, 'error');
-                return;
-            }
-
-            const result = await response.json();
-            if (result.success) {
-                showAlert('元素过滤已提交，开始计算');
-                document.getElementById('step4-next').disabled = false;
-            } else {
-                showAlert('提交失败：' + result.message, 'error');
-            }
-        } catch (error) {
-            showAlert('提交出错：' + error.message, 'error');
-            console.error("请求异常:", error);
-        }
-    });
+    document.getElementById('apply-filters').onclick = compareTrialChoices;
 }
 
 // 辅助函数：获取CSRF令牌（解决ReferenceError错误）
@@ -1884,7 +1709,7 @@ function Step5initApplyFiltersEvent() {
             const result = await response.json();
             if (result.success) {
                 showAlert('模型导出成功！', 'success');
-                sessionStorage.setItem('altdb_gibbs_source', JSON.stringify({tdb_files: result.tdb_files, phase: result.phase}));
+                sessionStorage.setItem(ToolShell.gibbsSourceKey, JSON.stringify({tdb_files: result.tdb_files, phase: result.phase}));
                 document.getElementById('gibbs-link').textContent = '计算已导出模型的 Gibbs 曲线';
                 // 处理下载链接
                 if (result.download_url) {

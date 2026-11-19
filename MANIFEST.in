@@ -1,0 +1,25 @@
+prune data
+prune .test-data
+prune manual
+prune tests
+prune docs
+prune examples
+prune static/metadata
+prune static/scss
+prune static/svgs
+prune static/svgs-full
+prune static/sprites
+prune static/sprites-full
+include docs/windows-server.md
+include examples/__init__.py
+include examples/demo.py
+include examples/gibbs_demo.py
+include examples/phase_diagram_demo.py
+include examples/parameter_fit_demo.py
+include examples/vasp_slurm/INCAR
+include Start-AL-TDB.cmd constraints-test.txt
+include Start-AL-TDB.sh Start-AL-TDB.command AGENTS.md
+include tools/build_windows_bundle.py
+include tools/check_release_contents.py
+include tools/check_public_tree.py
+global-exclude *.sqlite *.sqlite-wal *.sqlite-shm .env *.pdf *.pyc POTCAR POTCAR.*

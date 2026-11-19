@@ -122,27 +122,3 @@ python -m altdb --json phase-diagram data/phase_diagram_demo/property.json
 “完整相图”还需要数据库含有完整的竞争相及足够可信的参数。加入某个 DFT/ML 相片段不会自动生成其液相、其他晶体结构或欠缺的温度贡献。相图数值审查通过，也不证明数据库与实验相符。
 
 算法参考：[pycalphad Mapping 官方说明](https://pycalphad.org/docs/latest/examples/Mapping.html)。
-
-## 本次验证（2026-10-18）
-
-57 项相图、Gibbs 和终端相关测试全部通过，覆盖解析共晶、共切线与杠杆定则、封闭分相区的内部起点、三相三角形、严格零组元边界、三/四/五亚点阵磁性有序、可变间隙、CLI/API 和无训练检查点的 TUI。相图模块新增 32 项测试。网页 HTTP 入口、实际计算和 8 类文件下载均通过；浏览器自动操作环境未能启动，因此没有完成浏览器点击流程的自动化验证。
-
-| 文献数据库 | 网格点通过 / 总数 | 双密度检查通过 | 相界追踪 |
-| --- | --- | --- | --- |
-| Al–Zn，an Mey 模型 / NIMS 文件 | 1476 / 1476 | 1476 | 部分完成，2 条分支失败，8 个追踪点被拒绝 |
-| Cr–Ti–V，Ghosh 模型 / NIMS 文件 | 136 / 136 | 136 | 部分完成，1 条分支失败 |
-| Al–Cr–Ni，含有序与磁性模型 | 135 / 136 | 135 | 部分完成，10 条分支失败 |
-
-Al–Cr–Ni 在 1273.15 K、总成分 Al=0.133333、Cr=0.2、Ni=0.666667 的点未通过稳定性检查：采样中仍有约 19.708 J/mol-atoms 低于所得共切平面的状态。该点保留为失败，不提供伪造的稳定平衡结果。上述网格检查通过不表示整个相界拓扑已经验证。
-
-人工数据库的三元截面（231 点）、四元路径截面（651 点）和相分数曲线（76 点）均完成，并通过双密度检查。三元人工算例的相界追踪完成。
-
-Thermo-Calc Education 2026b 对 Al–Zn 的 4 个代表点进行了全相平衡总 G 复核，覆盖 FCC 同相分裂、FCC+液相、FCC+HCP 和液相。最大绝对差为 **0.005429 J/mol-atoms**。这是总 G 的交叉验证，尚未自动核验全部相分数、占位和相图拓扑。为兼容其 TDB 导入器，仅在临时副本中删除了 38 行完整注释，所有非注释行保持一致；原数据库未改动。数据库哈希、求解状态和核对结果见 [验证记录](validation/phase-diagram-validation.json)。
-
-本机有可用 Thermo-Calc Education 安装时，可用以下脚本重复核对已有结果中的内部点：
-
-```bash
-python -m examples.phase_diagram_tc_check data/phase_diagrams/diagram_ID/diagram.json data/tc_check --points 594 1004 512 1045 --home "PATH_TO_THERMO_CALC_2026b"
-```
-
-点编号来自该次运行的 `rows[].point_id`，不能直接用于其他网格。脚本要求源文件哈希一致、全相候选集、TDB 导入成功、平衡收敛标记和实际结果文件，缺一项不会判为验证通过。

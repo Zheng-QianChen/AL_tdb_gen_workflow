@@ -125,12 +125,13 @@ def audit_state(sets, chemical_potentials, composition, total_energy=None):
 
 
 class EquilibriumSystem:
-    def __init__(self, db, request):
+    def __init__(self, db, request, parameters=None):
         import pycalphad
         from pycalphad import variables as v
         from pycalphad.core.utils import filter_phases, unpack_species
         from pycalphad.codegen.phase_record_factory import PhaseRecordFactory
         self.db, self.request = db, request
+        self.parameter_values = dict(parameters or {})
         if not pycalphad.__version__.startswith("0.11."):
             raise ValueError("Phase diagrams require pycalphad 0.11.x; install requirements-thermo.txt")
         if set(request.components) - db.elements:
@@ -171,15 +172,24 @@ class EquilibriumSystem:
                 validated = GibbsModel(db, name, groups, request.temperatures, request.pressure,
                                        request.allow_missing_ordered_endmembers, build_numeric=False,
                                        allow_vacancy_limit=True,
-                                       continuous_temperature_range=request.mode == "binary" and request.map_boundaries)
+                                       continuous_temperature_range=request.mode == "binary" and request.map_boundaries,
+                                       model_parameters=list(self.parameter_values) or None)
             self.warnings.extend(str(w.message) for w in caught)
             self.models[name] = validated.model
             self.metadata[name] = {"sublattices": groups, "site_ratios": validated.ratios.tolist(),
                                    "ordering": validated.ordering, "reference_functions": validated.functions}
-        self.records = PhaseRecordFactory(db, self.components, [v.N, v.P, v.T], self.models)
+        self.records = PhaseRecordFactory(db, self.components, [v.N, v.P, v.T], self.models, parameters=self.parameter_values)
         self.elements = list(self.records[self.phases[0]].nonvacant_elements)
         self.cache = OrderedDict()
         self.faces = {}
+        self.branch_searches = {}
+
+    def update_parameters(self, parameters):
+        self.records.update_parameters(parameters)
+        self.parameter_values = dict(parameters)
+        self.cache.clear()
+        for face in self.faces.values():
+            face.update_parameters(parameters)
 
     def energy_grid(self, temperature, density):
         from pycalphad import calculate
@@ -205,7 +215,7 @@ class EquilibriumSystem:
         if len(present) < len(self.elements):
             if present not in self.faces:
                 face_request = self.request.model_copy(update={"components": list(present)})
-                self.faces[present] = EquilibriumSystem(self.db, face_request)
+                self.faces[present] = EquilibriumSystem(self.db, face_request, parameters=self.parameter_values)
             result = self.faces[present].solve_once(point, density)
             absent = sorted(set(self.elements)-set(present))
             for state in result["phases"]:
@@ -237,6 +247,10 @@ class EquilibriumSystem:
             sets.append(cs)
         mu = eq.MU.reshape(-1)
         result = audit_state(sets, mu, composition, float(eq.GM.reshape(-1)[0]))
+        if self.request.refine_branches:
+            from src.equilibrium_branches import refine_branches
+            result = refine_branches(self, sets, mu, raw, composition, grid, audit_state)
+            mu = np.array([result['chemical_potentials_J_mol_atoms'][c] for c in self.elements])
         gx = grid.X.reshape((-1, len(self.elements)))
         gg = grid.GM.reshape(-1)
         real = (grid.Phase.reshape(-1) != "_FAKE_") & np.isfinite(gg) & np.isfinite(gx).all(axis=1)
@@ -266,8 +280,25 @@ class EquilibriumSystem:
             return {**point, "status": "failed", "attempts": attempts, "phases": [], "assemblage": "FAILED"}
         best = min(accepted, key=lambda r: r["G_J_mol_atoms"])
         spread = max(a["G_J_mol_atoms"] for a in accepted) - best["G_J_mol_atoms"]
-        verified = len(accepted) == 2 and spread <= ENERGY_TOL and accepted[0]["assemblage"] == accepted[1]["assemblage"]
+        # A near-degenerate magnetic branch can differ by less than 0.1 J/mol
+        # while changing a tie-line endpoint by several atomic percent.
+        composition_error = None
+        if len(accepted) == 2 and accepted[0]['assemblage'] == accepted[1]['assemblage']:
+            from scipy.optimize import linear_sum_assignment
+            left,right = [[p for p in row['phases'] if p['amount']>PRESENT_TOL] for row in accepted]
+            if Counter(p['phase'] for p in left)==Counter(p['phase'] for p in right):
+                differences=[]
+                for name in {p['phase'] for p in left}:
+                    a=[p for p in left if p['phase']==name]; b=[p for p in right if p['phase']==name]
+                    costs=np.array([[max(abs(x['composition'][c]-y['composition'][c]) for c in self.elements)
+                                     for y in b] for x in a])
+                    ii,jj=linear_sum_assignment(costs)
+                    differences.extend(costs[ii,jj])
+                composition_error=float(max(differences,default=0.))
+        verified = (len(accepted) == 2 and spread <= self.request.branch_tolerance
+                    and composition_error is not None and composition_error <= 1e-5)
         return {**point, **best, "status": "accepted", "attempts": attempts, "sampling_verified": verified,
+                "sampling_composition_difference": composition_error,
                 "sampling_energy_spread_J_mol_atoms": float(spread),
                 "needs_refinement": self.request.verify_sampling and not verified}
 
@@ -333,6 +364,15 @@ def trace_boundaries(system, rows, progress=None):
             if len(missing) == 1:
                 composition[missing.pop()] = 1-sum(fixed.values())
             audited = audit_state(sets, point.chemical_potentials, composition)
+            if req.refine_branches:
+                from src.equilibrium_branches import branch_candidates
+                temperature=float(point.global_conditions[v.T])
+                state=np.array([float(point.global_conditions[s]) for s in system.records.state_variables])
+                lower=branch_candidates(system,sets,np.asarray(point.chemical_potentials),state,
+                                        system.energy_grid(temperature,2*req.sampling_density))
+                if lower:
+                    raise ValueError('Boundary has an unresolved lower branch')
+                audited['branch_refinement']={'verified':True,'global_minimum_certified':False}
             return {"T_K": float(point.global_conditions[v.T]), "P_Pa": req.pressure, "composition": composition, **audited}
 
         for line in strategy.zpf_lines:

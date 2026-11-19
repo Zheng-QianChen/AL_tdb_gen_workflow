@@ -624,7 +624,7 @@ function validatePath(path, isFile = false) {
     // 检查文件路径是否有扩展名（如果是文件）
     if (isFile) {
         const hasExtension = /\.[a-zA-Z0-9]+$/.test(path);
-        if (!hasExtension) return false;
+        if (!hasExtension && !/(^|\/)(POSCAR|CONTCAR)$/i.test(path)) return false;
     }
 
     // 检查是否有连续的斜杠
@@ -690,7 +690,7 @@ function generateSublattices(count) {
         sublattice.dataset.index = i;
 
         // 默认元素列表
-        const defaultElements = "CO, CU, FE, NI, TA, TI, W";
+        const defaultElements = document.getElementById('sublattices-container').dataset.elements || "CO, CU, FE, NI, TA, TI, W";
 
         sublattice.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -1082,9 +1082,9 @@ function showAlert(message, type = 'info') {
     alert.className = `alert alert-${type} alert-dismissible fade show`;
     alert.role = 'alert';
     alert.innerHTML = `
-        ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
+    alert.prepend(document.createTextNode(message));
 
     alertContainer.appendChild(alert);
 
@@ -1238,12 +1238,16 @@ function saveToServer() {
     // 获取当前语言，用于 fallback
     const currentLang = localStorage.getItem('preferredLang') || 'zh';
 
-    fetch('/save_input_json', {
-        method: 'POST',
+    const scoped=!!ToolShell.modelApi;
+    const prior=scoped?savedModelConfig:null;
+    const modelData=prior?{...prior,...data,tdb_model:{...prior.tdb_model,...data.tdb_model},
+        AL_set:{...prior.AL_set,...data.AL_set}}:data;
+    fetch(scoped?ToolShell.modelApi+'/config':'/save_input_json', {
+        method: scoped?'PUT':'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body: JSON.stringify(scoped?modelData:{
                 filename: filename,  // 发送文件名
                 data: data     // 发送数据内容
             })
@@ -1270,7 +1274,7 @@ function saveToServer() {
         console.error('保存出错:', error);
         // 翻译通用的网络错误 key
         const netError = getI18nText('api.err_network', '保存失败，请检查网络连接或重试');
-        showAlert(netError, 'danger');
+        showAlert(typeof error.detail==='string'?error.detail:netError, 'danger');
     })
     .finally(() => {
         // 核心：无论如何都会执行到这里，恢复按钮

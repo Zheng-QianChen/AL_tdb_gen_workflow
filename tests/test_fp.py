@@ -151,13 +151,21 @@ def test_collection_requires_complete_batch_and_exports_final_frame(batch):
         dataset(fp / task["task_id"], task)
     ready = collect(config)
     assert ready["status"] == "ready" and ready["invalid"] == 0
+    assert ready["source_kind"] == "external_dataset" and ready.get("database")
     assert all(r["frame"] == 1 and r["energy_ev_cell"] == -8 for r in ready["records"])
     assert all(line.endswith(",-8,-8") for line in (calculated / "calc.txt").read_text().splitlines())
+    from src.result_records import list_results
+    assert list_results(config, iteration=0)["total"] == len(tasks)
+    assert {r["source_kind"] for r in list_results(config)["records"]} == {"external_dataset"}
     for task in tasks:
         final = load_labels(fp / "datasets" / task["task_id"], "deepmd/npy")
         assert len(final) == 1 and final.data["energies"][0] == -8
     assert collect(config) == ready
     (calculated / "calc.txt").write_text("tampered\n")
+    # calc.txt is a compatibility export only; recollect restores it from the DB tip.
+    restored = collect(config)
+    assert all(line.endswith(",-8,-8") for line in Path(restored["calc_file"]).read_text().splitlines())
+    atomic_json(fp / "collection.json", {**ready, "records": [{**r, "energy_ev_cell": 0} for r in ready["records"]]})
     with pytest.raises(ValueError, match="already published"):
         collect(config)
 
@@ -173,6 +181,12 @@ def test_bad_labels_never_published(batch, wrong, energies, message):
     assert report["status"] == "pending" and report["valid"] == 0
     assert message in report["failures"][0]["error"]
     assert not (calculated / "calc.txt").exists()
+    from src.result_records import list_attempts, list_results
+    attempts = list_attempts(config, iteration=0)
+    assert attempts['total'] == len(manifest['tasks'])
+    assert all(item['status'] == 'invalid' and item['evidence']['INCAR']
+               for item in attempts['attempts'])
+    assert list_results(config)['total'] == 0
 
 
 def outcar_frame(energy, electronic_steps=2, truncated=False):
@@ -195,7 +209,7 @@ def test_real_outcar_parser_rejects_bad_final_frame(tmp_path, problem):
     (tmp_path / "OUTCAR").write_text(text)
     task = {"task_id": "task.000000", "endmember": "AL:AL", "natoms": 2, "composition": {"Al": 2}}
     if problem:
-        with pytest.raises(ValueError, match="converged|incomplete"):
+        with pytest.raises(ValueError, match="converged|incomplete|convert|float|force"):
             read_labels(tmp_path, task, "vasp/outcar", "OUTCAR")
     else:
         labels, record = read_labels(tmp_path, task, "vasp/outcar", "OUTCAR")

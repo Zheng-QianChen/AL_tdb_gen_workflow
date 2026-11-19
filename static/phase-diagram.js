@@ -166,6 +166,7 @@ el("request-upload").addEventListener("change", async () => {
         if (!Array.isArray(ts) || !ts.length || ts.some((t, i) => i && t <= ts[i-1])) throw new Error("网页导入需要升序温度序列。");
         if (ts.length > 2 && ts.some((t, i) => Math.abs(t-(ts[0]+i*(ts.at(-1)-ts[0])/(ts.length-1))) > 1e-8)) throw new Error("非均匀温度序列请使用 CLI；网页不自动重采样。");
         el("databases").value = (request.tdb_files || []).join("\n"); el("config").value = request.config || "";
+        el("databases").dispatchEvent(new Event("input"));
         el("components").value = request.components.join(", ");
         await loadSource();
         const boxes = Array.from(el("phase-choices").querySelectorAll("input"));

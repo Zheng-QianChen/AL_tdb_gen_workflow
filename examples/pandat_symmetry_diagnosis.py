@@ -1,21 +1,8 @@
-"""Reproduce observed occupancy equalities, then release them in the local model.
-
-These are explicit diagnostic constraints, not assertions about undocumented
-Pandat internals. Site numbering in the output is one-based.
-"""
-import argparse
-import csv
-import json
-from pathlib import Path
-
+"""Compare an imposed occupancy symmetry with the unconstrained local solution."""
 import numpy as np
 from scipy.linalg import null_space
 from scipy.optimize import LinearConstraint, minimize
-
 from examples.pandat_literature_diagnosis import coordinates
-from examples.pandat_occupancy_diagnosis import SELECTED
-from src.gibbs import GibbsModel, read_databases
-from src.storage import atomic_json
 
 
 def analyze(model, row, pandat):
@@ -102,34 +89,3 @@ def analyze(model, row, pandat):
     result["coordinate_matrix"] = matrix.tolist()
     result["coordinate_offset"] = offset.tolist()
     return result
-
-
-def run(summary_path, output):
-    source = json.loads(Path(summary_path).read_text(encoding="utf-8"))
-    result = {"source_validation": str(Path(summary_path).resolve()),
-              "interpretation": "Imposed observed equalities in the local model, not verified internal Pandat constraints", "cases": []}
-    for case in source["cases"]:
-        if case["name"] not in SELECTED:
-            continue
-        row = json.loads(Path(case["local_result"]).read_text(encoding="utf-8"))["rows"][SELECTED[case["name"]]]
-        folder = Path(case["folder"])
-        db, _ = read_databases([str(folder/"original.tdb")])
-        model = GibbsModel(db, case["phase"], None, [row["T_K"]], row["P_Pa"], True)
-        with (folder/"reference.csv").open(newline="", encoding="utf-8") as stream:
-            reference = list(csv.DictReader(stream))[SELECTED[case["name"]]]
-        pandat = np.array([float(reference[label]) for label in model.labels])
-        record = analyze(model, row, pandat)
-        record.update(case=case["name"], T_K=row["T_K"], G_pandat=float(reference["G"]),
-                      restricted_minus_pandat=record["G_restricted"]-float(reference["G"]))
-        result["cases"].append(record)
-        print(json.dumps({k: record[k] for k in ("case", "equal_site_pairs", "restricted_degrees_of_freedom", "restricted_minus_pandat", "G_restricted")}), flush=True)
-        atomic_json(Path(output), result)
-    return result
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("summary")
-    parser.add_argument("--output", required=True)
-    args = parser.parse_args()
-    run(args.summary, args.output)

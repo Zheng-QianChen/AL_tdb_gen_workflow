@@ -30,6 +30,8 @@ def parser():
     diagram = commands.add_parser("phase-diagram", help="Multi-phase equilibrium: binary, ternary, isopleth, property or point")
     diagram.add_argument("request", help="Phase diagram request JSON; exit code 6 means partial/unconfirmed results")
     diagram.add_argument("--config", help="Include a trained workflow phase alongside the request's competing-phase TDBs")
+    fitting = commands.add_parser("fit", help="Fit existing G/L parameters and export a candidate TDB")
+    fitting.add_argument("request", help="Parameter fitting request JSON")
     diagram_tui = commands.add_parser("phase-diagram-tui", help="Standalone terminal interface for phase diagrams")
     diagram_tui.add_argument("request", nargs="?", default="", help="Optional initial request JSON path")
     reference = commands.add_parser("gibbs-reference", help="Prepare blank external single-point reference CSV and comparison request")
@@ -43,6 +45,22 @@ def parser():
     imported = commands.add_parser("import-results", help="Validate and publish a complete calc.txt batch")
     imported.add_argument("config")
     imported.add_argument("source")
+    results = commands.add_parser("results", help="Inspect result evidence and create attributed revisions")
+    result_actions = results.add_subparsers(dest="result_action", required=True)
+    listing = result_actions.add_parser("list")
+    listing.add_argument("config")
+    listing.add_argument("--iteration", type=int)
+    detail = result_actions.add_parser("show")
+    detail.add_argument("config")
+    detail.add_argument("record_id")
+    amend = result_actions.add_parser("amend")
+    amend.add_argument("config")
+    amend.add_argument("record_id")
+    amend.add_argument("--revision", type=int, required=True)
+    amend.add_argument("--actor", required=True)
+    amend.add_argument("--reason", required=True)
+    amend.add_argument("--energy", type=float)
+    amend.add_argument("--note")
     demo = commands.add_parser("init-demo", help="Create inputs for a small synthetic example")
     demo.add_argument("--name")
     terminal = commands.add_parser("tui", help="Open the optional Textual terminal interface")
@@ -113,7 +131,28 @@ async def run_workflow(args):
 
 
 def execute(args):
+    if args.command == "fit":
+        from src.parameter_fit import run_fit
+        request = json.loads(Path(args.request).read_text(encoding="utf-8-sig"))
+        result = run_fit(request, progress=lambda row: print(json.dumps(row),file=sys.stderr,flush=True))
+        passed = all(result[k] for k in ("optimizer_success","candidate_is_optimizer_solution",
+                                         "training_assemblages_valid","all_observations_within_requested_scales"))
+        return (0 if passed else 7),result
     from src.workflow import load_config, read_checkpoint, status
+    if args.command == "results":
+        from src.result_records import list_results, result_detail, revise_result
+        if args.result_action == "list":
+            return 0, list_results(args.config, iteration=args.iteration)
+        if args.result_action == "show":
+            return 0, result_detail(args.config, args.record_id)
+        changes = {}
+        if args.energy is not None:
+            changes["energy_ev_cell"] = args.energy
+        if args.note is not None:
+            changes["note"] = args.note
+        return 0, revise_result(args.config, args.record_id, changes=changes,
+                               actor=args.actor, reason=args.reason,
+                               expected_revision=args.revision)
     if args.command == "phase-diagram":
         from src.phase_diagram import run_diagram
         data = json.loads(Path(args.request).read_text(encoding="utf-8-sig"))

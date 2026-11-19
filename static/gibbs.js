@@ -123,7 +123,7 @@ element("calculate").addEventListener("click", async () => {
     finally { element("calculate").disabled = JSON.stringify(source()) !== loadedSource; }
 });
 try {
-    const saved = JSON.parse(sessionStorage.getItem("altdb_gibbs_source") || "null");
+    const saved = JSON.parse(sessionStorage.getItem(ToolShell.gibbsSourceKey) || "null");
     if (saved) {
         element("databases").value = saved.tdb_files.join("\n"); element("phase").value = saved.phase;
         notice("已带入选定模型的 TDB。请添加相容参考数据库，再读取亚点阵。");

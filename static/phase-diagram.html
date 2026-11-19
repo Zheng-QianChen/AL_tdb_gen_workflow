@@ -1,11 +1,18 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>多相平衡与相图 · AL-TDB</title><link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<style>
-body{background:#f3f6fa;color:#172a3a}main{max-width:1280px;margin:auto;padding:28px 24px 60px}.card{border:1px solid #dce4ed;border-radius:12px;margin:20px 0}.card-body{padding:24px}h1{font-size:28px}h2{font-size:20px}label{margin:8px 0 5px;font-weight:550}.hint{color:#566b7a;font-size:14px}#phase-choices label{font-weight:400;margin-right:20px}#plot{width:100%;background:white}#notice{white-space:pre-wrap}.links a{display:inline-block;margin:6px 18px 6px 0}[hidden]{display:none!important}pre{white-space:pre-wrap;max-height:400px;overflow:auto}fieldset{margin:8px 0;padding:12px;border:1px solid #dce4ed;border-radius:6px}.table-responsive{max-height:380px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}@media(max-width:700px){.grid{grid-template-columns:1fr}}.form-control,.form-select{min-height:42px}nav a{color:white}
-</style></head><body>
-<nav class="navbar navbar-dark bg-primary px-4"><a class="navbar-brand" href="/">AL-TDB</a><a href="/gibbs">Gibbs 曲线</a></nav>
-<main><h1>多相平衡与相图</h1><p class="hint">让候选相共同竞争，求解相组成、相分数与内部占位。支持同相分相、共存连线和相界追踪。</p>
+<link rel="stylesheet" href="/static/workbench.css">
+<link rel="stylesheet" href="/static/workbench-project.css">
+<link rel="stylesheet" href="/static/tool-workbench.css">
+<script src="/static/project-icons.js"></script>
+<script src="/static/workbench-navigation.js"></script>
+</head><body class="tool-workbench" data-tool="diagram">
+<a class="skip" href="#main">跳到工作区</a>
+<aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><a href="/projects">项目工作台</a><span>计算与建模</span></div><nav class="railnav projnav" aria-label="工作区"></nav></aside>
+<button id="scrim" type="button" aria-label="收起导航" hidden></button>
+<div class="shell"><header class="topbar"></header>
+<main class="tool-content" id="main" tabindex="-1">
+<div class="pagehead"><div><h1>多相平衡与相图</h1><p class="hint">让候选相共同竞争，求解相组成、相分数与内部占位。支持同相分相、共存连线和相界追踪。</p></div></div>
 <section class="card"><div class="card-body"><h2>1 · 数据库与候选相</h2>
 <div class="grid"><div><label for="databases">TDB 文件路径 · 每行一个</label><textarea id="databases" class="form-control" rows="3" placeholder="uploads/system.tdb"></textarea><p class="hint">路径相对于 data/。组合数据库必须使用相容参考态，并包含需要竞争的全部相。</p></div>
 <div><label for="tdb-upload">上传 TDB 文件</label><input id="tdb-upload" type="file" multiple accept=".tdb,.TDB" class="form-control"><label for="config">加入已训练的工作流相 · 可选</label><input id="config" class="form-control" placeholder="run/input.json"></div></div>
@@ -41,4 +48,9 @@ body{background:#f3f6fa;color:#172a3a}main{max-width:1280px;margin:auto;padding:
 <label for="point">查看平衡点</label><select id="point" class="form-select"></select><p id="point-summary" class="mt-3"></p>
 <div class="table-responsive"><table class="table table-sm"><thead><tr><th>组成集</th><th>相分数</th><th>相成分</th><th>G / J·mol-atoms⁻¹</th><th>亚点阵占位</th></tr></thead><tbody id="point-phases"></tbody></table></div>
 <details><summary>数值检查、模型来源与排除相</summary><pre id="diagnostics"></pre></details>
-</div></section></main><script src="/static/phase-diagram.js"></script></body></html>
+</div></section>
+</main></div>
+<script src="/static/tool-shell.js"></script>
+<script src="/static/phase-diagram.js"></script>
+<script src="/static/project-database.js"></script>
+</body></html>

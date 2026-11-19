@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>项目总览 · AL–TDB 工作台</title>
+<link rel="stylesheet" href="/static/workbench.css?v=41">
+<link rel="stylesheet" href="/static/workbench-project.css?v=41">
+<link rel="stylesheet" href="/static/projects.css?v=47">
+<script defer src="/static/project-icons.js?v=41"></script>
+<script defer src="/static/workbench-navigation.js?v=44"></script>
+<script defer src="/static/project-reading.js"></script>
+<script defer src="/static/project-import.js?v=47"></script>
+<script defer src="/static/project-experiments.js"></script>
+<script defer src="/static/project-views.js?v=47"></script>
+<script defer src="/static/hpc-monitor.js"></script>
+<script defer src="/static/project-models.js"></script>
+<script defer src="/static/project-files.js?v=43"></script>
+<script defer src="/static/projects.js?v=47"></script>
+</head>
+<body>
+  <a href="#main" class="skip">跳到工作区</a>
+  <aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><select id="switcher" aria-label="当前项目"></select><span id="elements"></span></div><nav id="nav" class="railnav projnav"></nav></aside>
+  <button id="scrim" aria-label="收起导航" hidden></button>
+  <div class="shell">
+    <header class="topbar">
+      <button id="menu" aria-label="项目导航" aria-controls="rail" aria-expanded="false">☰</button>
+      <div class="crumb"><span id="projectTitle">项目</span><i>/</i><strong id="crumb"></strong></div>
+      <details id="projectMenu"><summary class="btn">项目菜单 ▾</summary><div class="project-actions"><button data-act="new">新建项目</button><button data-act="extend">编辑项目元素</button><button data-act="save-workspace">保存工作台…</button><button data-act="read-workspace">读取工作台…</button></div></details>
+    </header>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <dialog id="dialog"><form id="form"><div class="cardhead"><h2 id="modalTitle"></h2><button id="close" class="btn" type="button" aria-label="关闭">×</button></div><div class="cardbody"><div id="fields"></div><p id="error" role="alert"></p><button class="primary" type="submit">保存</button></div></form></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body></html>

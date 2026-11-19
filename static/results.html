@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>计算结果与修订 · AL-TDB</title>
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/results.css"><link rel="stylesheet" href="/static/workbench.css">
+<link rel="stylesheet" href="/static/workbench-project.css">
+<link rel="stylesheet" href="/static/tool-workbench.css">
+<script src="/static/project-icons.js"></script>
+<script src="/static/workbench-navigation.js"></script>
+</head>
+<body class="tool-workbench" data-tool="results">
+<a class="skip" href="#main">跳到工作区</a>
+<aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><a href="/projects">项目工作台</a><span>计算与建模</span></div><nav class="railnav projnav" aria-label="工作区"></nav></aside>
+<button id="scrim" type="button" aria-label="收起导航" hidden></button>
+<div class="shell"><header class="topbar"></header>
+<main class="tool-content" id="main" tabindex="-1">
+<div class="pagehead"><div><h1>计算结果与修订</h1>
+<p>查看计算设置、收敛情况和原始证据；修正数值时，保留每一次改动。</p></div></div>
+<form id="run-form" class="run-bar">
+<div><label for="config">运行配置</label><select id="config" required><option value="">正在读取运行配置…</option></select></div>
+<div><label for="iteration">轮次</label><input id="iteration" type="number" min="0" step="1" placeholder="全部轮次"></div>
+<button class="btn primary-action" id="load" type="submit">读取记录</button><span id="count" aria-live="polite"></span>
+</form>
+<p id="notice" role="status" aria-live="polite"></p>
+<div class="workspace">
+<section aria-label="计算记录列表" class="record-list">
+<div class="section-head"><h2>结果记录</h2><span class="muted">能量单位：eV / cell</span></div>
+<div class="table-wrap"><table><thead><tr><th>端元 / 轮次</th><th>总能量</th><th>来源 / 版本</th></tr></thead><tbody id="records"></tbody></table></div>
+<p id="empty" class="empty">选择运行后读取计算记录。</p>
+</section>
+<section id="detail" aria-label="记录详情" hidden>
+<div class="section-head"><div><p class="eyebrow" id="record-label"></p><h2 id="record-title"></h2></div><span id="source" class="tag"></span></div>
+<div class="energy"><span id="energy"></span><small>eV / cell</small></div>
+<p id="record-note" class="muted"></p>
+<p class="muted">修订保留原始解析值。已有训练使用其记录的版本；修改不会追溯改变已训练模型。</p>
+<div class="tabs" role="tablist" aria-label="记录内容">
+<button id="analysis-tab" class="active" type="button" role="tab" aria-selected="true" aria-controls="analysis-panel" data-tab="analysis-panel">计算分析</button>
+<button id="history-tab" type="button" role="tab" aria-selected="false" aria-controls="history-panel" data-tab="history-panel">修订历史</button>
+<button id="edit-tab" type="button" role="tab" aria-selected="false" aria-controls="edit-panel" data-tab="edit-panel">手动修订</button></div>
+<div id="analysis-panel" role="tabpanel" aria-labelledby="analysis-tab">
+<div id="analysis"></div>
+<details><summary>原始记录与文件证据</summary><pre id="evidence"></pre></details>
+</div>
+<div id="history-panel" role="tabpanel" aria-labelledby="history-tab" hidden><ol id="history"></ol></div>
+<div id="edit-panel" role="tabpanel" aria-labelledby="edit-tab" hidden>
+<form id="edit-form">
+<label for="edit-energy">修订总能量 / eV·cell⁻¹</label><input id="edit-energy" type="number" step="any" required>
+<label for="edit-note">条目备注</label><textarea id="edit-note" rows="2" maxlength="10000"></textarea>
+<div class="edit-grid"><div><label for="actor">修改人</label><input id="actor" required maxlength="200" autocomplete="name"></div><div><label for="revision">基于版本</label><input id="revision" readonly></div></div>
+<label for="reason">修改原因</label><textarea id="reason" required rows="3" maxlength="4000" placeholder="说明修订依据，例如复核后的总能量或数据录入错误。"></textarea>
+<button class="btn primary-action" id="save" type="submit">保存为新修订</button><p id="edit-status" role="status" aria-live="polite"></p>
+</form></div>
+</section>
+</div>
+<section class="attempts-section" aria-label="计算收集诊断">
+<h2>计算收集诊断</h2><p class="muted">保留每次收集的成功与失败证据；未通过的计算不会进入训练。</p>
+<div id="attempts"><p class="muted">选择运行后查看。</p></div>
+</section>
+<footer>原始证据保留 · 修订追加记录 · 训练引用确定版本</footer>
+</main></div>
+<script src="/static/tool-shell.js"></script>
+<script src="/static/results.js" defer></script>
+</body></html>

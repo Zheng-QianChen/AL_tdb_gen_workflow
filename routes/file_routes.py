@@ -1,6 +1,7 @@
 """File endpoints restricted to the application data directory."""
 import asyncio
 import json
+import re
 import uuid
 from pathlib import Path
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile
@@ -33,6 +34,8 @@ async def save_input_json(request: Request):
     body = await request.json()
     try:
         filename = safe_name(body.get("filename", "input.json"))
+        if re.fullmatch(r"model_[0-9a-f]{32}\.json", filename, flags=re.I):
+            raise ValueError("请从项目模型中保存该配置")
         data = TaskConfig.model_validate(body.get("data")).model_dump()
     except (ValueError, TypeError) as exc:
         raise HTTPException(422, str(exc)) from exc

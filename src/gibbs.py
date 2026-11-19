@@ -63,7 +63,10 @@ def read_databases(files):
             source["parser_normalizations"] = {"DISORDER_PART_to_DISORDERED_PART": count}
         sources.append(source)
     try:
-        return Database("\n".join(texts)), sources
+        db = Database("\n".join(texts))
+        from src.tdb_provenance import capture_references
+        capture_references(db, texts, sources)
+        return db, sources
     except Exception as exc:
         raise ValueError(f"Cannot read the combined TDB: {exc}") from exc
 
@@ -113,6 +116,14 @@ def validate_functions(db, parameters, temperatures, pressure, continuous_temper
     return sorted(seen)
 
 
+def omitted_endmembers(parameters, groups):
+    endmembers = [p for p in parameters if p['parameter_type'] == 'G'
+                  and p['parameter_order'] == 0 and all(len(site) == 1 for site in p['constituent_array'])]
+    return [':'.join(member) for member in itertools.product(*groups)
+            if not any(all(site[0].name in {element, '*'} for site, element in zip(p['constituent_array'], member))
+                       for p in endmembers)]
+
+
 def phase_parameters(db, phase, groups, allow_missing=False):
     parameters = []
     for parameter in db._parameters.all():
@@ -128,17 +139,28 @@ def phase_parameters(db, phase, groups, allow_missing=False):
             for p in parameters]
     if len(set(keys)) != len(keys):
         raise ValueError("Duplicate phase parameters; combine temperature ranges into a single parameter definition")
-    endmembers = [p for p in parameters if p["parameter_type"] == "G"
-                  and p["parameter_order"] == 0 and all(len(site) == 1 for site in p["constituent_array"])]
-    for member in (() if allow_missing else itertools.product(*groups)):
-        if not any(all(site[0].name in {element, "*"} for site, element in zip(p["constituent_array"], member)) for p in endmembers):
-            raise ValueError(f"Missing endmember G parameter in {phase}: {':'.join(member)}")
+    for parameter in parameters:
+        array = parameter['constituent_array']
+        if (parameter['parameter_type'] in {'G', 'L'} and parameter['parameter_order'] != 0
+                and all(len(site) == 1 and site[0].name != '*' for site in array)):
+            member = ':'.join(site[0].name for site in array)
+            key = f"{parameter['parameter_type']}({phase},{member};{parameter['parameter_order']})"
+            raise ValueError(
+                f"Invalid nonzero-order endmember {key}: endmembers must have degree zero; "
+                "an interaction needs multiple constituents on a sublattice. "
+                "Check the source record; changing its degree or discarding it is not an automatic repair."
+            )
+    if not allow_missing:
+        missing = omitted_endmembers(parameters, groups)
+        if missing:
+            raise ValueError(f"Missing endmember G parameter in {phase}: {missing[0]}")
     return parameters
 
 
 class GibbsModel:
     def __init__(self, db, phase, groups, temperatures, pressure, allow_missing_ordered_endmembers=False,
-                 build_numeric=True, allow_vacancy_limit=False, continuous_temperature_range=False):
+                 build_numeric=True, allow_vacancy_limit=False, continuous_temperature_range=False,
+                 model_parameters=None):
         import sympy as sp
         from pycalphad import variables as v
         from src.thermo_model import ThermodynamicModel
@@ -173,6 +195,7 @@ class GibbsModel:
         partitioned = definition.model_hints.get("ordered_phase") == self.phase
         self.ordering = {"kind": "independent_cef"}
         if partitioned:
+            never_disorder = definition.model_hints.get("never_disorder", False)
             disordered = definition.model_hints.get("disordered_phase")
             if disordered not in db.phases or disordered == self.phase:
                 raise ValueError("Partitioned ordering requires a distinct disordered phase in the TDB")
@@ -196,24 +219,29 @@ class GibbsModel:
             if np.prod([len(group) for group in active], dtype=float) > 10000:
                 raise ValueError("Partitioned model exceeds 10000 active endmembers")
             parameters = phase_parameters(db, self.phase, active, allow_missing=allow_missing_ordered_endmembers)
+            omitted = omitted_endmembers(parameters, active)
             if any(p["parameter_type"] not in {"G", "L", "TC", "BMAGN"} for p in parameters):
                 raise ValueError("Partitioned models support chemical G/L and conventional IHJ TC/BMAGN terms only")
-            if any(p["parameter_type"] in {"TC", "BMAGN"} for p in parameters) and not np.isclose(scale, 1):
+            if not never_disorder and any(p["parameter_type"] in {"TC", "BMAGN"} for p in parameters) and not np.isclose(scale, 1):
                 raise ValueError("Magnetic ordering corrections require matching ordered/disordered formula-unit site ratios")
             for key in ("ihj_magnetic_afm_factor", "ihj_magnetic_structure_factor"):
-                if key in definition.model_hints and definition.model_hints[key] != base.model_hints.get(key):
+                if not never_disorder and key in definition.model_hints and definition.model_hints[key] != base.model_hints.get(key):
                     raise ValueError("Ordered/disordered IHJ settings must match")
             parameters += phase_parameters(db, disordered, [sorted(group.intersection(self.species_names)) for group in base_groups])
-            self.ordering = {"kind": "partitioned_order_disorder", "disordered_phase": disordered,
+            self.ordering = {"kind": "never_disorder" if never_disorder else "partitioned_order_disorder", "disordered_phase": disordered,
                              "ordering_sublattices": substitutional,
                              "disordered_site_mapping": [0]*count + list(range(1, len(base_groups))),
-                             "allow_missing_ordered_endmembers": allow_missing_ordered_endmembers}
+                             "allow_missing_ordered_endmembers": allow_missing_ordered_endmembers,
+                             "endmember_parameter_role": "additive_cef_relative_to_reference" if never_disorder else "ordering_correction_relative_to_disordered_baseline",
+                             "subtract_random_occupation_energy": not never_disorder,
+                             "omitted_zero_ordering_corrections": omitted,
+                             "absolute_reference_endmembers_complete": True}
         else:
             parameters = phase_parameters(db, self.phase, self.groups)
         self.functions = validate_functions(db, parameters, temperatures, pressure, continuous_temperature_range)
         # Build with the original phase definitions so pycalphad's ordering
         # mapping remains intact, then apply the chosen site restrictions.
-        model = ThermodynamicModel(db, self.species_names, self.phase)
+        model = ThermodynamicModel(db, self.species_names, self.phase, parameters=model_parameters)
         self.model = model
         if not build_numeric:
             return

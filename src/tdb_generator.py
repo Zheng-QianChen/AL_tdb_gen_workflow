@@ -35,7 +35,16 @@ def pre_for_model_assess(phase, file_path):
         if not np.allclose(observed, [expected[e] for e in species]):
             raise ValueError("Composition does not match endmember site fractions")
     data[["sys_num", "sys_type"]] = data["endmember"].apply(lambda value: pd.Series(process_element(value)))
-    data["from"] = np.where(data["in_iter"].notna(), "VASP", "ML")
+    if "source_kind" not in data.columns:
+        data["source_kind"] = pd.NA
+    def provenance_label(row):
+        if pd.isna(row["in_iter"]):
+            return "ML"
+        kind = row["source_kind"]
+        if pd.isna(kind) or kind is None or str(kind).strip() == "":
+            return "unknown"
+        return str(kind).strip()
+    data["from"] = data.apply(provenance_label, axis=1)
     data = data.sort_values(["above_hull", "endmember"])
     Path(file_path).mkdir(parents=True, exist_ok=True)
     data.to_csv(Path(file_path) / f"{phase.name}_tdb_gen.csv")
@@ -127,5 +136,12 @@ def tdb_generate_from_MLmodel(pkl_path, iter=0, process=1, user="", mask=5, file
     filename = f"{phase.name}_{phase.iter}_raw.tdb"
     tdb_gene([len(phase.tdb_model["comp"])], phase.tdb_model["comp"],
              phase.tdb_model["occup_atoms_in_tdb"], output / filename, data)
+    from src.storage import atomic_json
+    provenance = filename + '.provenance.json'
+    atomic_json(output / provenance, {
+        'checkpoint': f'model_{iter:06d}_{process}.pd',
+        'training_batches': getattr(phase, 'result_bindings', {}),
+        'legacy_unverified': not bool(getattr(phase, 'result_bindings', {})),
+    })
     return {"file_path": output, "file_name_tdb": filename,
-            "file_name_csv": f"{phase.name}_tdb_gen.csv"}
+            "file_name_csv": f"{phase.name}_tdb_gen.csv", 'file_name_provenance': provenance}

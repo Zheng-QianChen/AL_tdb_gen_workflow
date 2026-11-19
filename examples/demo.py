@@ -51,15 +51,24 @@ def prepare_demo(name=None):
 
 
 def write_synthetic_results(runner):
-    folder = Path(runner.phase.generate_DFT_path) / str(runner.iter)
+    """Explicit synthetic registration with truthful source_kind=synthetic."""
+    from src.result_records import export_calc_txt, register_batch
+    from src.workflow import load_config
+    data = runner.data if getattr(runner, "data", None) else load_config(runner.input_json)[1]
+    iteration = int(runner.phase.iter)
+    folder = Path(runner.phase.generate_DFT_path) / str(iteration)
     members = [path.parent.name.replace("_", ":") for path in sorted(folder.glob("*/POSCAR"))]
-    rows = []
+    ledger = []
     for member in members:
         reference = sum(REFERENCE[e] for e in member.split(":")) / 2
         total = (reference + ENERGY[member] / EV_PER_ATOM_TO_KJ_PER_MOL) * 2
-        rows.append(f"{member},{total:.16g},{total:.16g}")
-    target = Path(runner.phase.calced_DFT_path) / f"iter.{runner.iter:06d}" / "calc.txt"
-    atomic_write(target, "\n".join(rows) + "\n")
+        ledger.append({"endmember": member, "energy_ev_cell": total, "source_kind": "synthetic",
+                       "note": "synthetic demo", "analysis": {}, "evidence": {"synthetic": True}})
+    register_batch(data, iteration, ledger, source_kind="synthetic",
+                   actor="examples.demo", reason="synthetic demo energies",
+                   evidence={"synthetic": True})
+    target = Path(runner.phase.calced_DFT_path) / f"iter.{iteration:06d}" / "calc.txt"
+    export_calc_txt(data, iteration, target)
     return target
 
 

@@ -4,7 +4,7 @@ const urlParams = new URLSearchParams(window.location.search);
 let activeConfigName = urlParams.get('task') || urlParams.get('filename') || 'input.json';
 
 // --- 2. Dynamic base path variables ---
-let recordPath = null; 
+let recordPath = null;
 // Image path will now be dynamically generated based on recordPath/fig
 let IMAGE_BASE_PATH = '';
 let csvPath = null; // iter.csv path
@@ -14,10 +14,10 @@ let process = 0;  // Current operation variable
 let phaseName = ""; // Phase name
 
 // Image cache - use localStorage to store image data
-const IMAGE_CACHE = "al_visualization_image_cache";
+const IMAGE_CACHE = "al_visualization_image_cache"+(ToolShell.modelRun||"");
 
 // Data cache
-const DATA_CACHE = "al_visualization_data_cache";
+const DATA_CACHE = "al_visualization_data_cache"+(ToolShell.modelRun||"");
 
 
 // Data cache
@@ -46,15 +46,15 @@ window.onload = function() {
     }
     bindEvents();
     loadSpecificConfig();
-    
+
 };
 
 function bindEvents() {
     console.log("Binding button events...");
-    
+
     // 1. Initialize data fetch timer, etc.
     initDataFetch();
-    
+
     // 2. Bind iteration control button events
     const iterBtns = [
         { id: 'first-iter', action: () => changeIteration(1) },
@@ -67,7 +67,7 @@ function bindEvents() {
         const el = document.getElementById(btn.id);
         if (el) el.onclick = btn.action;
     });
-    
+
     // 3. Prediction image 1 navigation control (second image)
     const pred1Btns = [
         { id: 'first-pred-1', action: () => updatePredImage(1, predImageMinIter) },
@@ -80,7 +80,7 @@ function bindEvents() {
         const el = document.getElementById(btn.id);
         if (el) el.onclick = btn.action;
     });
-    
+
     const iterPred1 = document.getElementById('iter-pred-1');
     if (iterPred1) {
         iterPred1.onchange = function() {
@@ -88,7 +88,7 @@ function bindEvents() {
             if (!isNaN(iter)) updatePredImage(1, iter);
         };
     }
-    
+
     // 4. Prediction image 2 navigation control (third image)
     const pred2Btns = [
         { id: 'first-pred-2', action: () => updatePredImage(2, predImageMinIter) },
@@ -101,7 +101,7 @@ function bindEvents() {
         const el = document.getElementById(btn.id);
         if (el) el.onclick = btn.action;
     });
-    
+
     const iterPred2 = document.getElementById('iter-pred-2');
     if (iterPred2) {
         iterPred2.onchange = function() {
@@ -109,7 +109,7 @@ function bindEvents() {
             if (!isNaN(iter)) updatePredImage(2, iter);
         };
     }
-    
+
     // 5. Tab switching listener
     const tabElements = document.querySelectorAll('#vizTabs button[data-bs-toggle="tab"]');
     tabElements.forEach(tab => {
@@ -124,17 +124,17 @@ async function fetchSystemStatus() {
         // [KEY] Include specific filename when requesting backend
         const response = await fetch(`/get_config_status?filename=${encodeURIComponent(activeConfigName)}`);
         const data = await response.json();
-        
+
         if (data.record_path) {
             // Dynamically construct image address: record_path + /fig/
             let base = data.record_path.endsWith('/') ? data.record_path : data.record_path + '/';
             window.IMAGE_BASE_PATH = '/get_data_file/'+data.record_path + '/fig/';
-            
+
             // Update path text on page for debugging
             const pathDisplay = document.getElementById('logs-image-path');
             if (pathDisplay) pathDisplay.textContent = `Current Path: ${window.IMAGE_BASE_PATH}`;
         }
-        
+
         // Update iteration data
         // itermax = data.itermax || 0;
         // process = data.process || 0;
@@ -142,12 +142,12 @@ async function fetchSystemStatus() {
         // Trigger UI and image updates
         updateUIWithConfig(data);
 
-        await readRecordFile(); 
+        await readRecordFile();
         await readCsvFile();
-        
-        updateAllImages(); 
+
+        updateAllImages();
         updateIterationDisplay();
-        
+
     } catch (e) {
         console.error("Failed to sync task status:", e);
     }
@@ -157,11 +157,11 @@ async function fetchSystemStatus() {
 function initDataFetch() {
     // Reset loading state
     resetLoadingState();
-    
+
     // Initialize cache
     initImageCache();
     initDataCache();
-    
+
     // Bind error details display button event
     document.getElementById('show-error-details').addEventListener('click', function() {
         const detailsElement = document.getElementById('csv-error-details');
@@ -173,13 +173,13 @@ function initDataFetch() {
             this.textContent = 'Show Details';
         }
     });
-    
+
     // Bind force refresh button event
     document.getElementById('force-refresh-main').addEventListener('click', function() {
         // Clear cache record for this image
         const formattedIter = String(currentIteration).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}iter.png`;
-        
+
         try {
             const cache = JSON.parse(localStorage.getItem(IMAGE_CACHE) || '{}');
             if (cache[baseImageUrl]) {
@@ -190,11 +190,11 @@ function initDataFetch() {
         } catch (e) {
             console.error('Failed to clear cache:', e);
         }
-        
+
         // Display refreshing status
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
         this.disabled = true;
-        
+
         // Reload image
         updateMainImage().then(() => {
             // Restore button status
@@ -206,7 +206,7 @@ function initDataFetch() {
             this.disabled = false;
         });
     });
-    
+
     // Set timer to sync data periodically (every 3 seconds)
     setInterval(() => {
         fetchSystemStatus(activeConfigName);
@@ -237,6 +237,7 @@ async function loadSpecificConfig() {
             recordPath = '/get_data_file/'+data.record_path + '/record.txt';
             csvPath = '/get_data_file/'+data.record_path + '/iter.csv';
             const url = new URL(window.location);
+            ToolShell.setRun(filename);
             url.searchParams.set('task', filename); // Use task parameter uniformly
             window.history.pushState({}, '', url);
         } else {
@@ -331,20 +332,20 @@ function resetLoadingState() {
         'data-count', 'train-rmse', 'test-rmse', 'cv-info', 'r2-score',
         'pred-range-1', 'pred-range-2', 'pred-r2-1', 'pred-r2-2'
     ];
-    
+
     loadingElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
             element.innerHTML = '<span class="loading-spinner"></span>Loading...';
         }
     });
-    
+
     const operationText = document.getElementById('current-operation-text');
     if (operationText) {
         operationText.className = 'operation-status','operation-unknown';
         operationText.textContent = 'Unknown';
     }
-    
+
     // Hide error messages
     document.getElementById('data-error').style.display = 'none';
     document.getElementById('csv-error-details').style.display = 'none';
@@ -384,7 +385,7 @@ function updateUIWithConfig(data) {
         const value = item.path.split('.').reduce((obj, key) => {
             return obj && obj[key] !== undefined ? obj[key] : undefined;
         }, data);
-        
+
         const element = document.getElementById(item.id);
         if (element) {
             element.textContent = value !== undefined ? value : item.defaultValue;
@@ -413,14 +414,14 @@ async function readRecordFile() {
         document.getElementById('current-operation-number').textContent = 'Cannot Retrieve';
         return;
     }
-    
+
     try {
         // Set timeout
         const abortController = new AbortController();
         const timeoutId = setTimeout(() => abortController.abort(), 10000); // 10 second timeout
-        
+
         console.info(`try to read local file: ${recordPath}`, 'info');
-        
+
         // Send file path to backend, have backend read file content
         const response = await fetch('/read-record', {
             method: 'POST',
@@ -430,9 +431,9 @@ async function readRecordFile() {
             body: JSON.stringify({ file_path: recordPath }),
             signal: abortController.signal
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
             if (response.status === 404) {
                 console.error(`Record file does not exist: ${recordPath}`, 'warning');
@@ -447,31 +448,31 @@ async function readRecordFile() {
         }
 
         const result = await response.json();
-        
+
         if (!result.success) {
             console.error(`Failed to read record file: ${result.error || 'Unknown error'}`, 'error');
             document.getElementById('current-iteration').textContent = 'Read Failed';
             document.getElementById('current-operation-number').textContent = 'Read Failed';
             return;
         }
-        
+
         // Split into lines and filter empty lines
         const lines = result.content.split('\n')
             .map(line => line.trim())
             .filter(line => line.length > 0);
-        
+
         if (lines.length === 0) {
             console.error('Record file is empty', 'info');
             document.getElementById('current-iteration').textContent = 'No Data';
             document.getElementById('current-operation-number').textContent = 'No Data';
             return;
         }
-        
+
         // Get last line
         const lastLine = lines[lines.length - 1];
         // Split into two numbers
         const [iteration, operation] = lastLine.split(/\s+/).map(num => num.trim());
-        
+
         if (iteration && operation) {
             // Update variables
             itermax = parseInt(iteration);
@@ -489,11 +490,11 @@ async function readRecordFile() {
 
             const operationTextEl = document.getElementById('current-operation-text');
             operationTextEl.textContent = getOperationText(operation);
-            
+
             operationTextEl.className = 'operation-status';
             const opClass = getOperationClass(operation);
             if (opClass) {
-                operationTextEl.classList.add(opClass); 
+                operationTextEl.classList.add(opClass);
             }
             console.info(`Updated iteration info: iteration ${iteration}, operation ${operation} (${getOperationText(operation)})`, 'status-update');
         } else {
@@ -524,11 +525,11 @@ function readCsvFile() {
     }
     // Print debug info to confirm requested path
     console.log('Attempting to read CSV file:', csvPath);
-    
+
     try {
         const abortController = new AbortController();
         const timeoutId = setTimeout(() => abortController.abort(), 10000);
-        
+
         fetch('/read-record', {
             method: 'POST',
             headers: {
@@ -539,10 +540,10 @@ function readCsvFile() {
         })
         .then(response => {
             clearTimeout(timeoutId);
-            
+
             // Print HTTP response status
             console.log('CSV file request response status:', response.status);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP status code: ${response.status}`);
             }
@@ -551,10 +552,10 @@ function readCsvFile() {
         .then(result => {
             // Extract CSV string content
             const content = result.content;
-            
+
             // Print raw content preview to help debugging
             console.log('CSV file content preview:', content.substring(0, 200) + (content.length > 200 ? '...' : ''));
-            
+
             csvRawContent = content;
             csvData = parseCsvContent(content);
             saveDataToCache(csvPath, csvData);
@@ -564,7 +565,7 @@ function readCsvFile() {
         .catch(error => {
             clearTimeout(timeoutId);
             console.error('CSV file read error:', error);
-            
+
             // More detailed error information
             let errorMsg, errorDetails;
             if (error.name === 'AbortError') {
@@ -574,12 +575,12 @@ function readCsvFile() {
                 errorMsg = `CSV file read failed: ${error.message}`;
                 errorDetails = `Error details: ${error.stack}\nFile path: ${csvPath}`;
             }
-            
+
             showDataError(errorMsg, errorDetails);
         });
     } catch (error) {
         console.error('Error occurred while reading CSV file:', error);
-        showDataError(`Error processing CSV: ${error.message}`, 
+        showDataError(`Error processing CSV: ${error.message}`,
             `Error details: ${error.stack}\nFile path: ${csvPath}`);
     }
 }
@@ -589,48 +590,48 @@ function readCsvFile() {
 function parseCsvContent(content) {
     const data = [];
     let errorDetails = [];
-    
+
     if (!content.trim()) {
         errorDetails.push("CSV file content is empty");
         showDataError("CSV file content is empty", errorDetails.join("\n"));
         return data;
     }
-    
+
     // Split lines and filter empty lines
     const lines = content.split('\n')
         .map((line, index) => ({ line: line.trim(), row: index + 1 }))
         .filter(item => item.line.length > 0);
-    
+
     if (lines.length < 2) {
         errorDetails.push(`CSV file content insufficient, needs at least header row and one data row, actually only has ${lines.length} rows`);
         showDataError("CSV file format error", errorDetails.join("\n"));
         return data;
     }
-    
+
     // Parse header row
     const headerLine = lines[0];
     const headers = headerLine.line.split(',').map(header => header.trim());
-    
+
     // Print header row info for debugging
     console.log(`CSV header row: ${headers.length} columns -`, headers);
-    
+
     // Relax column count check, only warn without blocking
     if (headers.length !== 7) {
         errorDetails.push(`Warning: Header row format does not match expectations, expected 7 columns, actually ${headers.length} columns`);
         errorDetails.push(`Header row content: "${headerLine.line}"`);
     }
-    
+
     // Parse data rows
     for (let i = 1; i < lines.length; i++) {
         const lineItem = lines[i];
         const values = lineItem.line.split(',').map(value => value.trim());
-        
+
         // Also relax column count check
         if (values.length !== 7) {
             errorDetails.push(`Warning: Row ${lineItem.row} column count does not match expectations: expected 7 columns, actually ${values.length} columns`);
             // Don't skip, try to parse available data
         }
-        
+
         try {
             // More robust parsing logic, handle possible missing values
             const record = {
@@ -643,7 +644,7 @@ function parseCsvContent(content) {
                 foldNumRMSE: values[5] ? parseInt(values[5]) : null,
                 rmseScore: values[6] ? parseFloat(values[6]) : null
             };
-            
+
             // Allow some fields to be empty, but need at least some valid data
             const hasValidData = Object.values(record).some(v => v !== null && !isNaN(v));
             if (hasValidData) {
@@ -656,11 +657,11 @@ function parseCsvContent(content) {
             errorDetails.push(`Row content: "${lineItem.line}"`);
         }
     }
-    
+
     // Even if there are errors, use data if available
     if (data.length > 0) {
         if (errorDetails.length > 0) {
-            showDataError(`CSV file parsing has ${errorDetails.length} warnings, but successfully parsed ${data.length} valid records`, 
+            showDataError(`CSV file parsing has ${errorDetails.length} warnings, but successfully parsed ${data.length} valid records`,
                 errorDetails.join("\n\n") + "\n\nWill continue with available data");
         }
         return data;
@@ -674,15 +675,15 @@ function parseCsvContent(content) {
 // Update metrics display from CSV
 function updateMetricsFromCsv() {
     if (csvData.length === 0) {
-        showDataError('No valid CSV data found', 
+        showDataError('No valid CSV data found',
             `CSV file path: ${csvPath}\n` +
             `Raw content preview: ${csvRawContent.substring(0, 500)}${csvRawContent.length > 500 ? '...' : ''}`);
         return;
     }
-    
+
     // Find data based on current iteration
     let csvRecord = null;
-    
+
     // Find record matching current iteration
     if (currentIteration && !isNaN(currentIteration)) {
         // Iterations start from 1, array index starts from 0
@@ -691,12 +692,12 @@ function updateMetricsFromCsv() {
             csvRecord = csvData[index];
         }
     }
-    
+
     // If not found, use last record
     if (!csvRecord && csvData.length > 0) {
         csvRecord = csvData[csvData.length - 1];
     }
-    
+
     // Update display
     if (csvRecord) {
         document.getElementById('data-count').textContent = csvRecord.trainingDataAmount;
@@ -704,7 +705,7 @@ function updateMetricsFromCsv() {
         document.getElementById('test-rmse').textContent = csvRecord.rmseTest.toFixed(3);
         document.getElementById('cv-info').textContent = `${csvRecord.foldNumRMSE} fold: ${csvRecord.rmseScore.toFixed(3)}`;
         document.getElementById('r2-score').textContent = csvRecord.r2Score.toFixed(3);
-        
+
         // Update prediction chart R² values
         document.getElementById('pred-r2-1').textContent = `R²: ${csvRecord.r2Score.toFixed(3)}`;
         document.getElementById('pred-r2-2').textContent = `R²: ${csvRecord.r2Score.toFixed(3)}`;
@@ -717,7 +718,7 @@ function updateMetricsFromCsv() {
         document.getElementById('pred-r2-1').textContent = 'R²: N/A';
         document.getElementById('pred-r2-2').textContent = 'R²: N/A';
     }
-    
+
     // Hide error messages
     document.getElementById('data-error').style.display = 'none';
     document.getElementById('csv-error-details').style.display = 'none';
@@ -727,10 +728,10 @@ function updateMetricsFromCsv() {
 function showDataError(message, details) {
     const errorElement = document.getElementById('data-error');
     const detailsElement = document.getElementById('csv-error-details');
-    
+
     errorElement.innerHTML = `Data Error: ${message} <button class="btn btn-sm btn-danger show-details-btn" id="show-error-details">Show Details</button>`;
     errorElement.style.display = 'block';
-    
+
     // Format detailed information
     if (details) {
         // Replace newlines with HTML breaks
@@ -743,7 +744,7 @@ function showDataError(message, details) {
     } else {
         detailsElement.innerHTML = `File path: ${csvPath}<br>No detailed error information provided`;
     }
-    
+
     // Automatically hide details
     detailsElement.style.display = 'none';
 }
@@ -764,15 +765,15 @@ function updateAllImages() {
     updateMainImage()
         .then(() => console.log('Main image loading complete'))
         .catch(err => console.error('Main image loading failed:', err));
-        
+
     updatePredImage(1, currentPredIter1)
         .then(() => console.log('Prediction image 1 loading complete'))
         .catch(err => console.error('Prediction image 1 loading failed:', err));
-        
+
     updatePredImage(2, currentPredIter2)
         .then(() => console.log('Prediction image 2 loading complete'))
         .catch(err => console.error('Prediction image 2 loading failed:', err));
-        
+
     updateOtherTabImages(currentIteration);
 }
 
@@ -783,24 +784,24 @@ function updateMainImage() {
             reject(new Error('Phase name not obtained'));
             return;
         }
-        
+
         // Display loading state
         const loadingElement = document.getElementById('main-loading');
         const imageElement = document.getElementById('main-image');
         const pathElement = document.getElementById('main-image-path');
         const statusElement = document.getElementById('main-image-status');
         const cacheIndicator = document.getElementById('main-image-cache');
-        
+
         loadingElement.style.display = 'block';
         imageElement.style.display = 'none';
         statusElement.style.display = 'block';
         statusElement.textContent = 'Loading...';
         cacheIndicator.style.display = 'none';
-        
+
         // Build image URL, including phase name
         const formattedIter = String(currentIteration).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}iter.png`;
-        
+
         // Check cache
         const cachedImage = getImageFromCache(baseImageUrl);
         if (cachedImage) {
@@ -815,35 +816,35 @@ function updateMainImage() {
             resolve();
             return;
         }
-        
+
         // Add timestamp to avoid caching
         const timestamp = new Date().getTime();
         const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
-        
+
         // Display image path
         pathElement.textContent = `Image path: ${baseImageUrl}`;
-        
+
         // Clear previous event listeners
         imageElement.onload = null;
         imageElement.onerror = null;
-        
+
         // Clear previous image source to ensure reload
         imageElement.src = '';
-        
+
         // Create image object for preloading
         const img = new Image();
-        
+
         // Set timeout to 20 seconds
         const timeout = setTimeout(() => {
             statusElement.textContent = 'Loading timeout, retrying...';
-            
+
             // Retry reload after first timeout
             img.src = '';
             setTimeout(() => {
                 const newTimestamp = new Date().getTime();
                 img.src = `${baseImageUrl}?timestamp=${newTimestamp}`;
             }, 1000);
-            
+
             // Show error on second timeout
             const secondTimeout = setTimeout(() => {
                 loadingElement.innerHTML = `
@@ -855,7 +856,7 @@ function updateMainImage() {
                 statusElement.style.display = 'none';
                 reject(new Error('Image loading timeout'));
             }, 20000);
-            
+
             // If second load succeeds, clear second timeout
             img.onload = function() {
                 clearTimeout(secondTimeout);
@@ -867,7 +868,7 @@ function updateMainImage() {
                 ctx.drawImage(img, 0, 0);
                 const dataUrl = canvas.toDataURL('image/png');
                 saveImageToCache(baseImageUrl, dataUrl);
-                
+
                 loadingElement.style.display = 'none';
                 imageElement.style.display = 'block';
                 imageElement.src = dataUrl;
@@ -876,11 +877,11 @@ function updateMainImage() {
                 resolve();
             };
         }, 20000);
-        
+
         // Image loading success
         img.onload = function() {
             clearTimeout(timeout);
-            
+
             // Convert to dataURL and save to cache
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
@@ -889,7 +890,7 @@ function updateMainImage() {
             ctx.drawImage(img, 0, 0);
             const dataUrl = canvas.toDataURL('image/png');
             saveImageToCache(baseImageUrl, dataUrl);
-            
+
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
             imageElement.src = dataUrl;
@@ -897,7 +898,7 @@ function updateMainImage() {
             console.log('Comprehensive training metrics view loaded successfully');
             resolve();
         };
-        
+
         img.onerror = function(error) {
             clearTimeout(timeout);
             console.error('Comprehensive training metrics view loading failed:', error);
@@ -910,7 +911,7 @@ function updateMainImage() {
             statusElement.style.display = 'none';
             reject(error);
         };
-        
+
         // Attempt to load image
         img.src = imageUrl;
     });
@@ -925,13 +926,13 @@ function updatePredImage(processNum, iter) {
             return;
         }
 
-        
+
         // Ensure iteration is within valid range
         if (iter < predImageMinIter || iter > predImageMaxIter || predImageMaxIter === 0) {
             reject(new Error('Iteration value out of valid range'));
             return;
         }
-        
+
         // Update current iteration
         if (processNum === 1) {
             currentPredIter1 = iter;
@@ -940,24 +941,24 @@ function updatePredImage(processNum, iter) {
             currentPredIter2 = iter;
             document.getElementById('iter-pred-2').value = iter;
         }
-        
+
         // Display loading state
         const loadingElement = document.getElementById(`pred-loading-${processNum}`);
         const imageElement = document.getElementById(`pred-image-${processNum}`);
         const pathElement = document.getElementById(`pred-image-path-${processNum}`);
         const statusElement = document.getElementById(`pred-image-status-${processNum}`);
         const cacheIndicator = document.getElementById(`pred-image-cache-${processNum}`);
-        
+
         loadingElement.style.display = 'block';
         imageElement.style.display = 'none';
         statusElement.style.display = 'block';
         statusElement.textContent = 'Loading...';
         cacheIndicator.style.display = 'none';
-        
+
         // Build image URL, including phase name, process fixed at 2
         const formattedIter = String(iter).padStart(4, '0');
         const baseImageUrl = `${IMAGE_BASE_PATH}pred_test_${phaseName}_iter${formattedIter}_process2.png`;
-        
+
         // Check cache
         const cachedImage = getImageFromCache(baseImageUrl);
         if (cachedImage) {
@@ -969,7 +970,7 @@ function updatePredImage(processNum, iter) {
             cacheIndicator.style.display = 'block';
             pathElement.textContent = `Image path: ${baseImageUrl} (Cached)`;
             console.log(`Using cache to load prediction image ${processNum}:`, baseImageUrl);
-            
+
             // Update R² value from CSV data
             if (csvData.length > 0) {
                 const r2Element = document.getElementById(`pred-r2-${processNum}`);
@@ -983,39 +984,39 @@ function updatePredImage(processNum, iter) {
                 if (r2Value === null && csvData.length > 0) {
                     r2Value = csvData[csvData.length - 1].r2Score;
                 }
-                r2Element.textContent = r2Value !== null ? 
+                r2Element.textContent = r2Value !== null ?
                     `R²: ${r2Value.toFixed(3)}` : 'R²: N/A';
             }
-            
+
             resolve();
             return;
         }
-        
+
         // Add timestamp to avoid caching
         const timestamp = new Date().getTime();
         const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
-        
+
         // Display image path
         pathElement.textContent = `Image path: ${baseImageUrl}`;
-        
+
         // Clear previous event listeners
         imageElement.onload = null;
         imageElement.onerror = null;
-        
+
         // Create image object for preloading
         const img = new Image();
-        
+
         // Set timeout to 20 seconds
         const timeout = setTimeout(() => {
             statusElement.textContent = 'Loading timeout, retrying...';
-            
+
             // Retry reload after first timeout
             img.src = '';
             setTimeout(() => {
                 const newTimestamp = new Date().getTime();
                 img.src = `${baseImageUrl}?timestamp=${newTimestamp}`;
             }, 1000);
-            
+
             // Show error on second timeout
             const secondTimeout = setTimeout(() => {
                 loadingElement.innerHTML = `
@@ -1027,7 +1028,7 @@ function updatePredImage(processNum, iter) {
                 statusElement.style.display = 'none';
                 reject(new Error('Image loading timeout'));
             }, 20000);
-            
+
             // If second load succeeds, clear second timeout
             img.onload = function() {
                 clearTimeout(secondTimeout);
@@ -1039,12 +1040,12 @@ function updatePredImage(processNum, iter) {
                 ctx.drawImage(img, 0, 0);
                 const dataUrl = canvas.toDataURL('image/png');
                 saveImageToCache(baseImageUrl, dataUrl);
-                
+
                 loadingElement.style.display = 'none';
                 imageElement.style.display = 'block';
                 imageElement.src = dataUrl;
                 statusElement.textContent = 'Loading Complete';
-                
+
                 // Update R² value
                 if (csvData.length > 0) {
                     const r2Element = document.getElementById(`pred-r2-${processNum}`);
@@ -1056,18 +1057,18 @@ function updatePredImage(processNum, iter) {
                     if (r2Value === null && csvData.length > 0) {
                         r2Value = csvData[csvData.length - 1].r2Score;
                     }
-                    r2Element.textContent = r2Value !== null ? 
+                    r2Element.textContent = r2Value !== null ?
                         `R²: ${r2Value.toFixed(3)}` : 'R²: N/A';
                 }
-                
+
                 resolve();
             };
         }, 20000);
-        
+
         // Image loading success
         img.onload = function() {
             clearTimeout(timeout);
-            
+
             // Convert to dataURL and save to cache
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
@@ -1076,12 +1077,12 @@ function updatePredImage(processNum, iter) {
             ctx.drawImage(img, 0, 0);
             const dataUrl = canvas.toDataURL('image/png');
             saveImageToCache(baseImageUrl, dataUrl);
-            
+
             loadingElement.style.display = 'none';
             imageElement.style.display = 'block';
             imageElement.src = dataUrl;
             statusElement.textContent = 'Loading Complete';
-            
+
             // Update R² value
             if (csvData.length > 0) {
                 const r2Element = document.getElementById(`pred-r2-${processNum}`);
@@ -1093,13 +1094,13 @@ function updatePredImage(processNum, iter) {
                 if (r2Value === null && csvData.length > 0) {
                     r2Value = csvData[csvData.length - 1].r2Score;
                 }
-                r2Element.textContent = r2Value !== null ? 
+                r2Element.textContent = r2Value !== null ?
                     `R²: ${r2Value.toFixed(3)}` : 'R²: N/A';
             }
-            
+
             resolve();
         };
-        
+
         img.onerror = function() {
             clearTimeout(timeout);
             loadingElement.innerHTML = `
@@ -1111,7 +1112,7 @@ function updatePredImage(processNum, iter) {
             statusElement.style.display = 'none';
             reject(new Error('Image loading failed'));
         };
-        
+
         // Attempt to load image
         img.src = imageUrl;
     });
@@ -1121,13 +1122,13 @@ function updatePredImage(processNum, iter) {
 function updateOtherTabImages(iter) {
     // Ensure iteration is within valid range
     if (iter < 1 || iter > totalIterations || totalIterations === 0 || !phaseName) return;
-    
+
     // Update convex hull info image
     updateTabImage('convex-hull', iter, 'convex_hull');
-    
+
     // Update feature analysis image
     updateTabImage('features', iter, 'features_importance');
-    
+
     // Update log info image
     updateTabImage('logs', iter, 'training_logs');
 }
@@ -1138,18 +1139,18 @@ function updateTabImage(tabId, iter, imagePrefix) {
     const imageElement = document.getElementById(`${tabId}-image`);
     const pathElement = document.getElementById(`${tabId}-image-path`);
     const cacheIndicator = document.getElementById(`${tabId}-cache`);
-    
+
     if (!loadingElement || !imageElement || !pathElement) return;
-    
+
     // Display loading state
     loadingElement.style.display = 'block';
     imageElement.style.display = 'none';
     cacheIndicator.style.display = 'none';
-    
+
     // Build image URL, including phase name
     const formattedIter = String(iter).padStart(4, '0');
     const baseImageUrl = `${IMAGE_BASE_PATH}${imagePrefix}_${phaseName}_iter${formattedIter}_process2.png`;
-    
+
     // Check cache
     const cachedImage = getImageFromCache(baseImageUrl);
     if (cachedImage) {
@@ -1162,21 +1163,21 @@ function updateTabImage(tabId, iter, imagePrefix) {
         console.log(`Using cache to load ${tabId} image:`, baseImageUrl);
         return;
     }
-    
+
     // Add timestamp to avoid caching
     const timestamp = new Date().getTime();
     const imageUrl = `${baseImageUrl}?timestamp=${timestamp}`;
-    
+
     // Display image path
     pathElement.textContent = `Image path: ${baseImageUrl}`;
-    
+
     // Clear previous event listeners
     imageElement.onload = null;
     imageElement.onerror = null;
-    
+
     // Create image object for preloading
     const img = new Image();
-    
+
     // Set timeout
     const timeout = setTimeout(() => {
         loadingElement.innerHTML = `
@@ -1186,11 +1187,11 @@ function updateTabImage(tabId, iter, imagePrefix) {
             <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">Retry</button>
         `;
     }, 20000);
-    
+
     // Image loading success
     img.onload = function() {
         clearTimeout(timeout);
-        
+
         // Convert to dataURL and save to cache
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
@@ -1199,13 +1200,13 @@ function updateTabImage(tabId, iter, imagePrefix) {
         ctx.drawImage(img, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
         saveImageToCache(baseImageUrl, dataUrl);
-        
+
         loadingElement.style.display = 'none';
         imageElement.style.display = 'block';
         imageElement.src = dataUrl;
         cacheIndicator.style.display = 'block';
     };
-    
+
     img.onerror = function() {
         clearTimeout(timeout);
         loadingElement.innerHTML = `
@@ -1215,7 +1216,7 @@ function updateTabImage(tabId, iter, imagePrefix) {
             <button class="btn btn-sm btn-primary mt-2" onclick="updateTabImage('${tabId}', ${iter}, '${imagePrefix}')">Retry</button>
         `;
     };
-    
+
     img.src = imageUrl;
 }
 

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>作业工作台 · AL-TDB</title><link rel="stylesheet" href="/static/results.css"><link rel="stylesheet" href="/static/workbench.css">
+<link rel="stylesheet" href="/static/workbench-project.css">
+<link rel="stylesheet" href="/static/tool-workbench.css">
+<script src="/static/project-icons.js"></script>
+<script src="/static/workbench-navigation.js"></script>
+</head>
+<body class="tool-workbench" data-tool="jobs">
+<a class="skip" href="#main">跳到工作区</a>
+<aside id="rail" aria-label="项目导航"><div class="brand"></div><div class="project-box"><a href="/projects">项目工作台</a><span>计算与建模</span></div><nav class="railnav projnav" aria-label="工作区"></nav></aside>
+<button id="scrim" type="button" aria-label="收起导航" hidden></button>
+<div class="shell"><header class="topbar"></header>
+<main class="tool-content" id="main" tabindex="-1">
+<div class="pagehead"><div><h1>作业工作台</h1></div></div>
+<div class="run-bar"><div><label for="config">运行配置</label><select id="config"></select></div>
+<button class="btn secondary-action" id="refresh">刷新状态</button></div><p id="notice" role="status"></p>
+<section class="record-list"><h2 id="phase">选择运行</h2><p id="stage"></p>
+<p id="run-links" hidden><a id="control" href="/">运行控制</a> · <a id="records" href="/results">结果与修订</a> · <a id="models" href="/model_analysis">亚点阵模型比较</a></p>
+<div><label for="machine">DPDispatcher 机器配置</label><select id="machine"></select><p class="muted" id="profiles"></p></div>
+<button class="btn primary-action" id="preview" disabled>准备输入并预览提交</button> <button class="btn secondary-action" id="collect" disabled>收集本地结果</button>
+<section id="confirmation" hidden><h3>核对本轮作业</h3><dl id="plan" class="facts"></dl>
+<button class="btn primary-action" id="submit" disabled>确认提交</button></section><p id="feedback" role="status"></p></section>
+</main></div>
+<script src="/static/tool-shell.js"></script>
+<script src="/static/jobs.js" defer></script>
+</body></html>

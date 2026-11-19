@@ -132,7 +132,10 @@ async def get_element_groups(request: Request, data: ElementGroupsRequest, task_
     if len(model[1].split(":")) != len(analyzer.site_weight):
         raise HTTPException(422, "Model does not match this task's sublattices")
     groups = generate.get_model_site_elements(model=model, elements=analyzer.site_elements)
-    return {"success": True, "element_groups": groups}
+    labels = model[1].split(':')
+    weights = [sum(w for w, site in zip(analyzer.site_weight, labels) if site == group)
+               for group in dict.fromkeys(labels)]
+    return {"success": True, "element_groups": groups, "site_ratios": weights}
 
 
 class FilterSubmitRequest(BaseModel):
@@ -157,6 +160,54 @@ async def submit_filtered_elements(request: Request, data: FilterSubmitRequest, 
             raise HTTPException(422, "Assign each allowed element to exactly one group; retain a constituent per site")
     analyzer.element_filter = data.model_dump()
     return {"success": True, "message": "Element choices saved for this task; use Export to write the database"}
+
+
+class ProtectedComposition(BaseModel):
+    source: str = Field(min_length=1)
+    temperature_K: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    composition: dict[str, float]
+
+
+class OccupancyRequest(FilterSubmitRequest):
+    protected: list[ProtectedComposition] = Field(default_factory=list, max_length=250)
+
+
+@tdb_router.post('/occupancy-trials')
+async def occupancy_trials(request: Request, data: OccupancyRequest, task_id: str):
+    from src.occupancy_trials import compare_occupancies
+    analyzer = assessment(request, task_id)
+    model = model_from_filename(data.selected_model)
+    report = await compute(request, compare_occupancies, analyzer, model, data.model_dump())
+    return report
+
+
+@tdb_router.post('/occupancy-trials/{trial_id}/{index}/export')
+async def export_trial(request: Request, trial_id: str, index: int, task_id: str):
+    import hashlib
+    import json
+    import pandas as pd
+    from io import BytesIO
+    if not re.fullmatch('[a-f0-9]{32}', trial_id):
+        raise HTTPException(422, 'Invalid trial ID')
+    analyzer = assessment(request, task_id)
+    def write_candidate():
+        folder = analyzer.working_path / 'occupancy_trials' / trial_id
+        report = json.loads((folder / 'comparison.json').read_text(encoding='utf-8'))
+        if not 0 <= index < len(report['candidates']):
+            raise ValueError('Unknown candidate')
+        candidate = report['candidates'][index]
+        if candidate['missing'] or not candidate['endmembers']:
+            raise ValueError('Endmember energies are missing for this candidate')
+        source = analyzer.vasp_ml_data_path.read_bytes()
+        if hashlib.sha256(source).hexdigest() != report['source_sha256']:
+            raise ValueError('Endmember data changed. Repeat the comparison.')
+        table = pd.read_csv(BytesIO(source))
+        model, sites = report['model'], candidate['sites']
+        selected = table[table.endmember.isin(generate.replace_groups(model, sites))].copy()
+        selected['distance_between_pt_hull'] = selected['above_hull']
+        path = analyzer.output_tdb_file(model, selected, sites, folder / str(index))
+        return {'url': '/get_data_file/' + path.relative_to(BASE_DATA_DIR).as_posix()}
+    return await compute(request, write_candidate)
 
 
 class AmodelTdbGenerateRequest(BaseModel):
